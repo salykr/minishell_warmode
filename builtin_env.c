@@ -6,11 +6,42 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:54:48 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/01 16:13:05 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 17:09:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
+void compare_with_ls_pwd(t_parser *list, t_env)
+{
+    int i;
+
+    i = 0;
+    if(list->input == NULL)
+        return;
+    while(list->input[i] != NULL)
+        i++;
+    if(!strcmp(list->input[i],"ls") || !strcmp(list->input[i],"pwd"))
+    {
+        if(!strcmp(list->input[i],"pwd"))
+            builtin_pwd()
+    }
+}
+char *compare_input_with_str(t_parser *list, const char *str)
+{
+    int i;
+
+    if (list == NULL || list->input == NULL || str == NULL)
+        return (NULL);  // Return NULL if list, input, or str is NULL
+    i = 0;
+    while (list->input[i] != NULL)
+    {
+        if (strcmp(list->input[i], str) != 0)
+            return (list->input[i]);  // Return the mismatched string
+        i++;
+    }
+    return (NULL);  // Return NULL if all strings match
+}
 
 char	*ft_getenv(t_env *myenv, char *str)
 {
@@ -103,16 +134,26 @@ t_env *init_env(char **env)
     return (myenv);
 }
 
-int builtin_env(t_env *myenv)
+int builtin_env(t_parser *list, t_env *myenv)
 {
+    char *mismatch_str;
     int i;
 
+    mismatch_str = compare_input_with_str(list, "env");
+    if (mismatch_str != NULL)  // If there's a mismatch
+    {
+        printf("env: '%s':  No such file or directory\n", mismatch_str);
+        return (-1);
+    }
+    printf("WHY AREN'T YOU HERE?\n");
     i = 0;
     while (myenv->env[i])
     {
-        if(ft_strchr(myenv->env[i],'=') != NULL)
-            printf("%s\n",myenv->env[i]);
+        if (ft_strchr(myenv->env[i], '=') != NULL)
+            printf("%s\n", myenv->env[i]);
         i++;
     }
+
     return (0);
 }
+

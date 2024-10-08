@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/05 14:08:28 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 14:51:13 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,19 +159,51 @@ int	ft_handle_redirections(t_parser *parser, int re)
 	return (fd);
 }
 
-int	is_builtin(char *command)
+int	is_builtin(t_parser *parser)
 {
-	if (command == NULL)
+	if (parser->command == NULL)
 		return (0);
-	if (strcmp(command, "echo") == 0 || strcmp(command, "cd") == 0
-		|| strcmp(command, "pwd") == 0 || strcmp(command, "export") == 0
-		|| strcmp(command, "unset") == 0 || strcmp(command, "env") == 0
-		|| strcmp(command, "exit") == 0)
+	if (strcmp(parser->command, "cd") == 0
+		|| strcmp(parser->command, "pwd") == 0 || strcmp(parser->command, "export") == 0
+		|| strcmp(parser->command, "unset") == 0 || strcmp(parser->command, "env") == 0
+		|| strcmp(parser->command, "exit") == 0 ||strcmp(parser->command, "echo") == 0)
 	{
-		return (1);
+				return (1);
 	}
 	return (0);
 }
+
+#include <string.h>
+
+// int is_builtin(t_parser *parser)
+// {
+//     if (parser == NULL || parser->command == NULL)
+//         return (0);
+    
+//     if (parser->operations != NULL && parser->operations[0] != NULL)
+//     {
+//         if (strcmp(parser->command, "echo") == 0)
+//         {
+//             if (strcmp(parser->operations[0], "-n") != 0)
+//                     return (0); // Return 0 for invalid operations with echo
+//             return (1); // Valid echo command with only -n option
+//         }
+//         return (0); // Return 0 for other commands with operations
+//     }
+//     if (strcmp(parser->command, "cd") == 0 ||
+//         strcmp(parser->command, "pwd") == 0 ||
+//         strcmp(parser->command, "export") == 0 ||
+//         strcmp(parser->command, "unset") == 0 ||
+//         strcmp(parser->command, "env") == 0 ||
+//         strcmp(parser->command, "exit") == 0 ||
+//         strcmp(parser->command, "echo") == 0)
+//     {
+//         return (1); // Valid built-in command
+//     }
+
+//     return (0); // Not a built-in command
+// }
+
 int	handle_heredoc(char **heredoc_content)
 {
 	int	pipefd[2];
@@ -296,7 +328,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		if (strcmp(parser->command, "echo") == 0)
 			builtin_echo(parser, *env);
 		else if (strcmp(parser->command, "env") == 0)
-			builtin_env(env);
+			builtin_env(parser, env);
 		else if (strcmp(parser->command, "pwd") == 0)
 			builtin_pwd(env); 
 		else if (strcmp(parser->command, "export") == 0)
@@ -370,7 +402,7 @@ void	cmds_exec(t_parser *parser, t_env *env)
 		}
 		else
 			f.fd_2 = fd[1];
-		if (is_builtin(parser->command))
+		if (is_builtin(parser))
 		{
 			printf("~~~~~~builtin-~~~~~~~\n");
 			printf("before executing echo: %d\n", global_var);

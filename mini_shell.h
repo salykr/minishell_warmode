@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/06 14:13:35 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 12:14:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ t_parser					*create_parser(void);
 void						print_2d_array(char **array);
 void						ft_redirection(t_parser *node);
 char						*strjoin(char const *s1, char const *s2);
-int							builtin_env(t_env *myenv);
+int builtin_env(t_parser *list, t_env *myenv);
 void builtin_pwd(t_env *env) ;
 int							builtin_unset(char **input, t_env *myenv);
 t_env						*init_env(char **env);
@@ -199,7 +199,6 @@ int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-int							builtin_env(t_env *myenv);
 char						*ft_getenv(t_env *myenv, char *str);
 void						update_pwd(t_env *myenv);
 void						update_env_level(t_env *myenv);

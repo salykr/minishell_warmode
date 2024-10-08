@@ -6,41 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/06 14:49:18 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 12:05:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-int list_length(char **list)
-{
-	int i;
-
-	i = 0;
-	while(list[i] != NULL)
-		i++;
-	return(i);
-}
-int check_args_nb_1(t_parser *list)
-{
-	if (list->input == NULL)
-		return (1);
-	if (list_length(list->input) > 1)
-	{
-		printf("too many args.\n");
-		return (0);
-	}
-	return(1);	
-}
-
-int check_args_nb(t_parser *list)
-{
-	if (list->input[1])
-	{
-		printf("too many args.\n");
-		return (0);
-	}
-	return(1);	
-}
 
 void replace_with_str(char ***array, char *new_str)
 {
@@ -158,10 +128,8 @@ int	change_directory_and_update(t_parser *list, t_env *myenv)
 }
 int	handle_directory_input(t_parser *list, t_env *myenv)
 {
-	printf("MADE IT HERE\n");
 	if (is_home_input(list->input))
 	{
-		printf("MADE IT HERE AS WELL\n");
 		if (!replace_with_env_var(&list->input, myenv, "HOME", "cd: HOME not set\n"))
 			return (-1);
 	}
@@ -178,16 +146,11 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 
 int	builtin_cd(t_parser *list, t_env *myenv)
 {
-	printf("PASSED 1\n");
 	if (list->input != NULL)
 		list->input[0]=remove_quotes(list->input[0]);
-	printf("PASSED 2\n");
-	// printf("path: %s\n",list->input[0]);
-	if (!check_args_nb(list) || (list->input != NULL && !strncmp(list->input[0],"/home",5)))
-		return(-1);
-	printf("PASSED 3\n");
+	if (list->input != NULL &&(list->input[1] != NULL || !strncmp(list->input[0], "/home", 5)))
+        return (-1);
 	if (handle_directory_input(list, myenv) != 0)
 		return (-1);
-	printf("PASSED 4\n");
 	return (change_directory_and_update(list, myenv));
 }
