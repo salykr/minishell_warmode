@@ -6,27 +6,27 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:54:48 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/08 17:09:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/08 17:22:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-void compare_with_ls_pwd(t_parser *list, t_env)
-{
-    int i;
+// void compare_with_ls_pwd(t_parser *list, t_env)
+// {
+//     int i;
 
-    i = 0;
-    if(list->input == NULL)
-        return;
-    while(list->input[i] != NULL)
-        i++;
-    if(!strcmp(list->input[i],"ls") || !strcmp(list->input[i],"pwd"))
-    {
-        if(!strcmp(list->input[i],"pwd"))
-            builtin_pwd()
-    }
-}
+//     i = 0;
+//     if(list->input == NULL)
+//         return;
+//     while(list->input[i] != NULL)
+//         i++;
+//     if(!strcmp(list->input[i],"ls") || !strcmp(list->input[i],"pwd"))
+//     {
+//         if(!strcmp(list->input[i],"pwd"))
+//             builtin_pwd()
+//     }
+// }
 char *compare_input_with_str(t_parser *list, const char *str)
 {
     int i;
