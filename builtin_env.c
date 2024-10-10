@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:54:48 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/09 16:40:54 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/09 18:40:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,60 @@ char *compare_input_with_str(t_parser *list, const char *str)
     }
     return (NULL);  // Return NULL if all strings match
 }
+
+int check_ls_pwd_in_env(t_parser *list, t_env *myenv)
+{
+    int i;
+  t_parser *parser;
+    if (list == NULL || list->input == NULL)
+        return 1;  // Return an error code
+    i = 0;
+    while (list->input[i] != NULL)
+        i++;
+    if (i > 0)
+    {
+        parser = create_parser();  // Create a new parser
+        if (strcmp(list->input[i - 1], "pwd") == 0)
+            parser->command = "pwd";
+        else if (strcmp(list->input[i - 1], "ls") == 0)
+            parser->command = "ls";
+        else
+        {
+            free(parser);  // Free the parser if not executing a command
+            return (1);  // Return an error code for unrecognized command
+        }
+        cmds_exec(parser, myenv);
+        free(parser);  // Free the parser after use
+        return (0);  // Success
+    }
+    return (1);  // Return an error code if there are no commands
+}
+
+char *check_env_input(t_parser *list)
+{
+    int i;
+    // Return NULL if the input list or its fields are NULL
+    if (list == NULL || list->input == NULL)
+        return (NULL);
+    i = 0;
+    while (list->input[i] != NULL)
+    {
+        // If the current input is "env", continue checking the next one
+        if (strcmp(list->input[i], "env") == 0)
+        {
+            i++;
+            continue;
+        }
+
+        // Check if the input contains an '=' character
+        if (strchr(list->input[i], '=') != NULL)
+            return (list->input[i]);  // Return if an '=' is found
+        // If it's neither "env" nor contains an '=', return the mismatched input
+        return (list->input[i]);
+    }
+    return (NULL);  // Return NULL if all inputs match the expected behavior
+}
+
 
 char	*ft_getenv(t_env *myenv, char *str)
 {
@@ -215,6 +269,15 @@ void print_user_defined_vars(t_parser *list, t_env *myenv)
 // Main builtin_env function that uses the helper functions
 int builtin_env(t_parser *list, t_env *myenv)
 {
+    char *mismatch_str;
+    if(check_ls_pwd_in_env(list, myenv)==0)
+        return(0);
+    mismatch_str = check_env_input(list);
+    if (mismatch_str != NULL)  // If there's a mismatch
+    {
+        printf("env: '%s':  No such file or directory\n", mismatch_str);
+        return (-1);
+    }
     // If no input is provided, print the entire environment
     if (list->input == NULL)
     {
