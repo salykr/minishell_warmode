@@ -6,27 +6,12 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:54:48 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/08 17:22:33 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/09 16:40:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-// void compare_with_ls_pwd(t_parser *list, t_env)
-// {
-//     int i;
-
-//     i = 0;
-//     if(list->input == NULL)
-//         return;
-//     while(list->input[i] != NULL)
-//         i++;
-//     if(!strcmp(list->input[i],"ls") || !strcmp(list->input[i],"pwd"))
-//     {
-//         if(!strcmp(list->input[i],"pwd"))
-//             builtin_pwd()
-//     }
-// }
 char *compare_input_with_str(t_parser *list, const char *str)
 {
     int i;
@@ -134,26 +119,110 @@ t_env *init_env(char **env)
     return (myenv);
 }
 
-int builtin_env(t_parser *list, t_env *myenv)
+// Helper function to compare env variable name with user input and print the correct value
+int match_and_print_env(char *env_var, char **input_list)
 {
-    char *mismatch_str;
-    int i;
-
-    mismatch_str = compare_input_with_str(list, "env");
-    if (mismatch_str != NULL)  // If there's a mismatch
+    int j = 0;
+    while (input_list[j] != NULL)
     {
-        printf("env: '%s':  No such file or directory\n", mismatch_str);
-        return (-1);
-    }
-    printf("WHY AREN'T YOU HERE?\n");
-    i = 0;
-    while (myenv->env[i])
-    {
-        if (ft_strchr(myenv->env[i], '=') != NULL)
-            printf("%s\n", myenv->env[i]);
-        i++;
-    }
+        char *equal_sign = strchr(input_list[j], '=');
+        if (equal_sign != NULL)
+        {
+            // Extract user-provided variable name
+            char *var_name = strndup(input_list[j], equal_sign - input_list[j]);
 
-    return (0);
+            // Compare env variable name with user-provided variable name
+            if (strncmp(env_var, var_name, equal_sign - input_list[j]) == 0 && env_var[equal_sign - input_list[j]] == '=')
+            {
+                // If names match, print the user-provided value
+                printf("%s\n", input_list[j]);
+                free(var_name);
+                return (1);  // Mark that we found a match and printed
+            }
+            free(var_name);
+        }
+        j++;
+    }
+    return (0);  // No match found
 }
 
+// Function to print all environment variables from myenv
+void print_all_env_vars(t_env *myenv)
+{
+    int i = 0;
+    while (myenv->env[i] != NULL)
+    {
+        printf("%s\n", myenv->env[i]);
+        i++;
+    }
+}
+
+// Function to print environment variables and replace matching variables with user input
+void print_env_vars(t_env *myenv, char **input_list)
+{
+    int i = 0;
+    while (myenv->env[i] != NULL)
+    {
+        if (!match_and_print_env(myenv->env[i], input_list))
+        {
+            // If no match, print the environment variable
+            printf("%s\n", myenv->env[i]);
+        }
+        i++;
+    }
+}
+
+// Helper function to check if a user-defined variable exists in the environment
+int exists_in_env(char *var_name, t_env *myenv)
+{
+    int i = 0;
+    while (myenv->env[i] != NULL)
+    {
+        if (strncmp(myenv->env[i], var_name, strlen(var_name)) == 0 && myenv->env[i][strlen(var_name)] == '=')
+        {
+            return (1);  // Exists in environment
+        }
+        i++;
+    }
+    return (0);  // Does not exist
+}
+
+// Function to print user-defined variables that don't exist in the environment
+void print_user_defined_vars(t_parser *list, t_env *myenv)
+{
+    int j = 0;
+    while (list->input[j] != NULL)
+    {
+        char *equal_sign = strchr(list->input[j], '=');
+        if (equal_sign != NULL)
+        {
+            // Extract user-provided variable name
+            char *var_name = strndup(list->input[j], equal_sign - list->input[j]);
+
+            // Check if the variable exists in the environment
+            if (!exists_in_env(var_name, myenv))
+            {
+                // If it doesn't exist, print the user-provided variable
+                printf("%s\n", list->input[j]);
+            }
+
+            free(var_name);
+        }
+        j++;
+    }
+}
+
+// Main builtin_env function that uses the helper functions
+int builtin_env(t_parser *list, t_env *myenv)
+{
+    // If no input is provided, print the entire environment
+    if (list->input == NULL)
+    {
+        print_all_env_vars(myenv);
+        return (0);
+    }
+
+    print_env_vars(myenv, list->input);          // First pass: Print environment variables
+    print_user_defined_vars(list, myenv);        // Second pass: Print user-defined variables that don't exist
+    return (0);
+}
