@@ -322,9 +322,14 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
     {
         if (tokens->type == T_IDENTIFIER)
         {
-            if (!ft_strcmp(tokens->value,"\\n"))
+            if (!ft_strncmp(tokens->value,"\\n",2))
             {
-                tokens->value ="n";
+                if (curr->command==NULL)
+                {
+                    printf("%s: command not found\n",(tokens->value)+1);
+                    global_var=127;
+                    return (-1);
+                }
             }
             if (!ft_strcmp(tokens->value,":") || !ft_strcmp(tokens->value,"!"))
             {
@@ -396,7 +401,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
             {
                 errmsg_cmd(tokens->value, NULL, "Is a directory");
                 global_var=0;
-                continue;
+                return 1;
             }
             else
             {
@@ -474,6 +479,23 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
         }
         else if (tokens->type == T_ENV || tokens->type == T_NUMBER || tokens->type == T_PERIODS || tokens->type == T_QUOTE)
         {
+            //             if (!strncmp(tokens->value,"$",1))
+            // {
+            //     char *value = ft_getenv(&env,tokens->value);
+            //     printf("%s testttttt\n",value);
+            //     char *cmd =ft_strjoin(value,"/");
+            //     printf("%s\n",cmd);
+            //    if (cmd_is_dir(cmd))
+            //    {
+            //         errmsg_cmd(tokens->value, NULL, "Is a directory");
+            //         global_var=0;
+            //         return 1;
+            //    }
+            //     if (value)
+            //         printf("%s", value);
+            //     tokens=tokens->next;
+            //         continue;
+            // }
             if ((tokens->value[0] == '\'' && tokens->value[1] == '\'' &&!tokens->value[2]) || (tokens->value[0] == '\"' && tokens->value[1] == '\"' && !tokens->value[2]))
                 {
                     curr->input = add_string_to_2d_array(curr->input, tokens->value);
@@ -495,7 +517,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
             }      
             if (curr->command == NULL)
             {
-                printf("bash:%s: command not found", tokens->value);
+                printf("bash:%s: command not found", value);
                 global_var=127;
                 return -1;
             }
@@ -507,7 +529,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
             }
             else
             {
-                curr->input = add_string_to_2d_array(curr->input, tokens->value);
+                curr->input = add_string_to_2d_array(curr->input, value);
             }
         }
         else if (tokens->type == T_APPEND || tokens->type == T_HEREDOC || tokens->type == T_OUTPUT || tokens->type == T_INPUT)
