@@ -190,6 +190,12 @@ void builtin_echo(t_parser *list, t_env env)
             }
             else if (*arg == '$')
             {
+                if (*(arg+1) == '\'' || *(arg +1) =='\"')
+                {
+                  arg= remove_quotes(arg);
+                    printf("%s",arg+1);
+                    break;
+                }
                 print_expanded_input(&arg, false, env);
                 // while (*arg && *arg != ' ' && *arg != '\'' && *arg != '\"')
                 //     arg++;
