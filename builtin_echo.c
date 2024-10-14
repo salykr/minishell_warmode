@@ -107,7 +107,7 @@ void print_expanded_input(char **input, bool inside_single_quotes, t_env env)
         char var_name[var_name_length + 1];
         strncpy(var_name, var_name_start, var_name_length);
         var_name[var_name_length] = '\0';
-
+        // printf("%s---------------------------------\n",var_name);
         char *value = ft_getenv(&env, var_name);
         if (value)
             printf("%s", value);

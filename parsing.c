@@ -306,6 +306,42 @@ bool ft_check_n_operation(char *str)
     return 0;
 }
 
+char *expand_variable(const char *input ,t_env env) {
+    char *dollar_sign = strchr(input, '$');
+    if (!dollar_sign) {
+        return strdup(input); // No expansion needed
+    }
+
+    // Get the part before the dollar sign
+    size_t prefix_len = dollar_sign - input;
+    char *prefix = strndup(input, prefix_len); // Allocate and copy prefix
+
+    // Get the variable name after the dollar sign
+    dollar_sign++; // Move past '$'
+    char *var_value = ft_getenv(&env,dollar_sign);
+
+    // If the variable is found, concatenate
+    char *result;
+    if (var_value) {
+        result = malloc(prefix_len + strlen(var_value) + 1);
+        if (result) {
+            strcpy(result, prefix);
+            strcat(result, var_value);
+        }
+    } else {
+        // If not found, just concatenate the prefix and the original string
+        result = malloc(prefix_len + strlen(dollar_sign) + 1);
+        if (result) {
+            strcpy(result, prefix);
+            strcat(result, dollar_sign);
+        }
+    }
+
+    free(prefix); // Free the allocated prefix
+    return result; // Return the new expanded string
+}
+
+
 //  parsing-----------------------------2
 int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
 {
@@ -321,7 +357,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
     while (tokens != NULL)
     {
         if (tokens->type == T_IDENTIFIER)
-        {
+        {  
             if (!ft_strncmp(tokens->value,"\\n",2))
             {
                 if (curr->command==NULL)
@@ -359,13 +395,14 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
             }
            if (!check_balanced_quotes(tokens->value))
             {
-                printf("Error: Unbalanced quotes in argument");
+                printf("Error: Unbalanced quotes in argument\n");
                 global_var=1;
                 return -1;
             }
             else
             {
                  value = remove_quotes(tokens->value);
+                 value = expand_variable(value,env);
             }
             if (value == NULL || value[0] == '\0')  
             {
@@ -479,7 +516,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
         }
         else if (tokens->type == T_ENV || tokens->type == T_NUMBER || tokens->type == T_PERIODS || tokens->type == T_QUOTE)
         {
-            //             if (!strncmp(tokens->value,"$",1))
+            // if (!strncmp(tokens->value,"$",1))
             // {
             //     char *value = ft_getenv(&env,tokens->value);
             //     printf("%s testttttt\n",value);
@@ -503,6 +540,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
                     continue;
                 }  
             char * value = remove_quotes(tokens->value);
+            value = expand_variable(value,env);
             if (curr->command == NULL &&(is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || ft_strncmp(value, "unset", 5) == 0))
             {
                 curr->command = value;
@@ -514,13 +552,31 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
                 curr->input = add_string_to_2d_array(curr->input, tokens->value);
                 tokens =tokens->next;
                 continue;
-            }      
+            }
+             if (curr->command == NULL && cmd_is_dir(value))
+            {
+                errmsg_cmd(value, NULL, "Is a directory");
+                global_var=0;
+                return 1;
+            }
             if (curr->command == NULL)
             {
-                printf("bash:%s: command not found", value);
+                if (!value)
+                {
+                    printf("\n");
+                    return 0;
+                }
+                if (!strcmp(tokens->value,"$?") && tokens->next && !strcmp(tokens->next->value,"$?"))
+                {
+                   printf("bash:%d%d: command not found\n", global_var,global_var);
+                   global_var=127;
+                   return -1; 
+                }
+                printf("bash:%d: command not found\n", global_var);    
                 global_var=127;
                 return -1;
             }
+
 
             // echo "-n" Hola (for this case)
             else if (!strncmp(tokens->value,"\"-",2))

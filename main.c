@@ -12,7 +12,7 @@
 
 #include "mini_shell.h"
 
-int global_var = 0;  // Define the global variable
+int global_var = 0;
 
 void	ft_free_env(t_env **myenv)
 {
@@ -92,7 +92,6 @@ void	free_parser(t_parser *parser)
 	while (parser)
 	{
 		next = parser->next;
-		// Free 2D arrays in parser
 		if (parser->input)
 		{
 			input_array = parser->input;
@@ -123,7 +122,7 @@ void	free_parser(t_parser *parser)
 			}
 			free(parser->outfile);
 		}
-		free(parser); // Free the parser node itself
+		free(parser);
 		parser = next;
 	}
 }
@@ -142,7 +141,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = readline("minishell>");
-		if (!line) // If EOF is reached, break the loop
+		if (!line)
 			break ;
 		if (strlen(line) == 0)
         {
@@ -159,9 +158,8 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		// Print tokens (for debugging)
-		printf("\nTokens:______________________\n");
-		print_token_list(token_list);
-	
+		// printf("\nTokens:______________________\n");
+		// print_token_list(token_list);
 		// Parse tokens
 		parser = create_parser(); // Initialize parser
 		if (!parser)
@@ -178,24 +176,21 @@ int	main(int argc, char **argv, char **envp)
 		{
 			// fprintf(stderr, "Error: Invalid parser or command.\n");
 			free(line);
-			free_token_list(token_list); // Free token list
-			free_parser(parser);         // Free parser
+			free_token_list(token_list);
+			free_parser(parser);
 			continue ;
 		}
 
 		// Print parser nodes (for debugging)
-		printf("\nParsed commands:\n");
-		print_parser(parser);
+		// printf("\nParsed commands:\n");
+		// print_parser(parser);
 
 		// Execute the parsed command
 		cmds_exec(parser, myenv);
-
-		// Cleanup allocated memory
-		free(line);                  // Free the input line
-		free_token_list(token_list); // Free token list
-		free_parser(parser);         // Free parser
+		free(line);
+		free_token_list(token_list);
+		free_parser(parser);
 	}
-	// Free the environment variables
 	ft_free_env(&myenv);
 	return (EXIT_SUCCESS);
 }
