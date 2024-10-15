@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/15 17:01:57 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/15 17:24:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,91 +297,107 @@ char *remove_quotes_new(const char *str)
     return (new_str);
 }
 
- 
-char *process_variable(char *input, t_env *env)
+ char *process_variable(char *input, t_env *env)
 {
     if (input == NULL)
         return (NULL);
 
-    size_t total_size = 1;  // Start with 1 for null terminator
-    char *start = input;
-    char *dollar = strchr(input, '$');
-    char *new_str = malloc(total_size);
-
-    if (!new_str)
-        return (NULL);
-    new_str[0] = '\0';  // Start with an empty string
-
-    while (dollar)
+    // Check if there is a dollar sign and it's not escaped
+    if (strchr(input, '$') && !strstr(input, "\\$"))
     {
-        // Append the part of the string before the dollar sign
-        strncat(new_str, start, dollar - start);
-        total_size += (dollar - start);
-        new_str = realloc(new_str, total_size);
-        if (!new_str) return NULL;
+        size_t total_size = 1;  // Start with 1 for null terminator
+        char *start = input;
+        char *dollar = strchr(input, '$');
+        char *new_str = malloc(total_size);
 
-        char *var_name = dollar + 1;
-        char *end_of_var = strpbrk(var_name, " $?= ");  // Stop at any space, ?, = or end of string
-        char temp_char = '\0';
+        if (!new_str)
+            return (NULL);
+        new_str[0] = '\0';  // Start with an empty string
 
-        // Handle single-digit environment variables ($9, $0, etc.)
-        if (isdigit(*var_name))
+        while (dollar)
         {
-            char temp_var[2] = {*var_name, '\0'};  // Variable name is just the digit
-            char *env_value = get_env_value(env, temp_var);
+            // Append the part of the string before the dollar sign
+            strncat(new_str, start, dollar - start);
+            total_size += (dollar - start);
 
-            if (env_value == NULL)
-                env_value = "";  // Treat as an empty string if not found
+            char *var_name = dollar + 1;
+            char *end_of_var = strpbrk(var_name, " $?"); // Find the end of variable name
+            char temp_char = '\0';
+            char first_char = *var_name; // Save the first character of the variable name
 
-            total_size += strlen(env_value);
-            new_str = realloc(new_str, total_size);
-            if (!new_str) return NULL;
-            strcat(new_str, env_value);
-
-            // Move past the $ and the digit
-            start = dollar + 2;
-        }
-        // Handle standard environment variables (like $USER)
-        else
-        {
             if (end_of_var)
             {
                 temp_char = *end_of_var;
                 *end_of_var = '\0';  // Temporarily terminate the variable name
             }
 
-            char *env_value = get_env_value(env, var_name);
-            if (env_value == NULL)
-                env_value = "";  // Treat as an empty string if not found
-
-            total_size += strlen(env_value);
-            new_str = realloc(new_str, total_size);
-            if (!new_str) return NULL;
-            strcat(new_str, env_value);
-
-            if (end_of_var)
+            // Check if the first character is '?'
+            if (first_char == '?')
             {
-                *end_of_var = temp_char;  // Restore the original character
-                start = end_of_var;  // Continue from the end of the variable
+                // Replace with the global exit status as a string
+                char exit_status[4];  // Enough for numbers 0-255 (max 3 digits + null terminator)
+                snprintf(exit_status, sizeof(exit_status), "%d", global_var);
+                
+                total_size += strlen(exit_status);
+                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                if (!new_str) return (NULL);
+                strcat(new_str, exit_status);  // Concatenate the exit status
+                printf("current new str %s\n\n",new_str);
+                // Move start to the position after the variable
+                if (end_of_var)
+                {
+                    start = end_of_var + 1;  // Move past the variable
+                }
+                else
+                {
+                    break;  // No more characters after `$?`
+                }
             }
             else
             {
-                start = var_name + strlen(var_name);  // Move past the variable name
+                // Retrieve the value from the environment
+                char *env_value = get_env_value(env, var_name);
+                
+                // If the variable is not found, treat it as an empty string
+                if (env_value == NULL)
+                {
+                    env_value = "";  // Treat it as empty string
+                }
+
+                total_size += strlen(env_value);  // Adjust total size for the env_value (even if empty)
+                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                if (!new_str) return (NULL);
+                strcat(new_str, env_value);  // Concatenate environment variable value (or empty string)
+
+                // Restore the character if it was saved
+                if (end_of_var)
+                {
+                    *end_of_var = temp_char;  // Restore the character
+                    start = end_of_var;  // Move start to the position after the variable
+                }
+                else
+                {
+                    start = var_name + strlen(var_name);  // Move past the variable name
+                }
+            }
+
+            dollar = strchr(start, '$');  // Find the next dollar sign
+            if (dollar != NULL)
+            {
+                char *dollar_1=dollar + 1;
+                if (*dollar_1 == '\0')
+                    break;
             }
         }
 
-        // Continue processing for more '$' symbols in the remaining string
-        dollar = strchr(start, '$');
-        if (dollar != NULL)
-        {
-            char *dollar_1=dollar + 1;
-            if (*dollar_1 == '\0')
-                break;
-        }
+        strcat(new_str, start);  // Append the remainder of the string
+        printf("new str %s\n",new_str);
+        return (new_str);
     }
-    strcat(new_str, start);  // Append the remainder of the string
-    return (new_str);
+
+    return strdup(input);  // Return a copy of input if no processing is needed
 }
+
 
 void check_semicolon(char *name, char **value)
 {
@@ -421,7 +437,7 @@ void add_or_update_to_env(char *name, char *value, t_env *env)
     int name_len;
     char *new_name = process_variable(name, env);
     char *new_value = value ? process_variable(value, env) : NULL;
-    printf("new name : %s new value: %s\n",new_name, new_value);
+    printf("new name : %s \nnew value: %s\n\n",new_name, new_value);
     if (!new_name || (value && !new_value))
     {
         free(new_name);
