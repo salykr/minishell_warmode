@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/08 14:51:13 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/11 19:58:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		else if (strcmp(parser->command, "env") == 0)
 			builtin_env(parser, env);
 		else if (strcmp(parser->command, "pwd") == 0)
-			builtin_pwd(env); 
+			builtin_pwd(parser, env); 
 		else if (strcmp(parser->command, "export") == 0)
 			builtin_export(parser, env);
 		printf("in child :%d\n",global_var);

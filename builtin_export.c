@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/02 16:28:10 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/15 15:05:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ void print_env_sorted(t_env *env)
 
 
 // Function to convert integer to string
-char *itoa(int num) {
+char *itoa(int num) 
+{
     char buffer[12]; // Buffer to hold the string representation of the integer
     snprintf(buffer, sizeof(buffer), "%d", num);
     return strdup(buffer); // Duplicate the string for return
@@ -120,12 +121,19 @@ char *get_env_value(t_env *env, const char *var)
         i++;
     }
     // Variable not found, return empty string instead of NULL
-    return strdup(""); 
+    return(NULL); 
 }
 
 int check_input(char *str)
 {
     int i = 0;
+    if(str[0]=='\0')
+       {
+            printf("Error.\n");
+            return(0);
+        }
+    if (str[ft_strlen(str)-1]=='+')
+        return(-1);
     if (!isalpha(str[0]) && str[0] != '_')
     {
         printf("Error: Invalid character.\n");
@@ -139,7 +147,7 @@ int check_input(char *str)
             printf("Error.\n");
             return(0);
         }
-        else if (ft_isalpha(str[i]) || isdigit(str[i]) || str[i]=='_' || str[i]=='\\' || str[i]=='$' 
+        else if (ft_isalpha(str[i]) || isdigit(str[i]) || str[i]=='_' || str[i]=='\\' || str[i]=='$' || str[i] == ';'
             || (str[i - 1]=='$' && str[i + 1]=='?'))
             i++;
         else if (str[i]=='=')
@@ -175,8 +183,8 @@ void parse_export_input(char *input, char **name, char **value)
     equal_sign = ft_strchr(input, '=');
     *name = NULL;
     *value = NULL;
-    if (check_input(input))
-    {
+    // if (check_input(input))
+    // {
         if (equal_sign)
         {
             *name = ft_strndup(input, equal_sign - input);
@@ -187,7 +195,7 @@ void parse_export_input(char *input, char **name, char **value)
             *name = ft_strdup(input);
             *value = NULL;  // Set value to NULL if '=' is not present
         }
-    }
+    // }
 }
 
 void free_env(t_env *env)
@@ -226,16 +234,15 @@ char *ft_escape_char(char *str)
 
     len = strlen(str);  // Length of the original string
     total = malloc(len + 1);  // Allocate memory for the result string
-    if (!total)
-        return NULL;
-
     i = 0;
     j = 0;
+    if (!total)
+        return (NULL);
+        
     while (str[i] != '\0')
     {
         if (str[i] == '\\')
         {
-            // Count consecutive backslashes
             backslash_count = 0;
             while (str[i] == '\\')
             {
@@ -243,13 +250,13 @@ char *ft_escape_char(char *str)
                 i++;
             }
 
-            // If the count is even, copy all backslashes
+            // If the number of backslashes is even, copy all of them
             if (backslash_count % 2 == 0)
             {
                 while (backslash_count--)
                     total[j++] = '\\';
             }
-            // If the count is odd, copy backslash_count - 1 backslashes (i.e., remove one)
+            // If odd, copy all but one
             else
             {
                 while (--backslash_count)
@@ -257,14 +264,13 @@ char *ft_escape_char(char *str)
             }
         }
         else
-        {
-            // Copy non-backslash characters directly
             total[j++] = str[i++];
-        }
     }
     total[j] = '\0';  // Null-terminate the result
-    return total;
+        
+    return (total);
 }
+
 
 char *remove_quotes_new(const char *str)
 {
@@ -280,7 +286,7 @@ char *remove_quotes_new(const char *str)
     // Copy non-quote characters into the new string
     while (str[i] != '\0')
     {
-        if (str[i] != '"')
+        if (str[i] != '"' && str[i] != '\'')
         {
             new_str[j] = str[i];
             j++;
@@ -289,144 +295,346 @@ char *remove_quotes_new(const char *str)
     }
     new_str[j] = '\0'; // Null-terminate the new string
 
-    return new_str;
+    return (new_str);
 }
 // Example get_env_value function (needs to be properly implemented)
 char *get_env_value(t_env *env, const char *name);
+
+char *process_variable(char *input, t_env *env)
+{
+    if (input == NULL)
+        return (NULL);
+
+    // Check if there is a dollar sign and it's not escaped
+    if (strchr(input, '$') && !strstr(input, "\\$"))
+    {
+        size_t total_size = 1;  // Start with 1 for null terminator
+        char *start = input;
+        char *dollar = strchr(input, '$');
+        char *new_str = malloc(total_size);
+
+        if (!new_str)
+            return (NULL);
+        new_str[0] = '\0';  // Start with an empty string
+
+        while (dollar)
+        {
+            // Append the part of the string before the dollar sign
+            strncat(new_str, start, dollar - start);
+            total_size += (dollar - start);
+
+            char *var_name = dollar + 1;
+            char *end_of_var = strpbrk(var_name, " $?"); // Find the end of variable name
+            char temp_char = '\0';
+            char first_char = *var_name; // Save the first character of the variable name
+
+            if (end_of_var)
+            {
+                temp_char = *end_of_var;
+                *end_of_var = '\0';  // Temporarily terminate the variable name
+            }
+
+            // Check if the first character is '?'
+            if (first_char == '?')
+            {
+                // Replace with the global exit status as a string
+                char exit_status[4];  // Enough for numbers 0-255 (max 3 digits + null terminator)
+                snprintf(exit_status, sizeof(exit_status), "%d", global_var);
+                
+                total_size += strlen(exit_status);
+                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                if (!new_str) return (NULL);
+                strcat(new_str, exit_status);  // Concatenate the exit status
+
+                // Append the remaining characters after "$?" correctly
+                if (end_of_var)
+                {
+                    start = end_of_var + 1;  // Move start to the position after the variable
+                }
+                else
+                {
+                    // If no more characters after `$?`, just break
+                    break;
+                }
+            }
+            else
+            {
+                // Retrieve the value from the environment
+                char *env_value = get_env_value(env, var_name);
+                
+                // If the variable is not found, treat it as an empty string
+                if (env_value == NULL)
+                {
+                    env_value = "";  // Treat it as empty string
+                }
+
+                total_size += strlen(env_value);  // Adjust total size for the env_value (even if empty)
+                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                if (!new_str) return (NULL);
+                strcat(new_str, env_value);  // Concatenate environment variable value (or empty string)
+
+                // Restore the character if it was saved
+                if (end_of_var)
+                {
+                    *end_of_var = temp_char;  // Restore the character
+                    start = end_of_var;  // Move start to the position after the variable
+                }
+                else
+                {
+                    start = var_name + strlen(var_name);  // Move past the variable name
+                }
+            }
+            dollar = strchr(start, '$');  // Find the next dollar sign
+        }
+
+        strcat(new_str, start);  // Append the remainder of the string
+        return (new_str);
+    }
+
+    return strdup(input);  // Return a copy of input if no processing is needed
+}
+
+
+
+
+// void add_or_update_to_env(char *name, char *value, t_env *env)
+// {
+//     int i = 0;
+//     int name_len;
+//     char *new_name = process_variable(name, env);
+//     char *new_value = value ? process_variable(value, env) : NULL;
+//         printf("*name %s value %s-------\n",new_name,new_value);
+//     if (!new_name || (value && !new_value))
+//     {
+//         free(new_name);
+//         free(new_value);
+//         return;  // Handle allocation error
+//     }
+//     name_len = strlen(new_name);
+//     if (check_input==-1)
+//         name_len--;
+//     int check_input = check_input(new_name);
+//     if (check_input==0|| (value != NULL && !check_value(new_value)))
+//     {
+//         free(new_name);
+//         free(new_value);
+//         return;
+//     }
+//     while (env->env[i] != NULL)
+//     {
+//         if (strncmp(env->env[i], new_name, name_len) == 0 &&
+//             (env->env[i][name_len] == '=' || env->env[i][name_len] == '\0'))
+//         {
+//             free(env->env[i]);
+//             size_t new_len = name_len + (new_value ? strlen(new_value) : 0) + 1;
+//             env->env[i] = malloc(new_len + 1);
+//             if (!env->env[i])
+//             {
+//                 free(new_name);
+//                 free(new_value);
+//                 return;
+//             }
+//             if (new_value)
+//                 snprintf(env->env[i], new_len + 1, "%s=%s", new_name, new_value);
+//             else
+//                 snprintf(env->env[i], new_len + 1, "%s", new_name);
+
+//             free(new_name);
+//             free(new_value);
+//             return;
+//         }
+//         i++;
+//     }
+//     // Variable not found, add it
+//     char **new_env = realloc(env->env, sizeof(char *) * (i + 2));
+//     if (!new_env)
+//     {
+//         free(new_name);
+//         free(new_value);
+//         return;
+//     }
+//     env->env = new_env;
+//     size_t new_len = name_len + (new_value ? strlen(new_value) : 0) + 1;
+//     env->env[i] = malloc(new_len + 1);
+//     if (!env->env[i])
+//     {
+//         free(new_name);
+//         free(new_value);
+//         return;
+//     }
+//     if (new_value)
+//         snprintf(env->env[i], new_len + 1, "%s=%s", new_name, new_value);
+//     else
+//         snprintf(env->env[i], new_len + 1, "%s", new_name);
+//     env->env[i + 1] = NULL;
+//     free(new_name);
+//     free(new_value);
+// }
+void check_semicolon(char *name, char **value)
+{
+    // Find the first occurrence of ';' in the name
+    char *semicolon_in_name = strchr(name, ';');
+    if (semicolon_in_name != NULL)
+    {
+        // Nullify the character before ';' if it is '='
+        if (semicolon_in_name != name && *(semicolon_in_name - 1) == '=')
+        {
+            *(semicolon_in_name - 1) = '\0';  // Remove the '=' character
+        }
+        *semicolon_in_name = '\0';  // Nullify everything after ';'
+        
+        // Safely nullify value if it's not NULL
+        if (*value != NULL)
+        {
+            *value = NULL;  // Nullify the entire value
+            return;
+        }
+    }
+    else if (*value != NULL)  // Only check the value if it's non-NULL
+    {
+        // Find the first occurrence of ';' in the value
+        char *semicolon_in_value = strchr(*value, ';');
+        if (semicolon_in_value != NULL)
+        {
+            *semicolon_in_value = '\0';  // Nullify everything after ';' in the value
+        }
+    }
+}
+
+/*
+void check_semicolon(char *name, char *value)
+{
+    // Find the first occurrence of ';' in the name
+    char *semicolon_in_name = strchr(name, ';');
+    if (semicolon_in_name != NULL)
+    {
+        // Nullify the character before ';' if it is '='
+        if (semicolon_in_name != name && *(semicolon_in_name - 1) == '=')
+        {
+            *(semicolon_in_name - 1) = '\0';  // Remove the '=' character
+        }
+        *semicolon_in_name = '\0';  // Nullify everything after ';'
+        
+        // Safely nullify value if it's not NULL
+        if (value != NULL)
+        {
+            *value = '\0';  // Nullify the entire value
+        }
+    }
+    else if (value != NULL)  // Only check the value if it's non-NULL
+    {
+        // Find the first occurrence of ';' in the value
+        char *semicolon_in_value = strchr(value, ';');
+        if (semicolon_in_value != NULL)
+        {
+            *semicolon_in_value = '\0';  // Nullify everything after ';' in the value
+        }
+    }
+}
+*/
+
 void add_or_update_to_env(char *name, char *value, t_env *env)
 {
     int i = 0;
     int name_len;
-    char *str = NULL;
-    char *new_value = NULL;
-    char *new_name = NULL;
-     if (value != NULL)
+    char *new_name = process_variable(name, env);
+    char *new_value = value ? process_variable(value, env) : NULL;
+
+    if (!new_name || (value && !new_value))
     {
-        if (!check_value(value))
-            return; 
+        free(new_name);
+        free(new_value);
+        return;  // Handle allocation error
     }
-    // Check for variables that reference other environment variables in the name
-    if (name && strchr(name, '$') && !strstr(name, "\\$"))
+  check_semicolon(new_name, &new_value);
+
+    int check_input_status = check_input(new_name);  // Call your check_input function
+
+    if (check_input_status == 0 || (value != NULL && new_value != NULL && !check_value(new_value)))
     {
-        new_name = malloc(strlen(name) + 1);  // +1 for null terminator
-        if (!new_name)
-            return;
+        free(new_name);
+        free(new_value);
+        return;
+    }
 
-        new_name[0] = '\0';  // Start with an empty string
-
-        char *start = name;
-        char *dollar = strchr(name, '$');
-
-        while (dollar)
+    // If check_input_status == -1, remove the trailing '+' from new_name for concatenation
+    if (check_input_status == -1)
+    {
+        size_t len = strlen(new_name);
+        if (new_name[len - 1] == '+')
         {
-            // Copy the part before $
-            strncat(new_name, start, dollar - start);
-
-            // Get the environment variable's name after $
-            char *var_name = dollar + 1;
-            char *end_of_var = strpbrk(var_name, " $");
-            if (end_of_var)
-            {
-                *end_of_var = '\0';  // Temporarily end the string to isolate the variable name
-                start = end_of_var;
-            }
-            else
-            {
-                start = var_name + strlen(var_name);
-            }
-
-            // Fetch the value of the environment variable
-            str = get_env_value(env, var_name);
-            if (str)
-            {
-                strcat(new_name, str);
-            }
-
-            // Move to the next part of the string
-            dollar = strchr(start, '$');
+            new_name[len - 1] = '\0';  // Remove the '+' for proper name matching
         }
-
-        // Copy any remaining part of the string after the last $
-        strcat(new_name, start);
-
-        // Replace name with new_name
-        name = new_name;
     }
 
-    name_len = strlen(name);
+    name_len = strlen(new_name);
 
-    // Check for variables that reference other environment variables in the value
-    if (value!=NULL && strchr(value, '$') && !strstr(value, "\\$"))
-    {
-        new_value = malloc(strlen(value) + 1);  // +1 for null terminator
-        if (!new_value)
-            return;
-
-        new_value[0] = '\0';  // Start with an empty string
-
-        char *start = value;
-        char *dollar = strchr(value, '$');
-
-        while (dollar)
-        {
-            // Copy the part before $
-            strncat(new_value, start, dollar - start);
-
-            // Get the environment variable's name after $
-            char *var_name = dollar + 1;
-            char *end_of_var = strpbrk(var_name, " $");
-            if (end_of_var)
-            {
-                *end_of_var = '\0';  // Temporarily end the string to isolate the variable name
-                start = end_of_var;
-            }
-            else
-            {
-                start = var_name + strlen(var_name);
-            }
-
-            // Fetch the value of the environment variable
-            str = get_env_value(env, var_name);
-            if (str)
-            {
-                strcat(new_value, str);
-            }
-
-            // Move to the next part of the string
-            dollar = strchr(start, '$');
-        }
-
-        // Copy any remaining part of the string after the last $
-        strcat(new_value, start);
-
-        // Replace value with new_value
-        value = new_value;
-    }
-
-    if (ft_haschar(name,'\\'))
-        name = ft_escape_char(name);
-    if(value && ft_haschar(value, '\\'))
-        value = ft_escape_char(value);
-
-    // Check if the variable already exists
     while (env->env[i] != NULL)
     {
-        if (strncmp(env->env[i], name, name_len) == 0 &&
+        if (strncmp(env->env[i], new_name, name_len) == 0 &&
             (env->env[i][name_len] == '=' || env->env[i][name_len] == '\0'))
         {
-            // Variable found, update it
-            free(env->env[i]);
-            size_t new_len = name_len + (value ? strlen(value) : 0) + 1; // +1 for '=' or '\0'
-            env->env[i] = malloc(new_len + 1);  // +1 for null terminator
-            if (!env->env[i])
-                return;
-            if (value)
-                snprintf(env->env[i], new_len + 1, "%s=%s", name, value);
+            if (check_input_status == -1)
+            {
+                // Append the new_value to the current value
+                char *current_value = strchr(env->env[i], '=');
+                if (current_value)
+                {
+                    current_value++;  // Move past the '='
+                    size_t current_len = strlen(current_value);
+                    size_t new_len = current_len + (new_value ? strlen(new_value) : 0);
+
+                    // Allocate memory for the concatenated string
+                    char *updated_value = malloc(new_len + 1);
+                    if (!updated_value)
+                    {
+                        free(new_name);
+                        free(new_value);
+                        return;  // Memory allocation error
+                    }
+
+                    // Concatenate the current value and the new value
+                    snprintf(updated_value, new_len + 1, "%s%s", current_value, new_value);
+
+                    // Update the environment variable
+                    free(env->env[i]);
+                    env->env[i] = malloc(name_len + new_len + 2); // +2 for '=' and null terminator
+                    if (!env->env[i])
+                    {
+                        free(new_name);
+                        free(new_value);
+                        free(updated_value);
+                        return;  // Memory allocation error
+                    }
+                    snprintf(env->env[i], name_len + new_len + 2, "%s=%s", new_name, updated_value);
+
+                    free(updated_value);
+                    free(new_name);
+                    free(new_value);
+                    return;
+                }
+            }
             else
-                snprintf(env->env[i], new_len + 1, "%s", name);
-            free(new_value);  // Free the allocated new_value buffer
-            free(new_name);   // Free the allocated new_name buffer
-            return;
+            {
+                // Replace the value if check_input_status != -1
+                free(env->env[i]);
+                size_t new_len = name_len + (new_value ? strlen(new_value) : 0) + 1;
+                env->env[i] = malloc(new_len + 1);
+                if (!env->env[i])
+                {
+                    free(new_name);
+                    free(new_value);
+                    return;
+                }
+                if (new_value)
+                    snprintf(env->env[i], new_len + 1, "%s=%s", new_name, new_value);
+                else
+                    snprintf(env->env[i], new_len + 1, "%s", new_name);
+
+                free(new_name);
+                free(new_value);
+                return;
+            }
         }
         i++;
     }
@@ -434,20 +642,28 @@ void add_or_update_to_env(char *name, char *value, t_env *env)
     // Variable not found, add it
     char **new_env = realloc(env->env, sizeof(char *) * (i + 2));
     if (!new_env)
+    {
+        free(new_name);
+        free(new_value);
         return;
+    }
     env->env = new_env;
-    size_t new_len = name_len + (value ? strlen(value) : 0) + 1; // +1 for '=' or '\0'
-    env->env[i] = malloc(new_len + 1);  // +1 for null terminator
+    size_t new_len = name_len + (new_value ? strlen(new_value) : 0) + 1;
+    env->env[i] = malloc(new_len + 1);
     if (!env->env[i])
+    {
+        free(new_name);
+        free(new_value);
         return;
-    if (value)
-        snprintf(env->env[i], new_len + 1, "%s=%s", name, value);
+    }
+    if (new_value)
+        snprintf(env->env[i], new_len + 1, "%s=%s", new_name, new_value);
     else
-        snprintf(env->env[i], new_len + 1, "%s", name);
-    env->env[i + 1] = NULL;
+        snprintf(env->env[i], new_len + 1, "%s", new_name);
 
-    free(new_value);  // Free the allocated new_value buffer
-    free(new_name);   // Free the allocated new_name buffer
+    env->env[i + 1] = NULL;
+    free(new_name);
+    free(new_value);
 }
 
 void remove_edge_quotes(char *str)
@@ -469,40 +685,147 @@ void remove_edge_quotes(char *str)
     }
 }
 
+void replace_with_str_NULL(char ***array, char *new_str)
+{
+    //same as replace_with_str, bas the only difference is that places an str incase it was passed
+    size_t i;
+
+    // Check if the array pointer itself is NULL
+    if (!array)
+        return;
+
+    // Free the old array if it exists
+    if (*array != NULL)
+    {
+        i = 0;
+        while ((*array)[i] != NULL)
+        {
+            free((*array)[i]); // Free each string in the array
+            i++;
+        }
+        free(*array); // Free the array itself
+    }
+
+    // Allocate memory for the new array
+    *array = (char **)malloc(sizeof(char *) * 2);
+    if (*array == NULL)
+        return;
+
+    // Set the first element to NULL if new_str is NULL
+    if (new_str == NULL)
+    {
+        (*array)[0] = NULL; // Insert NULL into the array
+    }
+    else
+    {
+        (*array)[0] = strdup(new_str); // Duplicate the new string
+        if ((*array)[0] == NULL)
+        {
+            free(*array); // Free the allocated memory in case of failure
+            return;
+        }
+    }
+
+    (*array)[1] = NULL; // Ensure the last element is NULL
+}
+
+
+void check_and_replace_env_value(t_parser *list, t_env *env)
+{
+    char *env_var_name;
+    char *env_value;
+    char global_var_str[4]; // Buffer to hold the string representation of global_var (max "256\0")
+    if (list->input && list->input[0] && list->input[0][0] == '$')
+    {
+        env_var_name = list->input[0] + 1;
+        env_value = ft_getenv(env, env_var_name);
+        printf("env var name: %s\n",env_var_name);
+        printf("val: %s\n",env_value);
+        if (env_value != NULL || strcmp(env_var_name, "?") == 0)
+        {
+            if (strcmp(env_var_name, "?") == 0)
+            {
+                snprintf(global_var_str, sizeof(global_var_str), "%d", global_var);
+                env_value = global_var_str; // Assign the string representation of the exit code
+            }
+            replace_with_str_NULL(&(list->input), env_value); // Replace the input with the value
+        }
+        else
+            replace_with_str_NULL(&(list->input), NULL);
+    }
+}
+
+char *ft_trim_string(char *str)
+{
+    char *trimmed_str = ft_strtrim(str, " ");  // Trim spaces from both sides
+    if (trimmed_str)
+    {
+        free(str);  // Free the original string if dynamically allocated
+        return trimmed_str;  // Return the newly trimmed string
+    }
+    return NULL;  // Return NULL if trimming failed
+}
 
 void builtin_export(t_parser *list, t_env *env)
 {
     char *name;
     char *value;
+
     if (list->operations != NULL)
     {
         write(1, "invalid option", 14);
         return;
     }
-    if (!list->input || !list->input[0]) // If no arguments, print all environment variables
+    if (!list->input || !list->input[0])
     {
         print_env_sorted(env);
         return;
     }
-    int j = 0;
-    while(list->input[j])
+    if (strchr(list->input[0], '$') != NULL && strchr(list->input[0], '=') == NULL)
+        check_and_replace_env_value(list, env);
+    printf("in buultin: %s\n\n", list->input[0]);
+    if (!list->input || !list->input[0])
     {
-        list->input[j]=remove_quotes_new(list->input[j]);
-        
+        print_env_sorted(env);
+        return;
+    }
+ 
+    int j = 0;
+    while (list->input[j])
+    {
+        list->input[j] = remove_quotes(list->input[j]);
+        j++;
+    }   
+    j = 0;
+    char*s;
+    while (list->input[j])
+    {
+        s = list->input[j];
+        list->input[j] = ft_escape_char(list->input[j]);
+        free(s);
         j++;
     }
-    //printf("no quotes: %s",list->input[0]);
-    //handling "ls"=l
     for (int i = 0; list->input[i]; i++)
     {
         parse_export_input(list->input[i], &name, &value);
+        if(value != NULL)
+            // value=ft_trim_string(value);
+        // if(strchr(name,'$')!=NULL)
+        // {
+        //     print_env_sorted(env);
+        // }
         if (name)
         {
-            // printf("name: %s, value: %s\n",name, value);
             add_or_update_to_env(name, value, env);
-            if(value)
+
+            if (value)
                 free(value);
             free(name);
         }
     }
 }
+
+//in one function, let's make :
+//export $HOME
+// and 
+//export he$HOME=hi

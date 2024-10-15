@@ -206,7 +206,8 @@ void print_all_env_vars(t_env *myenv)
     int i = 0;
     while (myenv->env[i] != NULL)
     {
-        printf("%s\n", myenv->env[i]);
+        if(strchr(myenv->env[i],'=')!=NULL)
+            printf("%s\n", myenv->env[i]);
         i++;
     }
 }

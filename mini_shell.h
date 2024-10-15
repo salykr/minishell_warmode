@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/08 12:14:57 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/11 19:58:44 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ void						print_2d_array(char **array);
 void						ft_redirection(t_parser *node);
 char						*strjoin(char const *s1, char const *s2);
 int builtin_env(t_parser *list, t_env *myenv);
-void builtin_pwd(t_env *env) ;
+void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
 t_env						*init_env(char **env);
 void						builtin_echo(t_parser *list, t_env env);
@@ -215,4 +215,5 @@ void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
 bool	cmd_is_dir(char *cmd);
 int check_args_nb(t_parser *list);
+void replace_with_str(char ***array, char *new_str);
 #endif
