@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/15 17:24:21 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/16 20:29:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,12 +316,13 @@ char *remove_quotes_new(const char *str)
 
         while (dollar)
         {
+            printf("start at beg: %s\n\n",start);
             // Append the part of the string before the dollar sign
             strncat(new_str, start, dollar - start);
             total_size += (dollar - start);
 
             char *var_name = dollar + 1;
-            char *end_of_var = strpbrk(var_name, " $?"); // Find the end of variable name
+            char *end_of_var = strpbrk(var_name, " $?1234567890"); // Find the end of variable name
             char temp_char = '\0';
             char first_char = *var_name; // Save the first character of the variable name
 
@@ -330,10 +331,12 @@ char *remove_quotes_new(const char *str)
                 temp_char = *end_of_var;
                 *end_of_var = '\0';  // Temporarily terminate the variable name
             }
+            printf("wby now : %s\n\n",start);
 
             // Check if the first character is '?'
             if (first_char == '?')
             {
+                printf("entered.\n");
                 // Replace with the global exit status as a string
                 char exit_status[4];  // Enough for numbers 0-255 (max 3 digits + null terminator)
                 snprintf(exit_status, sizeof(exit_status), "%d", global_var);
@@ -352,6 +355,13 @@ char *remove_quotes_new(const char *str)
                 {
                     break;  // No more characters after `$?`
                 }
+            }
+            else if (isdigit(first_char))
+            {
+                printf("start before : %s\n\n",start);
+                // Move start to skip the $ and the digit
+                start = var_name + 1;  // Skip the digit (which is just one character)
+                printf("start after : %s\n\n",start);
             }
             else
             {
@@ -382,6 +392,7 @@ char *remove_quotes_new(const char *str)
             }
 
             dollar = strchr(start, '$');  // Find the next dollar sign
+            printf("start: %s\n\n",start);
             if (dollar != NULL)
             {
                 char *dollar_1=dollar + 1;
@@ -397,7 +408,6 @@ char *remove_quotes_new(const char *str)
 
     return strdup(input);  // Return a copy of input if no processing is needed
 }
-
 
 void check_semicolon(char *name, char **value)
 {
