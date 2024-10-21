@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/01 15:47:42 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/21 17:27:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,118 +14,25 @@
 
 int global_var = 0;
 
-void	ft_free_env(t_env **myenv)
+void	ft_free_env(t_env **my_env)
 {
 	int	i;
 
 	i = 0;
-	if (!myenv || !(*myenv))
+	if (!my_env || !(*my_env))
 		return ;
-	while ((*myenv)->env[i])
+	while ((*my_env)->env[i])
 	{
-		free((*myenv)->env[i]);
+		free((*my_env)->env[i]);
 		i++;
 	}
-	free((*myenv)->env);
-	free(*myenv);
-	*myenv = NULL;
-}
-void	print_2d_array(char **array)
-{
-	int	i;
-
-	i = 0;
-	while (array && array[i] != NULL)
-	{
-		printf("%s\n", array[i]);
-		i++;
-	}
-}
-void	print_token_list(t_tokenlist *list)
-{
-	t_input	*token;
-
-	token = list->head;
-	while (token)
-	{
-		printf("Type: %d, Value: %s\n", token->type, token->value);
-		token = token->next;
-	}
+	free((*my_env)->env);
+	free(*my_env);
+	*my_env = NULL;
 }
 
-void	print_parser(t_parser *parser)
-{
-	t_parser	*curr;
 
-	curr = parser;
-	while (curr)
-	{
-		printf("Command: %s\n", curr->command ? curr->command : "None");
-		printf("Input:\n");
-		print_2d_array(curr->input);
-		printf("Operations:\n");
-		print_2d_array(curr->operations);
-		printf("Redirections:\n");
-		if (curr->redirection)
-		{
-			for (int i = 0; curr->redirection[i] != '\0'; i++)
-			{
-				printf("%d\n", curr->redirection[i]);
-			}
-		}
-		printf("Delimiter: %s\n", curr->delimeter ? curr->delimeter : "None");
-		printf("Infile: %s\n", curr->infile ? curr->infile : "None");
-		printf("Outfile:\n");
-		print_2d_array(curr->outfile);
-		printf("-----\n");
-		curr = curr->next;
-	}
-}
 
-void	free_parser(t_parser *parser)
-{
-	t_parser	*next;
-	char		**input_array;
-	char		**ops_array;
-	char		**outfile_array;
-
-	while (parser)
-	{
-		next = parser->next;
-		if (parser->input)
-		{
-			input_array = parser->input;
-			while (*input_array)
-			{
-				free(*input_array);
-				input_array++;
-			}
-			free(parser->input);
-		}
-		if (parser->operations)
-		{
-			ops_array = parser->operations;
-			while (*ops_array)
-			{
-				free(*ops_array);
-				ops_array++;
-			}
-			free(parser->operations);
-		}
-		if (parser->outfile)
-		{
-			outfile_array = parser->outfile;
-			while (*outfile_array)
-			{
-				free(*outfile_array);
-				outfile_array++;
-			}
-			free(parser->outfile);
-		}
-		free(parser);
-		parser = next;
-	}
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -158,8 +65,8 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		// Print tokens (for debugging)
-		// printf("\nTokens:______________________\n");
-		// print_token_list(token_list);
+		printf("\nTokens:______________________\n");
+		print_token_list(token_list);
 		// Parse tokens
 		parser = create_parser(); // Initialize parser
 		if (!parser)
@@ -182,8 +89,8 @@ int	main(int argc, char **argv, char **envp)
 		}
 
 		// Print parser nodes (for debugging)
-		// printf("\nParsed commands:\n");
-		// print_parser(parser);
+		printf("\nParsed commands:\n");
+		print_parser(parser);
 
 		// Execute the parsed command
 		cmds_exec(parser, myenv);

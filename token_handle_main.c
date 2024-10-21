@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_shell.h"
+#include "./mini_shell.h"
 
 void handle_braces(const char **p, t_tokenlist *token_list)
 {
@@ -24,7 +24,7 @@ void handle_braces(const char **p, t_tokenlist *token_list)
     (*p)++;
 }
 
-void handle_quote1(const char **p)
+void handle_quote_identifier(const char **p)
 {
     char quote_char;
     char *end;
@@ -53,7 +53,7 @@ void handle_identifier(const char **p, t_tokenlist *token_list)
     while (!ft_isspace(**p) && **p != '\0' && **p!= '>' && **p != '<' && ft_strncmp(*p, ">>", 2) && ft_strncmp(*p,"<<", 2))//&& **p!='|'
     {
         if (**p == '"' || **p == '\'' || (**p == '\\' && (**(p+1) == '"' ||**(p+1) == '\'')))
-                handle_quote1(p);
+                handle_quote_identifier(p);
         (*p)++;
     }
     identifier_str = ft_strndup(start, *p - start);

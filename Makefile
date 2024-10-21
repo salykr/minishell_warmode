@@ -11,11 +11,17 @@ CFLAGS              = -Wall -Werror -Wextra -I$(INC)
 EXTRAFLAGS          = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
 RM                  = rm -f
 # Source and Object Files
-SRCS                = $(SRC_DIR)parsing.c \
-                      $(SRC_DIR)token_0.c \
-                      $(SRC_DIR)token_handle_0.c \
-                      $(SRC_DIR)token_handle_1.c \
-                      $(SRC_DIR)token_handle_2.c \
+SRCS                = $(SRC_DIR)parsing_creation.c \
+                      $(SRC_DIR)parsing_handling.c \
+                      $(SRC_DIR)parsing_identifier.c \
+                      $(SRC_DIR)parsing_main.c \
+                      $(SRC_DIR)parsing_path.c \
+                      $(SRC_DIR)parsing_UTILS.c \
+                      $(SRC_DIR)parsing_UTILS2.c \
+                      $(SRC_DIR)token_creation.c \
+                      $(SRC_DIR)token_handle_main.c \
+                      $(SRC_DIR)token_handling_1.c \
+                      $(SRC_DIR)token_handling_2.c \
                       $(SRC_DIR)builtin_echo.c \
                       $(SRC_DIR)builtin_pwd.c \
                       $(SRC_DIR)builtin_exit.c \

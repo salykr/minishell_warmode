@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_shell.h"
-
+#include "./mini_shell.h"
 
 void handle_tilde(const char **p, t_tokenlist *token_list)
 {
