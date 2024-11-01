@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 13:56:59 by skreik            #+#    #+#             */
-/*   Updated: 2024/09/06 14:39:58 by isalayan         ###   ########.fr       */
+/*   Updated: 2024/10/19 15:45:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strndup(const char *start, size_t length);
 char	*ft_strtok(char *str, const char *delim);
 bool	ft_isspace(int c);
+char *ft_str_join(char *s1, char *s2);
 
 #endif

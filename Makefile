@@ -25,7 +25,14 @@ SRCS                = $(SRC_DIR)parsing.c \
                       $(SRC_DIR)builtin_cd.c \
                       $(SRC_DIR)execute.c \
                       $(SRC_DIR)signals.c\
-                      $(SRC_DIR)main.c
+                      $(SRC_DIR)main.c \
+                      $(SRC_DIR)builtin_export_helper_0.c \
+                      $(SRC_DIR)builtin_export_helper_1.c \
+                      $(SRC_DIR)builtin_export_helper_2.c \
+                      $(SRC_DIR)builtin_export_helper_3.c \
+                      $(SRC_DIR)builtin_export_helper_4.c \
+                      $(SRC_DIR)builtin_export_helper_5.c \
+                      $(SRC_DIR)builtin_export_helper_utils.c
 OBJS                = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 
 # Targets
