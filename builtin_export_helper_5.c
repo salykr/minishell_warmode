@@ -11,110 +11,100 @@
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-
 char *process_variable(char *input, t_env *env)
 {
     if (input == NULL)
         return (NULL);
-    
-    // Check if there is a dollar sign and it's not escaped
-    //hay awwl existence ll $
-    if (strchr(input, '$') && !strstr(input, "\\$"))
+
+    // Check if there is a dollar sign in the input
+    if (strchr(input, '$'))
     {
         size_t total_size = 1;  // Start with 1 for null terminator
-        //el total size heye ll  overall size ll kelme
         char *start = input;
-        //saving wen bblesh el start
         char *dollar = strchr(input, '$');
-        //wen awl existence ll $
         char *new_str = malloc(total_size);
-        //new str hwi el new string in which i will save everything fia
         if (!new_str)
             return (NULL);
         new_str[0] = '\0';  // Start with an empty string
+
         while (dollar)
         {
-            // Append the part of the string before the dollar sign
-            // if(strchr(start, '\'')!= NULL)
-            //     strncat(new_str, start - 1, dollar - start -1); //export s$USER$99HOMESAL'$USER'$USER+=hhehee
-            // else
-                strncat(new_str, start, dollar - start );
-            total_size += (dollar - start);
+            // Count preceding backslashes before the dollar sign
+            size_t backslash_count = 0;
+            for (char *p = dollar - 1; p >= input && *p == '\\'; p--)
+                backslash_count++;
 
-            //el value ll $ baed el $ yaani $USER  : USER
+            // If odd number of backslashes, append dollar and skip expansion
+            if (backslash_count % 2 != 0)
+            {
+                strncat(new_str, start, dollar - start + 1);
+                total_size += (dollar - start + 1);
+                new_str = realloc(new_str, total_size);
+                if (!new_str)
+                    return (NULL);
+
+                // Skip to the next part of the string after the dollar sign
+                start = dollar + 1;
+                dollar = strchr(start, '$');
+                continue;
+            }
+
+            // If even number of backslashes, process the dollar variable as usual
+            strncat(new_str, start, dollar - start);
+            total_size += (dollar - start);
             char *var_name = dollar + 1;
             char *end_of_var = strpbrk(var_name, " '$?1234567890+\"");
             char temp_char = '\0';
-            char first_char = *var_name; // Save the first character of the variable name
-                    // printf("INITIAL start: %s\n",start);
-                    // printf("INITIAL dollar: %s\n",dollar);
-                    // printf("INITIAL var name: %s\n",var_name);
-                    // printf("INITIAL end of var: %s\n\n\n",end_of_var);
+            char first_char = *var_name;
+
             if (end_of_var)
             {
                 temp_char = *end_of_var;
-                *end_of_var = '\0';  // Temporarily terminate the variable name
-               // printf("temp_char: %c\n",temp_char);
-               // printf("end of var: %s\n\n\n",end_of_var);
-
+                *end_of_var = '\0';
             }
-            //why is the prev part neccessary?
 
-            // New condition: if the previous character is a single quote
-            // Check if the first character is '?'
             if (first_char == '?')
             {
                 char exit_status[4];
                 snprintf(exit_status, sizeof(exit_status), "%d", global_var);
-
                 total_size += strlen(exit_status);
-                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                new_str = realloc(new_str, total_size);
                 if (!new_str)
                     return (NULL);
-                strcat(new_str, exit_status);  // Concatenate the exit status
-                     // Move start to the position after the variable
+                strcat(new_str, exit_status);
                 if (end_of_var)
-                    start = end_of_var + 1;  // Move past the variable
+                    start = end_of_var + 1;
                 else
-                    break;  // No more characters after `$?`
+                    break;
             }
-            else if (dollar > input && *(dollar - 1) == '\'' && temp_char=='\'')
+            else if (dollar > input && *(dollar - 1) == '\'' && temp_char == '\'')
             {
                 if (dollar)
                 {
                     total_size += strlen(dollar);
                     new_str = realloc(new_str, total_size);
                     if (!new_str)
-                        return (NULL); // Handle allocation failure
-                   // printf("BEF: new str : %s\n",new_str);
+                        return (NULL);
                     strncat(new_str, dollar, strlen(dollar));
-                   // printf("$$$$$$$$$$$$DOLLAR: %s\n",dollar);
-                   // printf("AFT:new str : %s\n",new_str);
                     start = end_of_var + 1;
-                   // printf("start: %s\n",start);
-                  //  printf("end of var: %s\n\n\n",end_of_var);
                     if (*start == '\0')
-                        break;  // Exit the loop if we've reached the end
+                        break;
                 }
                 else
                 {
-                    // If no closing quote is found, append the rest of the string and break
                     strcat(new_str, dollar);
                     break;
                 }
-              //  printf("current new str in els eif: %s\n",new_str);
-                
             }
             else if (isdigit(first_char))
-                start = var_name + 1;  // Skip the digit (which is just one character)
+                start = var_name + 1;
             else
             {
                 char *env_value = get_env_value(env, var_name);
-               // printf("in else the value is : %s \n env val is: %s\n\n",var_name,env_value);
                 if (env_value == NULL)
-                    env_value = "";  // Treat it as an empty string
+                    env_value = "";
                 total_size += strlen(env_value);
-                new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+                new_str = realloc(new_str, total_size);
                 if (!new_str)
                     return (NULL);
                 strcat(new_str, env_value);
@@ -126,18 +116,145 @@ char *process_variable(char *input, t_env *env)
                 else
                     start = var_name + strlen(var_name);
             }
+
             dollar = strchr(start, '$');
             if (dollar != NULL && *(dollar + 1) == '\0')
                 break;
-            //printf("current new str: %s\n",new_str);
         }
-        strcat(new_str, start);  // Append the remainder of the string
-    //    printf("new-str: %s\n",new_str);
+
+        strcat(new_str, start);
         return (remove_quotes_new_new(new_str));
     }
-    // printf("input: %s\n",input);
-    return (remove_quotes_new_new(strdup(input)));  // Return a copy of input if no processing is needed
+
+    return (remove_quotes_new_new(strdup(input)));
 }
+
+// char *process_variable(char *input, t_env *env)
+// {
+//     if (input == NULL)
+//         return (NULL);
+    
+//     // Check if there is a dollar sign and it's not escaped
+//     //hay awwl existence ll $
+//     if (strchr(input, '$') && !strstr(input, "\\$"))
+//     {
+//         size_t total_size = 1;  // Start with 1 for null terminator
+//         //el total size heye ll  overall size ll kelme
+//         char *start = input;
+//         //saving wen bblesh el start
+//         char *dollar = strchr(input, '$');
+//         //wen awl existence ll $
+//         char *new_str = malloc(total_size);
+//         //new str hwi el new string in which i will save everything fia
+//         if (!new_str)
+//             return (NULL);
+//         new_str[0] = '\0';  // Start with an empty string
+//         while (dollar)
+//         {
+//             // Append the part of the string before the dollar sign
+//             // if(strchr(start, '\'')!= NULL)
+//             //     strncat(new_str, start - 1, dollar - start -1); //export s$USER$99HOMESAL'$USER'$USER+=hhehee
+//             // else
+//                 strncat(new_str, start, dollar - start );
+//             total_size += (dollar - start);
+
+//             //el value ll $ baed el $ yaani $USER  : USER
+//             char *var_name = dollar + 1;
+//             char *end_of_var = strpbrk(var_name, " '$?1234567890+\"");
+//             char temp_char = '\0';
+//             char first_char = *var_name; // Save the first character of the variable name
+//                     // printf("INITIAL start: %s\n",start);
+//                     // printf("INITIAL dollar: %s\n",dollar);
+//                     // printf("INITIAL var name: %s\n",var_name);
+//                     // printf("INITIAL end of var: %s\n\n\n",end_of_var);
+//             if (end_of_var)
+//             {
+//                 temp_char = *end_of_var;
+//                 *end_of_var = '\0';  // Temporarily terminate the variable name
+//                // printf("temp_char: %c\n",temp_char);
+//                // printf("end of var: %s\n\n\n",end_of_var);
+
+//             }
+//             //why is the prev part neccessary?
+
+//             // New condition: if the previous character is a single quote
+//             // Check if the first character is '?'
+//             if (first_char == '?')
+//             {
+//                 char exit_status[4];
+//                 snprintf(exit_status, sizeof(exit_status), "%d", global_var);
+
+//                 total_size += strlen(exit_status);
+//                 new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+//                 if (!new_str)
+//                     return (NULL);
+//                 strcat(new_str, exit_status);  // Concatenate the exit status
+//                      // Move start to the position after the variable
+//                 if (end_of_var)
+//                     start = end_of_var + 1;  // Move past the variable
+//                 else
+//                     break;  // No more characters after `$?`
+//             }
+//             else if (dollar > input && *(dollar - 1) == '\'' && temp_char=='\'')
+//             {
+//                 if (dollar)
+//                 {
+//                     total_size += strlen(dollar);
+//                     new_str = realloc(new_str, total_size);
+//                     if (!new_str)
+//                         return (NULL); // Handle allocation failure
+//                    // printf("BEF: new str : %s\n",new_str);
+//                     strncat(new_str, dollar, strlen(dollar));
+//                    // printf("$$$$$$$$$$$$DOLLAR: %s\n",dollar);
+//                    // printf("AFT:new str : %s\n",new_str);
+//                     start = end_of_var + 1;
+//                    // printf("start: %s\n",start);
+//                   //  printf("end of var: %s\n\n\n",end_of_var);
+//                     if (*start == '\0')
+//                         break;  // Exit the loop if we've reached the end
+//                 }
+//                 else
+//                 {
+//                     // If no closing quote is found, append the rest of the string and break
+//                     strcat(new_str, dollar);
+//                     break;
+//                 }
+//               //  printf("current new str in els eif: %s\n",new_str);
+                
+//             }
+//             else if (isdigit(first_char))
+//                 start = var_name + 1;  // Skip the digit (which is just one character)
+//             else
+//             {
+//                 char *env_value = get_env_value(env, var_name);
+//                // printf("in else the value is : %s \n env val is: %s\n\n",var_name,env_value);
+//                 if (env_value == NULL)
+//                     env_value = "";  // Treat it as an empty string
+//                 total_size += strlen(env_value);
+//                 new_str = realloc(new_str, total_size);  // Resize the string to fit the new value
+//                 if (!new_str)
+//                     return (NULL);
+//                 strcat(new_str, env_value);
+//                 if (end_of_var)
+//                 {
+//                     *end_of_var = temp_char;
+//                     start = end_of_var;
+//                 }
+//                 else
+//                     start = var_name + strlen(var_name);
+//             }
+//             dollar = strchr(start, '$');
+//             if (dollar != NULL && *(dollar + 1) == '\0')
+//                 break;
+//             //printf("current new str: %s\n",new_str);
+//         }
+//         strcat(new_str, start);  // Append the remainder of the string
+//     //    printf("new-str: %s\n",new_str);
+//         return (remove_quotes_new_new(new_str));
+//     }
+//     // printf("input: %s\n",input);
+//     return (remove_quotes_new_new(strdup(input)));  // Return a copy of input if no processing is needed
+// }
 
 /*
 char *process_variable(char *input, t_env *env)

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/01 14:56:52 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/08 15:07:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ int check_value(char *str);
 int check_input(char *str);
 void check_semicolon(char *name, char **value);
 int ft_haschar(char *str, char c);
-char *ft_escape_char(char *str);
+char *ft_escape_char(const char *str);
 char *process_variable(char *input, t_env *env);
 char *ft_trim_string(char *str);
 int ft_doublecharlen(t_env *env);

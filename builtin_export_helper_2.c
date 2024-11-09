@@ -14,57 +14,76 @@
 
 //removals
 //remove backslashes
+#include <stdlib.h>
+#include <string.h>
+
 static size_t count_backslashes(const char *str, size_t *index)
 {
-    size_t count;
+    size_t count = 0;
 
-    count = 0;
     while (str[*index] == '\\')
     {
         count++;
         (*index)++;
     }
-    return (count);
+    return count;
 }
-static void handle_backslashes(char *total, size_t *j, size_t backslash_count)
+
+static void handle_backslashes(char *total, size_t *j, size_t backslash_count, char next_char)
 {
-    if (backslash_count % 2 == 0)
+    if (next_char == '$')
     {
+        // Add all backslashes without any removal if next character is '$'
+        while (backslash_count--)
+            total[(*j)++] = '\\';
+    }
+    else if (backslash_count % 2 == 0)
+    {
+        // Add all backslashes if the count is even
         while (backslash_count--)
             total[(*j)++] = '\\';
     }
     else
     {
+        // Add all but one backslash if the count is odd
         while (--backslash_count)
             total[(*j)++] = '\\';
     }
 }
-char *ft_escape_char(char *str)
+
+char *ft_escape_char(const char *str)
 {
     char *total;
-    size_t i;
-    size_t j;
-    size_t len;
+    size_t i = 0;
+    size_t j = 0;
+    size_t len = strlen(str);
     size_t backslash_count;
 
-    i = 0;
-    j = 0;
-    len = strlen(str);  // Length of the original string
     total = malloc(len + 1);  // Allocate memory for the result string
     if (!total)
-        return (NULL);
+        return NULL;
+
     while (str[i] != '\0')
     {
         if (str[i] == '\\')
         {
+            // Count consecutive backslashes
             backslash_count = count_backslashes(str, &i);
-            handle_backslashes(total, &j, backslash_count);
+
+            // Determine the next character (or '\0' if at end)
+            char next_char = str[i] ? str[i] : '\0';
+
+            // Handle the backslashes based on their count and next character
+            handle_backslashes(total, &j, backslash_count, next_char);
         }
         else
+        {
+            // Copy non-backslash characters directly
             total[j++] = str[i++];
+        }
     }
     total[j] = '\0';  // Null-terminate the result
-    return (total);
+    return total;
 }
 
 char *ft_trim_string(char *str)
