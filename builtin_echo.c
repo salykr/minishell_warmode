@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
@@ -8,12 +8,10 @@
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
 /*   Updated: 2024/11/10 21:04:25 by marvin           ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include <stdbool.h>
 #include "mini_shell.h"
-
-
 
 bool check_balanced_quotes(const char *input)
 {
@@ -188,9 +186,7 @@ void builtin_echo(t_parser *list, t_env env)
 /*
     Things to test again:
     ---------------------
-    echo '''ho"''''l"a'''
-    echo hola"''''''''''"
-    echo hola'""""""""""'
-    echo "" hola (if there's no space between "" and hola then it works)
+    echo "-n" Hi (the -n should work in this case but instead it's printing -n Hi/ same with echo '-n' Hi)
+    echo $?$ (is giving $0 instead of 0$)
     
 */
