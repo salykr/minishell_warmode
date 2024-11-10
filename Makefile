@@ -13,6 +13,7 @@ RM                  = rm -f
 # Source and Object Files
 SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)parsing_handling.c \
+                      $(SRC_DIR)parsing_freeing.c \
                       $(SRC_DIR)parsing_identifier.c \
                       $(SRC_DIR)parsing_main.c \
                       $(SRC_DIR)parsing_path.c \
@@ -31,6 +32,7 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_cd.c \
                       $(SRC_DIR)execute.c \
                       $(SRC_DIR)signals.c\
+                      $(SRC_DIR)printing.c\
                       $(SRC_DIR)main.c
 OBJS                = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 

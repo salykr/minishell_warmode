@@ -104,8 +104,9 @@ int handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,char *value
             free(value);
             return -1;
         }
-        else
-            curr->input = add_string_to_2d_array(curr->input, tokens->value);
+    else
+        curr->input = add_string_to_2d_array(curr->input, tokens->value);
+    free(value);
     return 0;
 }
 
@@ -114,8 +115,8 @@ int handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,char *value
 
 int handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
 {
-    char *value;
-    char *temp_value;
+    char *value = NULL;
+    char *temp_value = NULL;
     int return_value;
 
     if (tokens->type == T_IDENTIFIER)
@@ -131,10 +132,10 @@ int handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
         else if ((is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || 
                     ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || 
                     ft_strncmp(value, "unset", 5) == 0) && (curr->command == NULL && !is_all_spaces(value)))
-                        curr->command = value;
+                       curr->command = value;
         else if(handle_parsing_identifier_helper(tokens,curr,value) < 0)
             return -1;
-        if (curr->command == NULL)
+        else if (curr->command == NULL)
             free(value);
     }
     return 0;

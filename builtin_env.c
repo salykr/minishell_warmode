@@ -88,7 +88,7 @@ char	*ft_getenv(t_env *myenv, char *str)
 	size_t	len;
 
 	i = 0;
-	len = strlen(str);
+	len = ft_strlen(str);
 	while (myenv->env[i])
 	{
 		if (!strncmp(myenv->env[i], str, len) && myenv->env[i][len] == '=')

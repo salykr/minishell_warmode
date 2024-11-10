@@ -55,28 +55,42 @@ int handle_parsing_quotes_helper(t_input *tokens,char * value)
 
 int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
 {
-    char * value;
+    char * value = NULL;
+    char * temp_value= NULL;
 
-    value = remove_quotes(tokens->value);
-    value = expand_variable(value,env);
+    temp_value= remove_quotes(tokens->value);
+    if (temp_value == NULL)
+        return -1;
+    value = expand_variable(temp_value, env);
+    free(temp_value);
+    
+    if (value == NULL || value[0] == '\0')
+        return 1;
     if ((tokens->value[0] == '\'' && tokens->value[1] == '\'' &&!tokens->value[2]) || (tokens->value[0] == '\"' && tokens->value[1] == '\"' && !tokens->value[2]))
             curr->input = add_string_to_2d_array(curr->input, tokens->value);
     else  if (curr->command == NULL &&(is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || ft_strncmp(value, "unset", 5) == 0))
             curr->command = value;
     else if (!strncmp(tokens->value,"\"-",2) || !strncmp(tokens->value,"\'-",2))
             curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
-    else if (curr->command!=NULL &&!ft_strcmp (curr->command,"echo"))
+    else if (curr->command!=NULL &&!ft_strcmp (curr->command,"echo") && !ft_strchr(tokens->value,'$'))
         curr->input = add_string_to_2d_array(curr->input, tokens->value);
     else if (curr->command == NULL && cmd_is_dir(value))
     {
         errmsg_cmd(value, NULL, "Is a directory");
+        // free(value);
         global_var=0;
         return 1;
     }
     else if (curr->command == NULL)
+    {
       handle_parsing_quotes_helper(tokens,value);
+      free(value);
+    }
     else
+    {
         curr->input = add_string_to_2d_array(curr->input, value);
+        free(value);
+    }
     return 0;
 }
 

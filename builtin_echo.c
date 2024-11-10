@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/09/20 13:37:51 by skreik           ###   ########.fr       */
+/*   Updated: 2024/11/10 21:04:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,45 +16,27 @@
 
 
 bool check_balanced_quotes(const char *input)
-
 {
-
     char quote = '\0';  // No quote initially
-
     int i = 0;
 
-
-
     while (input[i])
-
     {
-
         if (input[i] == '\\')
-
         {
-
             if (input[i+1] != '\'')
-
                 i++;
-
         }
-
         else if (input[i] == '\'' || input[i] == '\"')
-
         {
-
             if (quote == '\0')
                 quote = input[i];
             else if (quote == input[i])
                 quote = '\0';
         }
-
         i++;
-
     }
-
     return (quote == '\0');
-
 }
 
 int is_special_char(char c)
@@ -107,7 +89,6 @@ void print_expanded_input(char **input, bool inside_single_quotes, t_env env)
         char var_name[var_name_length + 1];
         strncpy(var_name, var_name_start, var_name_length);
         var_name[var_name_length] = '\0';
-        // printf("%s---------------------------------\n",var_name);
         char *value = ft_getenv(&env, var_name);
         if (value)
             printf("%s", value);
@@ -118,13 +99,9 @@ void print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 
 void builtin_echo_helper(char **input, char quote, t_env env)
 {
-
     bool inside_single_quotes = (quote == '\'');
 
-
-
     while (**input && **input != quote)
-
     {
         if (**input == '\\' && !inside_single_quotes)
         {
@@ -135,27 +112,18 @@ void builtin_echo_helper(char **input, char quote, t_env env)
                 printf("\\%c", **input); // Print unknown escape sequences
             (*input)++;
         }
-
         else if (**input == '$' && !inside_single_quotes)
-
         {
             print_expanded_input(input, inside_single_quotes, env);
             continue;
         }
-
         else
-
         {
-
             printf("%c", **input);
 
             (*input)++;
-
         }
-
     }
-
-    // Skip the closing quote (if applicable)
     if (**input == quote)
         (*input)++;
 }
@@ -173,8 +141,7 @@ void builtin_echo(t_parser *list, t_env env)
             // printf("Error: Unbalanced quotes in argument %d.\n", i + 1);
             // exit(EXIT_FAILURE);
             return;
-        }
-        
+        } 
         char *arg = list->input[i];
 
         while (*arg)
@@ -208,12 +175,10 @@ void builtin_echo(t_parser *list, t_env env)
                 arg++;
             }
         }
-
         if (list->input[i + 1])
             printf(" ");
         i++;
     }
-
     if (list->operations == NULL)
         printf("\n");    
     // global_var = 0;

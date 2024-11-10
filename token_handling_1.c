@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_handle_0.c                                   :+:      :+:    :+:   */
+/*   token_handling_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 16:12:39 by skreik            #+#    #+#             */
-/*   Updated: 2024/09/11 13:22:00 by isalayan         ###   ########.fr       */
+/*   Updated: 2024/11/10 21:00:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./mini_shell.h"
 
 
-void handle_pipe(const char **p, t_tokenlist *token_list) 
+void handle_pipe(const char **p, t_tokenlist *token_list)
 {
     t_input *token;
 
@@ -21,7 +21,6 @@ void handle_pipe(const char **p, t_tokenlist *token_list)
     add_token(token_list, token);
     (*p)++;
 }
-
 
 void handle_redirection(const char **p, t_tokenlist *token_list)
 {
