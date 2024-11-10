@@ -97,6 +97,57 @@ char *ft_trim_string(char *str)
     return NULL;  // Return NULL if trimming failed
 }
 
+
+char *remove_paired_quotes(const char *str) 
+{
+    if (!str) return NULL;
+
+    int len = strlen(str);
+    char *result = (char *)malloc(len + 1); // Allocate memory for the result
+    if (!result) return NULL;
+    result[0] = '\0'; // Initialize result as an empty string
+
+    int i = 0, j = 0;
+    while (str[i] != '\0') {
+        // Look for the first quote
+        if (str[i] == '"' || str[i] == '\'') {
+            char quote_type = str[i];
+            i++; // Move past the opening quote
+
+            // Copy everything before the quote to the result
+            strncat(result, str + j, i - j - 1);
+
+            // Find the closing quote
+            int start = i;
+            while (str[i] != '\0' && str[i] != quote_type) {
+                i++;
+            }
+
+            // If a closing quote was found, add the content between quotes
+            if (str[i] == quote_type) {
+                strncat(result, str + start, i - start);
+                i++; // Move past the closing quote
+            }
+            j = i; // Update j to the new start after the quote pair
+        } else {
+            i++;
+        }
+    }
+
+    // Add any remaining characters after the last quote to the result
+    if (j < len) {
+        strncat(result, str + j, len - j);
+    }
+
+    // Resize to the actual used length
+    int actual_len = strlen(result);
+    result = realloc(result, actual_len + 1);
+
+    return result;
+}
+
+
+
 //ft_escape_char
 /*
 char *ft_escape_char(char *str)

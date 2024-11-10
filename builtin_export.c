@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/09 14:41:06 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/10 15:19:46 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,53 @@
 //export hi=jey\$hi
 //export hi=jey\\$hi
 //i just have to edit the backslash f eza baada fe $ dont remove the $
+
+char *remove_closing_quote_after_equals(const char *str)
+{
+    if (!str) return NULL;
+
+    int len = strlen(str);
+    char *result = (char *)malloc(len + 1); // Allocate memory for the result
+    if (!result) return NULL;
+    result[0] = '\0'; // Initialize result as an empty string
+
+    int i = 0;
+    while (str[i] != '\0') {
+        // Look for the first single or double quote
+        if (str[i] == '"' || str[i] == '\'') {
+            char quote_type = str[i];
+            int quote_start = i;
+            i++; // Move past the opening quote
+
+            // Look for the closing quote and check for the '=' in between
+            int has_equals = 0;
+            int quote_end = i;
+            while (str[quote_end] != '\0' && str[quote_end] != quote_type) {
+                if (str[quote_end] == '=') {
+                    has_equals = 1;
+                }
+                quote_end++;
+            }
+
+            // If '=' is found between the quotes, do not copy the quotes themselves
+            if (has_equals) {
+                // Copy everything between the quotes except the quotes themselves
+                strncat(result, str + i, quote_end - i);
+            } else {
+                // If no '=' found, keep the quotes and copy everything
+                strncat(result, str + quote_start, quote_end - quote_start + 1);
+            }
+
+            i = quote_end + 1; // Move past the closing quote
+        } else {
+            // If not in a quoted section, copy characters as-is
+            strncat(result, str + i, 1);
+            i++;
+        }
+    }
+
+    return result;
+}
 
 void builtin_export(t_parser *list, t_env *env)
 {
@@ -47,7 +94,6 @@ void builtin_export(t_parser *list, t_env *env)
     {
         char *input_copy= ft_strdup(list->input[0]);
         new_name = process_variable(input_copy, env);
-        printf("new name: %s\n\n",new_name);
         if (*new_name=='\0')
         {
             print_env_sorted(env);  // Sorted environment display
@@ -56,7 +102,7 @@ void builtin_export(t_parser *list, t_env *env)
             return;
         }
         if (check_input(new_name)==0 || check_input(new_name)==-1)
-        {
+        {//export $hey9hh   //يعاد النظر
             free(input_copy);
             free(new_name);
             return;
@@ -67,6 +113,8 @@ void builtin_export(t_parser *list, t_env *env)
     i = 0;
     while (list->input[i])
     {
+        list->input[i]=remove_closing_quote_after_equals(list->input[i]);
+        printf("the input: %s\n\n",list->input[i]);
         parse_export_input(list->input[i], &name, &value);  // Split input into name and value
         if (name!= NULL && check_input(name)==0)
         {
@@ -78,7 +126,7 @@ void builtin_export(t_parser *list, t_env *env)
             continue;
         }
         value = ft_strtrim(value," ");
-        if ((name!= NULL && strchr(name,';')==0) ||(value!= NULL && strchr(value,';')==0))
+        if ((name!= NULL && strchr(name,';')) ||(value!= NULL && strchr(value,';')))
         {
             add_or_update_to_env(name, value, env);  // Update environment
             if (value != NULL)

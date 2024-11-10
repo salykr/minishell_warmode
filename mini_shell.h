@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/08 15:07:53 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/09 17:46:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,4 +236,5 @@ char *itoa(int num);
 char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
+char *remove_paired_quotes(const char *str);
 #endif

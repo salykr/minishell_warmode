@@ -33,7 +33,6 @@ char *process_variable(char *input, t_env *env)
             size_t backslash_count = 0;
             for (char *p = dollar - 1; p >= input && *p == '\\'; p--)
                 backslash_count++;
-
             // If odd number of backslashes, append dollar and skip expansion
             if (backslash_count % 2 != 0)
             {
@@ -42,15 +41,23 @@ char *process_variable(char *input, t_env *env)
                 new_str = realloc(new_str, total_size);
                 if (!new_str)
                     return (NULL);
-
-                // Skip to the next part of the string after the dollar sign
                 start = dollar + 1;
                 dollar = strchr(start, '$');
                 continue;
             }
-
             // If even number of backslashes, process the dollar variable as usual
-            strncat(new_str, start, dollar - start);
+            // printf("dollar: %s\n\n",dollar);
+            // printf("dollar-start: %c\n\n",start[dollar - start -1]);
+            // if (start[dollar - start - 1] == '\'') 
+            // {
+            //     printf("hereeeeeeeeeeeeee\n\n");
+            //     dollar--;
+            // }
+            // printf("dollar after: %s\n\n",dollar);
+            if (start[dollar - start - 1] == '\'') 
+                strncat(new_str, start, dollar - start - 1);
+            else
+                strncat(new_str, start, dollar - start);
             total_size += (dollar - start);
             char *var_name = dollar + 1;
             char *end_of_var = strpbrk(var_name, " '$?1234567890+\"");
@@ -62,7 +69,6 @@ char *process_variable(char *input, t_env *env)
                 temp_char = *end_of_var;
                 *end_of_var = '\0';
             }
-
             if (first_char == '?')
             {
                 char exit_status[4];
@@ -121,12 +127,11 @@ char *process_variable(char *input, t_env *env)
             if (dollar != NULL && *(dollar + 1) == '\0')
                 break;
         }
-
         strcat(new_str, start);
-        return (remove_quotes_new_new(new_str));
+        printf("the new_str: %s\n\n",new_str);
+        return (remove_paired_quotes(new_str));
     }
-
-    return (remove_quotes_new_new(strdup(input)));
+    return (remove_paired_quotes(strdup(input)));
 }
 
 // char *process_variable(char *input, t_env *env)

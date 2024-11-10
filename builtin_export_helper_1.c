@@ -50,7 +50,7 @@ int check_input(char *str)
     {
         if (str[i] == '=')
             return (1);
-        if (!(ft_isalpha(str[i]) || isdigit(str[i]) || str[i] == '_' || str[i] == '\\' || str[i] == ';' || str[i] == '\'' || str[i] == '\"'|| str[i] == '$') 
+        if (!(ft_isalpha(str[i]) || isdigit(str[i]) || str[i] == '_' || str[i] == '?' || str[i] == '\\' || str[i] == ';' || str[i] == '\'' || str[i] == '\"'|| str[i] == '$') 
             || (str[i] == '\\' && str[i + 1] == '\\'))
         {
             if((i == ft_strlen(str) - 1) && str[ft_strlen(str) - 1] == '+')
@@ -64,7 +64,6 @@ int check_input(char *str)
 int check_input_end(char *str)
 {
     size_t i;
-
     i = 0;
     if (str[0] == '\0' || (!isalpha(str[0]) && str[0] != '_'))
     {
