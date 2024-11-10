@@ -34,7 +34,9 @@
 # include <sys/wait.h>
 # include <unistd.h>
 #include <termios.h>
+# include <sys/stat.h>
 
+# define CMD_NOT_EXECUTABLE 126
 # ifndef GLOBALS_H
 #  define GLOBALS_H
 
@@ -83,15 +85,15 @@ typedef struct s_env_signals
 typedef struct s_input
 {
 	t_type					type;
-	char *value;          // dynamically allocated
-	struct s_input *next; // Pointer to the next token in the list
-	struct s_input *prev; // Pointer to the previous token in the list
+	char *value;
+	struct s_input *next;
+	struct s_input *prev;
 }							t_input;
 
 typedef struct
 {
-	t_input *head; // Points to the first token in the list
-	t_input *tail; // Points to the last token in the list
+	t_input *head;
+	t_input *tail;
 }							t_tokenlist;
 
 typedef struct s_fd
@@ -132,52 +134,11 @@ typedef struct s_env
 	int						exit_code;
 }							t_env;
 
-// typedef struct s_fd{
-// 	int	fd_1;
-// 	int	fd_2;
-// }t_fd;
 
 // void                        ctrl_c_press_here(int signal);
 void						ctrl_c_press(int signal_nb);
-t_input						*create_token(t_type type, const char *value);
-void						free_token(t_input *token);
-t_tokenlist					*create_token_list(void);
-void						add_token(t_tokenlist *list, t_input *token);
-void						free_token_list(t_tokenlist *list);
 void						print_tokens(const t_tokenlist *list);
-void						handle_pipe(const char **p,
-								t_tokenlist *token_list);
-void						handle_redirection(const char **p,
-								t_tokenlist *token_list);
-void						handle_argument(const char **p,
-								t_tokenlist *token_list);
-void						handle_operator(const char **p,
-								t_tokenlist *token_list);
-void						handle_tilde(const char **p,
-								t_tokenlist *token_list);
-void						handle_env_variable(const char **p,
-								t_tokenlist *token_list);
-void						handle_parenthesis(const char **p,
-								t_tokenlist *token_list);
-void						handle_number(const char **p,
-								t_tokenlist *token_list);
-char						*ft_find_str(const char **str, char c);
-void						handle_quote(const char **p,
-								t_tokenlist *token_list);
-void						handle_braces(const char **p,
-								t_tokenlist *token_list);
-void						handle_identifier(const char **p,
-								t_tokenlist *token_list);
-void						handle_unknown(const char **p,
-								t_tokenlist *token_list);
-void						handle_period(const char **p,
-								t_tokenlist *token_list);
-void						handle_path(const char **p,
-								t_tokenlist *token_list);
-t_tokenlist					*tokenize_input(const char *input);
 int							ft_isprintable(char c);
-t_parser					*create_parser(void);
-// void parse_tokens(t_parser **parser, t_tokenlist *list);
 void						print_2d_array(char **array);
 void						ft_redirection(t_parser *node);
 int builtin_env(t_parser *list, t_env *myenv);
@@ -206,14 +167,11 @@ void						free_parser(t_parser *parser);
 int							parse_tokens(t_parser **parser, t_tokenlist *list,
 								t_env env);
 bool						check_balanced_quotes(const char *input);
-void						handle_quote1(const char **p);
 char						*remove_quotes_new(const char *str);
-char						*remove_quotes(const char *str);
 int							handle_heredoc(char **heredoc_content);
 char						*get_path_1(t_env env, char *cmd);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
-bool	cmd_is_dir(char *cmd);
 int check_args_nb(t_parser *list);
 void replace_with_str(char ***array, char *new_str);
 void print_env_sorted(t_env *env);
@@ -237,4 +195,75 @@ char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(const char *str);
+//---------------------------tokens
+
+t_input						*create_token(t_type type, const char *value);
+t_tokenlist					*create_token_list(void);
+void						add_token(t_tokenlist *list, t_input *token);
+void						free_token(t_input *token);
+void						free_token_list(t_tokenlist *list);
+void						handle_braces(const char **p,
+								t_tokenlist *token_list);
+void						handle_quote_identifier(const char **p);
+void						handle_identifier(const char **p, t_tokenlist *token_list);
+void						tokenize_special_input(const char **p, t_tokenlist *token_list);
+t_tokenlist					*tokenize_input(const char *input);
+void						handle_pipe(const char **p, t_tokenlist *token_list);
+void						handle_redirection(const char **p, t_tokenlist *token_list);
+void						handle_number(const char **p, t_tokenlist *token_list);
+void						handle_argument(const char **p, t_tokenlist *token_list);
+void						handle_path(const char **p, t_tokenlist *token_list);
+void						handle_tilde(const char **p, t_tokenlist *token_list);
+void						handle_env_variable(const char **p, t_tokenlist *token_list);
+void						handle_parenthesis(const char **p, t_tokenlist *token_list);
+char						*ft_find_str( const char **str, char c);
+void						handle_quote(const char **p, t_tokenlist *token_list);
+//---------------------------parsing
+t_parser	*create_parser(void);
+void		add_parser_node(t_parser **head, t_parser *new_node);
+int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
+int			parse_tokens_helper(t_input *tokens, t_parser *curr,t_env env);
+int			handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env);
+int			handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,char *value);
+int			handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr);
+int			handle_parsing_identifier_helper_errors_helper(t_input *tokens, t_parser *curr);
+int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);
+int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
+int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
+char		*remove_quotes(const char *str);
+bool		count_dash(char *str);
+int			handle_parsing_argument(t_input *tokens, t_parser *curr);
+int			handle_parsing_quotes_helper(t_input *tokens,char * value);
+int			handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env);
+int			handle_parsing_redirection(t_input *tokens, t_parser *curr);
+int			is_all_spaces(const char *str);
+int			isempty(const char *str);
+char		*expand_variable(const char *input ,t_env env);
+int			parse_tokens_helper(t_input *tokens, t_parser *curr,t_env env);
+int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
+int			is_executable(char *cmd);
+int			is_executable_2(t_env env, char *cmd);
+int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
+int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
+int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);
+bool		ft_check_n_operation(char *str);
+int			count_rows(char **array);
+char		**add_string_to_2d_array(char **array, char *new_string);
+void		add_to_array_helper(t_parser *parser, int new_redirection);
+void		add_to_array(t_parser *parser, int new_redirection);
+void		free_ptr(void *ptr);
+char		*join_strs(char *str, char *add);
+void		errmsg_cmd(char *command, char *detail, char *error_message);
+bool		cmd_is_dir(char *cmd);
+
+//--------------------------------------printing
+void	print_tokens(const t_tokenlist *list);
+void	print_token_list(t_tokenlist *list);
+void	print_parser(t_parser *parser);
+
+
+
+
+
+
 #endif
