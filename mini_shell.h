@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/21 17:24:44 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/09 17:46:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 #  define GLOBALS_H
 
 extern int global_var; // Declare the global variable
+
 # endif
 
 typedef enum
@@ -140,9 +141,8 @@ void						print_tokens(const t_tokenlist *list);
 int							ft_isprintable(char c);
 void						print_2d_array(char **array);
 void						ft_redirection(t_parser *node);
-char						*strjoin(char const *s1, char const *s2);
 int builtin_env(t_parser *list, t_env *myenv);
-void builtin_pwd(t_env *env) ;
+void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
 t_env						*init_env(char **env);
 void						builtin_echo(t_parser *list, t_env env);
@@ -173,11 +173,28 @@ char						*get_path_1(t_env env, char *cmd);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
 int check_args_nb(t_parser *list);
-
-
-
-
-
+void replace_with_str(char ***array, char *new_str);
+void print_env_sorted(t_env *env);
+int check_value(char *str);
+int check_input(char *str);
+void check_semicolon(char *name, char **value);
+int ft_haschar(char *str, char c);
+char *ft_escape_char(const char *str);
+char *process_variable(char *input, t_env *env);
+char *ft_trim_string(char *str);
+int ft_doublecharlen(t_env *env);
+void free_name_and_value(char *new_name, char *new_value);
+void handle_memory_errors(char *new_name, char *new_value);
+void free_env(t_env *env);
+char *concatenate_value(char *current_value, char *new_value);
+void replace_or_append_value(char **env_entry, char *new_name, char *new_value);
+int find_and_update_env(int check_input_status, char *new_name, char *new_value, t_env *env);
+void parse_export_input(char *input, char **name, char **value);
+char *itoa(int num);
+char *get_env_value(t_env *env, const char *var);
+int check_input_end(char *str);
+char *remove_quotes_new_new(const char *str);
+char *remove_paired_quotes(const char *str);
 //---------------------------tokens
 
 t_input						*create_token(t_type type, const char *value);
@@ -201,10 +218,7 @@ void						handle_env_variable(const char **p, t_tokenlist *token_list);
 void						handle_parenthesis(const char **p, t_tokenlist *token_list);
 char						*ft_find_str( const char **str, char c);
 void						handle_quote(const char **p, t_tokenlist *token_list);
-
-
 //---------------------------parsing
-
 t_parser	*create_parser(void);
 void		add_parser_node(t_parser **head, t_parser *new_node);
 int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/06 12:33:15 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/11 20:00:42 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,18 @@ void handle_pwd_env(t_env *env)
         perror("getcwd and PWD not set");
 }
 
-void builtin_pwd(t_env *env)
+void builtin_pwd(t_parser *parser, t_env *env)
 {
     size_t size;
     char *buffer;
 
     size = INITIAL_SIZE;
     buffer = (char *)malloc(size);
+    if(parser->operations != NULL)
+    {
+     printf("bash: pwd: invalid option\n");
+        return;
+    }
     if (buffer == NULL)
     {
         perror("malloc");
