@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2024/11/11 23:49:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:26:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ char *expand_variable(const char *input ,t_env env)
     free(prefix);
     return result;
 }
-
 
 int parse_tokens_helper(t_input *tokens, t_parser *curr,t_env env)
 {

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 00:20:44 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 01:38:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,8 @@ int check_value(char *str);
 int check_input(char *str);
 void check_semicolon(char *name, char **value);
 int ft_haschar(char *str, char c);
-char *ft_escape_char(const char *str);
+char *ft_escape_char(char *str);
+void free_2d_array(char **array);
 char *process_variable(char *input, t_env *env);
 char *ft_trim_string(char *str);
 int ft_doublecharlen(t_env *env);
@@ -188,7 +189,9 @@ int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(const char *str);
 
-
+void memory_free(char *str1, char *str2);
+char *remove_closing_quote_after_equals(const char *str);
+int calculate_len_for_backslash(const char *str);
 
 //---------------------------tokens
 

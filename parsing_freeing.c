@@ -22,6 +22,7 @@ void free_input(char **input_array)
 		return;
 	while (*ptr)
 	{
+		printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
 		free(*ptr);
 		ptr++;
 	}
