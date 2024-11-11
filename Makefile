@@ -39,9 +39,8 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_export_helper_3.c \
                       $(SRC_DIR)builtin_export_helper_4.c \
                       $(SRC_DIR)builtin_export_helper_5.c \
-                      $(SRC_DIR)builtin_export_helper_utils.c
-                      $(SRC_DIR)printing.c\
-                      $(SRC_DIR)main.c
+                      $(SRC_DIR)builtin_export_helper_utils.c\
+                      $(SRC_DIR)printing.c
                  
 OBJS                = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 
