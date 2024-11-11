@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_handle_1.c                                   :+:      :+:    :+:   */
+/*   token_handling_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 16:14:53 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/03 14:53:30 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/11 22:49:44 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void handle_env_variable(const char **p, t_tokenlist *token_list)
 
     if (**p!='\0')
         (*p)++;
-    if (**p == '$' || **p == '?' || **p == '!' || **p == '@' || **p == '*' || **p == '_')
-    {  
+    if (**p == '!' || **p == '@' || **p == '*' || **p == '_') // **p == '$' || **p == '?' ||
+    {
         if (**p!='\0')
             (*p)++;
     }
@@ -68,39 +68,6 @@ void handle_parenthesis(const char **p, t_tokenlist *token_list)
     token = create_token(T_PARENTHESIS, paren_str);
     add_token(token_list, token);
     (*p)++;
-}
-
-
-char *ft_find_str( const char **str, char c)
-{
-    const char *last_c = NULL;
-
-    while (**str)// && **str != '|'
-    {
-        if ( **str==c )
-        {
-            while (**str && **str!= ' ')
-                (*str)++;
-            last_c = *str -1;
-            break;
-        }
-        (*str)++;
-    }
-    if (last_c && *(last_c + 1) == '=')
-    {
-        last_c++;
-        while (*last_c && *last_c != ' ')
-            last_c++;
-        while (*last_c != c && *last_c && *last_c!=' ')
-            last_c++;
-    }
-    if (!last_c)
-    {
-        last_c = *str - 1;
-        while (last_c >= *str && ft_isspace(*last_c))
-            last_c--;
-    }
-    return ((char *)last_c);
 }
 
 void handle_quote(const char **p, t_tokenlist *token_list)

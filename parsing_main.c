@@ -12,67 +12,31 @@
 
 #include"mini_shell.h"
 
+int handle_parsing_argument(t_input *tokens, t_parser *curr)
+{
+    int  i;
 
+    i = 0;
+    if (!ft_strcmp(curr->command,"echo"))
+    {
+                
+        if(count_dash(tokens->value) && i ==0 && !ft_check_n_operation(tokens->value) && curr->input ==NULL)
+            curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
+        else
+        {
+            curr->input = add_string_to_2d_array(curr->input, tokens->value);
+            i++;             
+        }
+    }
+    else
+        curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
+    return 0;
+}
 
 int isempty(const char *str)
 {
     return (str == NULL || str[0] == '\0');
 }
-
-
-char *get_prefix(const char *input, size_t *prefix_len)
-{
-    char *dollar_sign = NULL;
-
-    dollar_sign = ft_strchr(input, '$');
-    if (!dollar_sign)
-        return NULL;
-    *prefix_len = dollar_sign - input;
-    if (*prefix_len != 0)
-        return ft_strndup(input, *prefix_len);
-    return NULL;
-}
-
-char *allocate_result(size_t prefix_len, const char *var_value, const char *dollar_sign)
-{
-    size_t var_length;
-    char *result;
-
-    result = NULL;
-    if (var_value)
-        var_length = ft_strlen(var_value);
-    else
-        var_length = ft_strlen(dollar_sign);
-    result = malloc(prefix_len + var_length + 1);
-    return result;
-}
-
-
-// char *expand_variable(const char *input, t_env env)
-// {
-//     size_t prefix_len;
-//     char *prefix = NULL;
-//     char *dollar_sign= NULL;
-//     char *var_value = NULL;
-//     char *result = NULL;
-    
-//     prefix = get_prefix(input, &prefix_len);
-//     if (!prefix)
-//         return ft_strdup(input);
-//     dollar_sign = (char*)input + prefix_len + 1;
-//     var_value = ft_getenv(&env, dollar_sign);
-//     result = allocate_result(prefix_len, var_value, dollar_sign);
-//     if (result) 
-//     {
-//         ft_strcpy(result, prefix);
-//         ft_strcat(result, var_value);
-//         ft_strcat(result, dollar_sign);
-//     } 
-//     free(prefix);
-//     return result;
-// }
-
-
 
 
 char *expand_variable(const char *input ,t_env env)
@@ -91,29 +55,17 @@ char *expand_variable(const char *input ,t_env env)
     dollar_sign++;
     var_value = ft_getenv(&env,dollar_sign);
     if (var_value)
-    {
         result = malloc(prefix_len + ft_strlen(var_value) + 1);
-        if (result)
-        {
-           ft_strcpy(result, prefix);
-           ft_strcat(result, var_value);
-        }
-    }
     else
-    {
         result = malloc(prefix_len + ft_strlen(dollar_sign) + 1);
-        if (result)
-        {
-            ft_strcpy(result, prefix);
-            ft_strcat(result, dollar_sign);
-        }
-    }
+    ft_strcpy(result, prefix);
+    if (var_value)
+        ft_strcat(result, var_value);
+    else
+        ft_strcat(result, dollar_sign);
     free(prefix);
     return result;
 }
-
-
-
 
 int parse_tokens_helper(t_input *tokens, t_parser *curr,t_env env)
 {
