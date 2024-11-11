@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2024/11/10 20:57:56 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:26:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,69 +48,69 @@ char *allocate_result(size_t prefix_len, const char *var_value, const char *doll
 }
 
 
-char *expand_variable(const char *input, t_env env)
-{
-    size_t prefix_len;
-    char *prefix = NULL;
-    char *dollar_sign= NULL;
-    char *var_value = NULL;
-    char *result = NULL;
-    
-    prefix = get_prefix(input, &prefix_len);
-    if (!prefix)
-        return ft_strdup(input);
-    dollar_sign = (char*)input + prefix_len + 1;
-    var_value = ft_getenv(&env, dollar_sign);
-    result = allocate_result(prefix_len, var_value, dollar_sign);
-    if (result) 
-    {
-        ft_strcpy(result, prefix);
-        ft_strcat(result, var_value);
-        ft_strcat(result, dollar_sign);
-    } 
-    free(prefix);
-    return result;
-}
-
-
-
-
-// char *expand_variable(const char *input ,t_env env)
+// char *expand_variable(const char *input, t_env env)
 // {
-//     char    *dollar_sign;
-//     size_t  prefix_len;
-//     char    *prefix;
-//     char    *var_value;
-//     char    *result;
-
-//     dollar_sign = ft_strchr(input, '$');
-//     if (!dollar_sign)
+//     size_t prefix_len;
+//     char *prefix = NULL;
+//     char *dollar_sign= NULL;
+//     char *var_value = NULL;
+//     char *result = NULL;
+    
+//     prefix = get_prefix(input, &prefix_len);
+//     if (!prefix)
 //         return ft_strdup(input);
-//     prefix_len = dollar_sign - input;
-//     prefix = ft_strndup(input, prefix_len);
-//     dollar_sign++;
-//     var_value = ft_getenv(&env,dollar_sign);
-//     if (var_value)
+//     dollar_sign = (char*)input + prefix_len + 1;
+//     var_value = ft_getenv(&env, dollar_sign);
+//     result = allocate_result(prefix_len, var_value, dollar_sign);
+//     if (result) 
 //     {
-//         result = malloc(prefix_len + ft_strlen(var_value) + 1);
-//         if (result)
-//         {
-//            ft_strcpy(result, prefix);
-//            ft_strcat(result, var_value);
-//         }
-//     }
-//     else
-//     {
-//         result = malloc(prefix_len + ft_strlen(dollar_sign) + 1);
-//         if (result)
-//         {
-//             ft_strcpy(result, prefix);
-//             ft_strcat(result, dollar_sign);
-//         }
-//     }
+//         ft_strcpy(result, prefix);
+//         ft_strcat(result, var_value);
+//         ft_strcat(result, dollar_sign);
+//     } 
 //     free(prefix);
 //     return result;
 // }
+
+
+
+
+char *expand_variable(const char *input ,t_env env)
+{
+    char    *dollar_sign;
+    size_t  prefix_len;
+    char    *prefix;
+    char    *var_value;
+    char    *result;
+
+    dollar_sign = ft_strchr(input, '$');
+    if (!dollar_sign)
+        return ft_strdup(input);
+    prefix_len = dollar_sign - input;
+    prefix = ft_strndup(input, prefix_len);
+    dollar_sign++;
+    var_value = ft_getenv(&env,dollar_sign);
+    if (var_value)
+    {
+        result = malloc(prefix_len + ft_strlen(var_value) + 1);
+        if (result)
+        {
+           ft_strcpy(result, prefix);
+           ft_strcat(result, var_value);
+        }
+    }
+    else
+    {
+        result = malloc(prefix_len + ft_strlen(dollar_sign) + 1);
+        if (result)
+        {
+            ft_strcpy(result, prefix);
+            ft_strcat(result, dollar_sign);
+        }
+    }
+    free(prefix);
+    return result;
+}
 
 
 
