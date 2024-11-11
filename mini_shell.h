@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/09 17:46:53 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 00:20:44 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,9 +137,7 @@ typedef struct s_env
 
 // void                        ctrl_c_press_here(int signal);
 void						ctrl_c_press(int signal_nb);
-void						print_tokens(const t_tokenlist *list);
 int							ft_isprintable(char c);
-void						print_2d_array(char **array);
 void						ft_redirection(t_parser *node);
 int builtin_env(t_parser *list, t_env *myenv);
 void builtin_pwd(t_parser *parser, t_env *env);
@@ -147,15 +145,12 @@ int							builtin_unset(char **input, t_env *myenv);
 t_env						*init_env(char **env);
 void						builtin_echo(t_parser *list, t_env env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
-void						ft_free_env(t_env **myenv);
 int							builtin_cd(t_parser *parser, t_env *myenv);
 void						add_or_update_to_env(char *name, char *value,
 								t_env *env);
 void						builtin_exit(t_parser *parser, t_env *myenv);
 void						builtin_export(t_parser *list, t_env *env);
-char						**add_string_to_2d_array(char **array,
-								char *new_string);
-int							is_executable(char *cmd);
+char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
@@ -163,9 +158,6 @@ void						cmds_exec(t_parser *parser, t_env *env);
 char						*ft_getenv(t_env *myenv, char *str);
 void						update_pwd(t_env *myenv);
 void						update_env_level(t_env *myenv);
-void						free_parser(t_parser *parser);
-int							parse_tokens(t_parser **parser, t_tokenlist *list,
-								t_env env);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
 int							handle_heredoc(char **heredoc_content);
@@ -195,6 +187,9 @@ char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(const char *str);
+
+
+
 //---------------------------tokens
 
 t_input						*create_token(t_type type, const char *value);
@@ -218,6 +213,12 @@ void						handle_env_variable(const char **p, t_tokenlist *token_list);
 void						handle_parenthesis(const char **p, t_tokenlist *token_list);
 char						*ft_find_str( const char **str, char c);
 void						handle_quote(const char **p, t_tokenlist *token_list);
+
+
+
+
+
+
 //---------------------------parsing
 t_parser	*create_parser(void);
 void		add_parser_node(t_parser **head, t_parser *new_node);
@@ -233,7 +234,7 @@ int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
 char		*remove_quotes(const char *str);
 bool		count_dash(char *str);
 int			handle_parsing_argument(t_input *tokens, t_parser *curr);
-int			handle_parsing_quotes_helper(t_input *tokens,char * value);
+int			handle_parsing_quotes_helper_2(t_input *tokens,char * value);
 int			handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env);
 int			handle_parsing_redirection(t_input *tokens, t_parser *curr);
 int			is_all_spaces(const char *str);
@@ -256,14 +257,17 @@ char		*join_strs(char *str, char *add);
 void		errmsg_cmd(char *command, char *detail, char *error_message);
 bool		cmd_is_dir(char *cmd);
 
+
 //--------------------------------------printing
 void	print_tokens(const t_tokenlist *list);
 void	print_token_list(t_tokenlist *list);
 void	print_parser(t_parser *parser);
+void	print_2d_array(char **array);
 
 
-
-
+//-----------------------free
+void						ft_free_env(t_env **myenv);
+void						free_parser(t_parser *parser);
 
 
 #endif
