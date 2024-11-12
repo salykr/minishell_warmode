@@ -50,42 +50,7 @@ static void handle_backslashes(char *total, size_t *j, size_t backslash_count, c
             total[(*j)++] = '\\';
     }
 }
-int calculate_len_for_backslash(const char *str)
-{
-    int i = 0;
-    int count = 0;
-    printf("Received string: \"%s\"\n", str);  // Print the input string for debugging
-    printf("Length of string: %ld\n", strlen(str));  // Print the length of the string
 
-    while (str[i] != '\0') {
-        if (str[i] == '\\') {
-            int j = i;
-            int f = 0;
-
-            // Count consecutive backslashes
-            while (str[j] == '\\') {
-                f++;
-                j++;
-            }
-            printf("f (consecutive backslashes) is: %d\n", f);
-
-            // If the backslashes are odd, check if there's no '$' after them
-            if (f % 2 != 0) {
-                // If the next character is '$', don't count the backslashes
-                if (str[j] != '$') {
-                    count++; // Add 1 to the count if odd and no '$' follows
-                }
-            }
-
-            // Skip over the counted backslashes
-            i = j - 1;
-        }
-        i++;
-    }
-    printf("count: %d\n",count);
-    return count;
-}
-//before leaks:
 char *ft_escape_char(char *str)
 {
     char *total;
@@ -93,24 +58,31 @@ char *ft_escape_char(char *str)
     size_t j = 0;
     size_t len = strlen(str);
     size_t backslash_count;
-    total = malloc(len + 1 - calculate_len_for_backslash(str));  // Allocate memory for the result string
-    // printf("~~~~``total is %ld\n\n",len + 1 - calculate_len_for_backslash(str));
+
+    total = malloc(len + 1);  // Allocate memory for the result string
     if (!total)
         return NULL;
+
     while (str[i] != '\0')
     {
         if (str[i] == '\\')
         {
+            // Count consecutive backslashes
             backslash_count = count_backslashes(str, &i);
+
+            // Determine the next character (or '\0' if at end)
             char next_char = str[i] ? str[i] : '\0';
+
+            // Handle the backslashes based on their count and next character
             handle_backslashes(total, &j, backslash_count, next_char);
         }
         else
+        {
+            // Copy non-backslash characters directly
             total[j++] = str[i++];
+        }
     }
     total[j] = '\0';  // Null-terminate the result
-    // printf("this str will be freed: %s\n",str);
-    free(str);
     return total;
 }
 
@@ -125,51 +97,55 @@ char *ft_trim_string(char *str)
     return NULL;  // Return NULL if trimming failed
 }
 
-char *remove_paired_quotes(const char *str)
-{
-    int len;
-    int i;
-    int j;
-    int start;
-    int actual_len;
-    char *result;
-    char quote_type;
 
-    if (!str)
-        return NULL;
-    len = strlen(str);
-    result = (char *)malloc(len + 1); // Allocate memory for the result
-    if (!result) 
-        return NULL;
+char *remove_paired_quotes(const char *str) 
+{
+    if (!str) return NULL;
+
+    int len = strlen(str);
+    char *result = (char *)malloc(len + 1); // Allocate memory for the result
+    if (!result) return NULL;
     result[0] = '\0'; // Initialize result as an empty string
-    i = 0;
-    j = 0;
-    while (str[i] != '\0')
-    {
-        if (str[i] == '"' || str[i] == '\'')
-        {
-            quote_type = str[i];
+
+    int i = 0, j = 0;
+    while (str[i] != '\0') {
+        // Look for the first quote
+        if (str[i] == '"' || str[i] == '\'') {
+            char quote_type = str[i];
             i++; // Move past the opening quote
+
+            // Copy everything before the quote to the result
             strncat(result, str + j, i - j - 1);
-            start = i;
-            while (str[i] != '\0' && str[i] != quote_type)
+
+            // Find the closing quote
+            int start = i;
+            while (str[i] != '\0' && str[i] != quote_type) {
                 i++;
-            if (str[i] == quote_type)
-            {
+            }
+
+            // If a closing quote was found, add the content between quotes
+            if (str[i] == quote_type) {
                 strncat(result, str + start, i - start);
                 i++; // Move past the closing quote
             }
             j = i; // Update j to the new start after the quote pair
-        }
-        else
+        } else {
             i++;
+        }
     }
-    if (j < len)
+
+    // Add any remaining characters after the last quote to the result
+    if (j < len) {
         strncat(result, str + j, len - j);
-    actual_len = strlen(result);
+    }
+
+    // Resize to the actual used length
+    int actual_len = strlen(result);
     result = realloc(result, actual_len + 1);
+
     return result;
 }
+
 
 
 //ft_escape_char
