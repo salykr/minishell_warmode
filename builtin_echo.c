@@ -1,4 +1,4 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
@@ -6,18 +6,19 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/11/10 21:04:25 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 19:37:01 by marvin           ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
-#include <stdbool.h>
 #include "mini_shell.h"
 
 bool check_balanced_quotes(const char *input)
 {
-    char quote = '\0';  // No quote initially
-    int i = 0;
+    char quote;
+    int i;
 
+    i = 0;
+    quote = '\0';
     while (input[i])
     {
         if (input[i] == '\\')
@@ -53,7 +54,7 @@ void print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 			(*input)++;
 			return ;
 		}
-        if (**input == '\0' || (**input == '\"')) //needs more handling
+        if (**input == '\0' || (**input == '\"'))
         {
             ft_putchar_fd('$', 1);
             return;
@@ -118,7 +119,6 @@ void builtin_echo_helper(char **input, char quote, t_env env)
         else
         {
             printf("%c", **input);
-
             (*input)++;
         }
     }
@@ -186,7 +186,6 @@ void builtin_echo(t_parser *list, t_env env)
 /*
     Things to test again:
     ---------------------
-    echo "-n" Hi (the -n should work in this case but instead it's printing -n Hi/ same with echo '-n' Hi)
     echo $?$ (is giving $0 instead of 0$)
     
 */

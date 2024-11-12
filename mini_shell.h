@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 01:38:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 20:17:23 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,23 +139,18 @@ typedef struct s_env
 void						ctrl_c_press(int signal_nb);
 int							ft_isprintable(char c);
 void						ft_redirection(t_parser *node);
-int builtin_env(t_parser *list, t_env *myenv);
 void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
-t_env						*init_env(char **env);
 void						builtin_echo(t_parser *list, t_env env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
-int							builtin_cd(t_parser *parser, t_env *myenv);
 void						add_or_update_to_env(char *name, char *value,
 								t_env *env);
-void						builtin_exit(t_parser *parser, t_env *myenv);
 void						builtin_export(t_parser *list, t_env *env);
 char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-char						*ft_getenv(t_env *myenv, char *str);
 void						update_pwd(t_env *myenv);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
@@ -188,10 +183,11 @@ char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(const char *str);
-
 void memory_free(char *str1, char *str2);
 char *remove_closing_quote_after_equals(const char *str);
 int calculate_len_for_backslash(const char *str);
+
+
 
 //---------------------------tokens
 
@@ -272,5 +268,30 @@ void	print_2d_array(char **array);
 void						ft_free_env(t_env **myenv);
 void						free_parser(t_parser *parser);
 
+
+//----------------------build-ins
+
+
+//_______exit
+void						builtin_exit(t_parser *parser, t_env *myenv);
+int							handle_exit_arguments(char *input);
+int							is_numeric(const char *str);
+
+//_______env
+int							builtin_env(t_parser *list, t_env *myenv);
+char						*ft_getenv(t_env *myenv, char *str);
+t_env						*init_env(char **env);
+char						*check_env_input(t_parser *list);
+int							check_ls_pwd_in_env(t_parser *list, t_env *myenv);
+void						print_env_vars(t_env *myenv, char **input_list);
+void						print_all_env_vars(t_env *myenv);
+void						update_SHLVL(t_env *myenv);
+
+//______cd
+int							builtin_cd(t_parser *parser, t_env *myenv);
+int							change_directory_and_update(t_parser *list, t_env *myenv);
+void						update_pwd(t_env *myenv);
+void						replace_with_str(char ***array, char *new_str);
+int							is_oldpwd_input(const char *input);
 
 #endif

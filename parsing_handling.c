@@ -33,7 +33,8 @@ int handle_parsing_quotes_helper_2(t_input *tokens,char * value)
     else
     {
         printf("command %s not found\n",value);
-        return 0;
+        global_var=127;
+        return -1;
     }
 }
 
@@ -46,10 +47,14 @@ int handle_parsing_quotes_helper(t_input *tokens, t_parser *curr,char* value)
         errmsg_cmd(value, NULL, "Is a directory");
         free(value);
         global_var=0;
-        return 1;
+        return -1;
     }
     else if (curr->command == NULL)
+    {
         handle_parsing_quotes_helper_2(tokens,value);
+        free(value);
+        return -1;
+    }
     else
         curr->input = add_string_to_2d_array(curr->input, value);
     return 0;   
@@ -78,8 +83,8 @@ int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
     }
     else if (!strncmp(tokens->value,"\"-",2) || !strncmp(tokens->value,"\'-",2))
         curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
-    else if( handle_parsing_quotes_helper(tokens,curr,value) == 1)
-        return 1;
+    else if( handle_parsing_quotes_helper(tokens,curr,value) == -1)
+        return -1;
     free(value);
     return 0;
 }
