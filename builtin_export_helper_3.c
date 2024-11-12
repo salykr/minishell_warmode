@@ -32,7 +32,8 @@ char *concatenate_value(char *current_value, char *new_value)
         ft_strcat(updated_value, new_value);  // Append new_value
     return (updated_value);
 }
-void replace_or_append_value(char **env_entry, char *new_name, char *new_value) 
+
+void replace_or_append_value(char **env_entry, char *new_name, char *new_value)
 {
     size_t name_len;
     size_t new_len;
@@ -42,15 +43,9 @@ void replace_or_append_value(char **env_entry, char *new_name, char *new_value)
         new_len = name_len + strlen(new_value) + 1;
     else
         new_len = name_len + 1;
-
-    // Free the old memory if env_entry is not NULL
-    if (*env_entry)
-        free(*env_entry);
-
-    *env_entry = malloc(new_len + 1);  // Allocate new memory
+    *env_entry = malloc(new_len + 1);
     if (!*env_entry)
         return;  // Memory allocation error
-
     ft_strcpy(*env_entry, new_name);
     if (new_value)
     {
