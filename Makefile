@@ -27,10 +27,14 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_echo.c \
                       $(SRC_DIR)builtin_pwd.c \
                       $(SRC_DIR)builtin_exit.c \
+                      $(SRC_DIR)builtin_exit_helper.c \
                       $(SRC_DIR)builtin_env.c \
+                      $(SRC_DIR)builtin_env_helper1.c \
+                      $(SRC_DIR)builtin_env_helper2.c \
                       $(SRC_DIR)builtin_unset.c \
                       $(SRC_DIR)builtin_export.c \
                       $(SRC_DIR)builtin_cd.c \
+                      $(SRC_DIR)builtin_cd_helper.c \
                       $(SRC_DIR)execute.c \
                       $(SRC_DIR)signals.c\
                       $(SRC_DIR)main.c \

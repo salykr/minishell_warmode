@@ -110,6 +110,7 @@ int process_name_and_value(char *name, char *value, t_env *env, char **new_name,
     }
 */
 
+
 void add_or_update_to_env(char *name, char *value, t_env *env)
 {
     char *new_name;
@@ -137,3 +138,4 @@ void add_or_update_to_env(char *name, char *value, t_env *env)
     env->env[i + 1] = NULL;  // Set the last element to NULL
     handle_memory_errors(new_name, new_value);
 }
+

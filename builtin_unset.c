@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/06 12:35:27 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 16:06:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,18 @@ int	is_valid_var_name(const char *var)
 	return (1);
 }
 
-// Function to find the index of an environment variable
 int	find_env_var(t_env *myenv, const char *name)
 {
 	size_t	name_len;
+	int i;
 
+	i = 0;
 	name_len = ft_strlen(name);
-	for (int i = 0; myenv->env[i]; i++)
+	while (myenv->env[i])
 	{
 		if (ft_strncmp(myenv->env[i], name, name_len) == 0)
 			return (i);
+		i++;
 	}
 	return (-1);
 }
@@ -48,19 +50,15 @@ void	remove_env_var(t_env *myenv, int index)
 	int	i;
 
 	i = index;
-	// Free the memory of the string at the specified index
 	free(myenv->env[i]);
-	// Shift remaining elements to the left
 	while (myenv->env[i + 1] != NULL)
 	{
 		myenv->env[i] = myenv->env[i + 1];
 		i++;
 	}
-	// Set the last element to NULL
 	myenv->env[i] = NULL;
 }
 
-// Function to handle unset operation
 int	builtin_unset(char **input, t_env *myenv)
 {
 	int	i;
@@ -70,10 +68,7 @@ int	builtin_unset(char **input, t_env *myenv)
 	i = 0;
 	exit_code = 0;
 	if (!input[0])
-	{
-		printf("exiting.\n");
-		return (exit_code);
-	}
+		return (printf("exiting.\n"),exit_code);
 	while (input[i])
 	{
 		if (!is_valid_var_name(input[i]))
@@ -84,18 +79,14 @@ int	builtin_unset(char **input, t_env *myenv)
 		else
 		{
 			index = find_env_var(myenv, input[i]);
-			printf("\nindex:%d\n", index);
 			if (index != -1)
-			{
 				remove_env_var(myenv, index);
-				printf("\nremoving\n");
-			}
 		}
 		i++;
 	}
 	return (exit_code);
 }
-// Function to print the current environment for testing (simulating `env` command)
+
 void	print_env(t_env *myenv)
 {
 	int	i;
