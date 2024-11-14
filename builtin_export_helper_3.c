@@ -68,6 +68,7 @@ void parse_export_input(char *input, char **name, char **value)
     if (equal_sign)
     {
         *name = ft_strndup(input, equal_sign - input);
+        printf("the len is: %ld and name len is %ld\n",equal_sign - input,strlen(*name));
         *value = ft_strdup(equal_sign + 1);
     }
     else
@@ -82,13 +83,15 @@ int process_name_and_value(char *name, char *value, t_env *env, char **new_name,
     //size_t len;
     int check_input_status;
 
-    *new_name = process_variable(name, env);    
+    *new_name = process_variable(name, env); 
     if (value != NULL)
         *new_value = process_variable(value, env);
     else
         *new_value = NULL;
+    // printf("===old name %s new name: %s====\n",name,*new_name);
     handle_memory_errors(name, value);
-    if (!(*new_name) || (value && !(*new_value)))
+    printf("new name: %s of len %ld====\n",*new_name,strlen(*new_name));
+    if (!(*new_name)|| **new_name =='\0' || (value && !(*new_value)))
     {
         handle_memory_errors(*new_name, *new_value);
         return 0;  // Handle allocation error

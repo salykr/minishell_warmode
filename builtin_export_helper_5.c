@@ -54,8 +54,13 @@ char *process_variable(char *input, t_env *env)
         {
             // Count preceding backslashes before the dollar sign
             size_t backslash_count = 0;
-            for (char *p = dollar - 1; p >= input && *p == '\\'; p--)
-                backslash_count++;
+            
+           if (dollar != input)  // Ensure dollar is not the first character
+            {
+                // printf("\n\n\nentered\n\n\n\n\n\n");
+                for (char *p = dollar - 1; p >= input && *p == '\\'; p--)
+                    backslash_count++;
+            }
             // If odd number of backslashes, append dollar and skip expansion
             if (backslash_count % 2 != 0)
             {
@@ -78,16 +83,20 @@ char *process_variable(char *input, t_env *env)
             //     dollar--;
             // }
             // printf("dollar after: %s\n\n",dollar);
-            if (start[dollar - start - 1] == '\'') 
+            if(dollar != input)
             {
-                new_str=resize_string(new_str,strlen(new_str) + dollar - start );                
-                strncat(new_str, start, dollar - start - 1);
-            }
-            else
-            {
-                new_str=resize_string(new_str,strlen(new_str) + dollar - start + 1);
-                // printf("!!!!!!!!!!!!!!!!!!!!\n\n!!!!!!!!!!!!!!!!!!!!!!!\n\n");
-                strncat(new_str, start, dollar - start);
+
+                if (start[dollar - start - 1] == '\'') 
+                {
+                    new_str=resize_string(new_str,strlen(new_str) + dollar - start );                
+                    strncat(new_str, start, dollar - start - 1);
+                }
+                else
+                {
+                    new_str=resize_string(new_str,strlen(new_str) + dollar - start + 1);
+                    // printf("!!!!!!!!!!!!!!!!!!!!\n\n!!!!!!!!!!!!!!!!!!!!!!!\n\n");
+                    strncat(new_str, start, dollar - start);
+                }
             }
             total_size += (dollar - start);
             char *var_name = dollar + 1;
@@ -142,6 +151,7 @@ char *process_variable(char *input, t_env *env)
                 if (env_value == NULL)
                     env_value = "";
                 total_size += strlen(env_value);
+                printf("len is %ld\n",strlen(env_value));
                 new_str = realloc(new_str, total_size);
                 if (!new_str)
                     return (NULL);
@@ -154,7 +164,9 @@ char *process_variable(char *input, t_env *env)
                 }
                 else
                     start = var_name + strlen(var_name);
-                free(env_value);
+                printf("the env is: %s\n",env_value);
+                if(env_value!=NULL && *env_value!='\0')
+                    free(env_value);
             }
 
             dollar = strchr(start, '$');
