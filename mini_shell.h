@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 20:17:23 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/13 13:55:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ char *process_variable(char *input, t_env *env);
 char *ft_trim_string(char *str);
 int ft_doublecharlen(t_env *env);
 void free_name_and_value(char *new_name, char *new_value);
+void free_input(char **input_array);
 void handle_memory_errors(char *new_name, char *new_value);
 void free_env(t_env *env);
 char *concatenate_value(char *current_value, char *new_value);
@@ -182,9 +183,9 @@ char *itoa(int num);
 char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
 char *remove_quotes_new_new(const char *str);
-char *remove_paired_quotes(const char *str);
+char *remove_paired_quotes(char *str);
 void memory_free(char *str1, char *str2);
-char *remove_closing_quote_after_equals(const char *str);
+char *remove_closing_quote_after_equals(char *str);
 int calculate_len_for_backslash(const char *str);
 
 
@@ -293,5 +294,5 @@ int							change_directory_and_update(t_parser *list, t_env *myenv);
 void						update_pwd(t_env *myenv);
 void						replace_with_str(char ***array, char *new_str);
 int							is_oldpwd_input(const char *input);
-
+char *remove_quotes_with_free(char *str);
 #endif

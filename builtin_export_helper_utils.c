@@ -30,8 +30,10 @@ void free_env(t_env *env)
 
 void handle_memory_errors(char *new_name, char *new_value)
 {
-    free(new_name);
-    free(new_value);
+    if(new_name != NULL)
+        free(new_name);
+    if(new_value != NULL)
+        free(new_value);
 }
 
 

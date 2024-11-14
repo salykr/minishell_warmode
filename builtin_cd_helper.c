@@ -83,3 +83,28 @@ int is_oldpwd_input(const char *input)
 {
 	return (ft_strcmp(input, "-") == 0);
 }
+char *remove_quotes_with_free(char *str)
+{
+    char *result;
+    int j;
+    int i;
+    bool in_single = false;
+    bool in_double = false;
+
+    result = malloc(ft_strlen(str) + 1);
+    j = 0;
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == '\'' && !in_double)
+            in_single = !in_single;
+        else if (str[i] == '"' && !in_single)
+            in_double = !in_double;
+        else
+            result[j++] = str[i];
+        i++;
+    }
+    result[j] = '\0';
+    free(str);
+    return result;
+}

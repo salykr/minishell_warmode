@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/11 18:30:44 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/13 01:00:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*get_path(t_env env, char *cmd)
 		free(back_slash);
 		if (access(p, X_OK) == 0)
 		{
-			free(path); // Free the split path array
+			free_input(path); // Free the split path array
 			return (p);
 		}
 		else
@@ -273,6 +273,8 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	}
 	else
 	{
+		free_input(args);
+		free(cmd_path);
 		if (f.fd_2 != STDOUT_FILENO)
 			close(f.fd_2);
 		if (parser->delimeter != NULL && parser->redirection[0] == T_HEREDOC)

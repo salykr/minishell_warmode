@@ -83,6 +83,7 @@ char *ft_escape_char(char *str)
         }
     }
     total[j] = '\0';  // Null-terminate the result
+    free(str);
     return total;
 }
 
@@ -98,10 +99,11 @@ char *ft_trim_string(char *str)
 }
 
 
-char *remove_paired_quotes(const char *str) 
+char *remove_paired_quotes(char *str) 
 {
     if (!str) return NULL;
-
+    if (!strchr(str, '\'') && !strchr(str, '\"'))
+        return str;
     int len = strlen(str);
     char *result = (char *)malloc(len + 1); // Allocate memory for the result
     if (!result) return NULL;
@@ -139,10 +141,10 @@ char *remove_paired_quotes(const char *str)
         strncat(result, str + j, len - j);
     }
 
-    // Resize to the actual used length
-    int actual_len = strlen(result);
-    result = realloc(result, actual_len + 1);
-
+    // // Resize to the actual used length
+    // int actual_len = strlen(result);
+    // result = realloc(result, actual_len + 1);
+    free(str);
     return result;
 }
 

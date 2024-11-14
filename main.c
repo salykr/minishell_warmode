@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 16:55:23 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 22:24:36 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	ft_free_env(t_env **my_env)
 		free((*my_env)->env[i]);
 		i++;
 	}
+	printf("(((((just freed  %d))))))\n",i);
 	free((*my_env)->env);
 	free(*my_env);
 	*my_env = NULL;

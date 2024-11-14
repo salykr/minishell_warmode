@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 20:44:47 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/12 23:06:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 
 
-char *expand_path(t_env *env, const char *path)
+char *expand_path(t_env *env, char *path)
 {
-    const char *env_var;
+    char *env_var;
     size_t skip_len;
+	char *full_path;
 
 	env_var = NULL;
 	skip_len = 0;
@@ -33,7 +34,7 @@ char *expand_path(t_env *env, const char *path)
     }
     if (env_var == NULL)
         return (NULL);
-    char *full_path = malloc(ft_strlen(env_var) + ft_strlen(path + skip_len) + 1);
+    full_path = malloc(ft_strlen(env_var) + ft_strlen(path + skip_len) + 1);
     if (full_path == NULL)
         return (NULL);
     ft_strcpy(full_path, env_var);
@@ -89,8 +90,9 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 
 int	builtin_cd(t_parser *list, t_env *myenv)
 {
-	if (list->input != NULL)
-		list->input[0]=remove_quotes(list->input[0]);
+	//i added these two conditions incase sar she
+	if (list->input != NULL && (strchr(list->input[0],'\'') ||strchr(list->input[0],'"')))
+		list->input[0]=remove_quotes_with_free(list->input[0]);
 	if (list->input != NULL &&(list->input[1] != NULL || !ft_strncmp(list->input[0], "/home", 5)))
         return (-1);
 	if (handle_directory_input(list, myenv) != 0)

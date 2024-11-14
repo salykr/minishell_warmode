@@ -11,6 +11,29 @@
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
+char *resize_string(char *str, size_t new_size)
+{
+    if (!str || new_size == 0) {
+        return NULL;  // Ensure the input is valid
+    }
+    // Allocate new memory with the specified new size
+    char *new_str = (char *)malloc(new_size);
+    if (!new_str) {
+        free(str);  // Free the old string to prevent leaks
+        return NULL;  // Return NULL if memory allocation fails
+    }
+
+    // Copy the old content into the new allocated memory
+    strncpy(new_str, str, new_size - 1);
+    new_str[new_size - 1] = '\0';  // Ensure null termination
+
+    // Free the old memory
+    free(str);
+
+    return new_str;  // Return the resized string
+}
+
 char *process_variable(char *input, t_env *env)
 {
     if (input == NULL)
@@ -36,6 +59,7 @@ char *process_variable(char *input, t_env *env)
             // If odd number of backslashes, append dollar and skip expansion
             if (backslash_count % 2 != 0)
             {
+                new_str=resize_string(new_str,strlen(new_str) + dollar - start + 2);
                 strncat(new_str, start, dollar - start + 1);
                 total_size += (dollar - start + 1);
                 new_str = realloc(new_str, total_size);
@@ -55,9 +79,16 @@ char *process_variable(char *input, t_env *env)
             // }
             // printf("dollar after: %s\n\n",dollar);
             if (start[dollar - start - 1] == '\'') 
+            {
+                new_str=resize_string(new_str,strlen(new_str) + dollar - start );                
                 strncat(new_str, start, dollar - start - 1);
+            }
             else
+            {
+                new_str=resize_string(new_str,strlen(new_str) + dollar - start + 1);
+                // printf("!!!!!!!!!!!!!!!!!!!!\n\n!!!!!!!!!!!!!!!!!!!!!!!\n\n");
                 strncat(new_str, start, dollar - start);
+            }
             total_size += (dollar - start);
             char *var_name = dollar + 1;
             char *end_of_var = strpbrk(var_name, " '$?1234567890+\"");
@@ -98,6 +129,7 @@ char *process_variable(char *input, t_env *env)
                 }
                 else
                 {
+                     new_str=resize_string(new_str,strlen(new_str) + strlen(dollar) + 1);
                     strcat(new_str, dollar);
                     break;
                 }
@@ -113,6 +145,7 @@ char *process_variable(char *input, t_env *env)
                 new_str = realloc(new_str, total_size);
                 if (!new_str)
                     return (NULL);
+                 new_str=resize_string(new_str,strlen(new_str) + strlen(env_value) + 1);
                 strcat(new_str, env_value);
                 if (end_of_var)
                 {
@@ -121,12 +154,14 @@ char *process_variable(char *input, t_env *env)
                 }
                 else
                     start = var_name + strlen(var_name);
+                free(env_value);
             }
 
             dollar = strchr(start, '$');
             if (dollar != NULL && *(dollar + 1) == '\0')
                 break;
         }
+         new_str=resize_string(new_str,strlen(new_str) + strlen(start) + 1);
         strcat(new_str, start);
         printf("the new_str: %s\n\n",new_str);
         return (remove_paired_quotes(new_str));

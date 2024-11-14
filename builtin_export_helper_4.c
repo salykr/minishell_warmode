@@ -132,7 +132,8 @@ int update_existing_value(char **env_var, char *new_name, char *new_value, char 
     updated_value = concatenate_value(current_value, new_value);
     if (!updated_value)
         return 1;
-    free(*env_var);
+    if(*env_var != NULL)
+        free(*env_var);
     *env_var = malloc(strlen(new_name) + strlen(updated_value) + 2);
     if (!(*env_var))
     {
@@ -153,7 +154,10 @@ int handle_input_status_negative(char **env_var, char *new_name, char *new_value
     current_value = strchr(*env_var, '=');
     if (current_value)
         return (update_existing_value(env_var, new_name, new_value, current_value));
-    return (allocate_and_update_new_value(env_var, new_name, new_value));
+    //can have replace or append instead?
+    // return (allocate_and_update_new_value(env_var, new_name, new_value));
+    replace_or_append_value(env_var, new_name, new_value);
+    return(1);
 }
 
 int find_and_update_env(int check_input_status, char *new_name, char *new_value, t_env *env)
@@ -168,7 +172,11 @@ int find_and_update_env(int check_input_status, char *new_name, char *new_value,
             if (check_input_status == -1)
                 return (handle_input_status_negative(&env->env[i], new_name, new_value));
             replace_or_append_value(&env->env[i], new_name, new_value);
-            handle_memory_errors(new_name, new_value);
+            if(strcmp("SHLVL",new_name)!=0)
+            {
+                printf("name and value: %s %s\n",new_name,new_value);
+                handle_memory_errors(new_name, new_value);
+            }
             return 1;  // Found and updated, return 1
         }
         i++;

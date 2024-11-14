@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 21:34:04 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/13 15:18:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 //export hi=jey\\$hi
 //i just have to edit the backslash f eza baada fe $ dont remove the $
 
-char *remove_closing_quote_after_equals(const char *str)
+char *remove_closing_quote_after_equals(char *str)
 {
     if (!str) return NULL;
 
@@ -59,7 +59,7 @@ char *remove_closing_quote_after_equals(const char *str)
             i++;
         }
     }
-
+    free(str);
     return result;
 }
 
@@ -70,7 +70,7 @@ void builtin_export(t_parser *list, t_env *env)
     char *new_name;
     int i;
     int j;
-    char *s;
+    // char *s;
 
     if (list->operations != NULL)
     {
@@ -85,63 +85,67 @@ void builtin_export(t_parser *list, t_env *env)
     j = 0;
     while (list->input[j])
     {
-        s = list->input[j];
-        list->input[j] = ft_escape_char(list->input[j]);  // Escape special characters
-        free(s);
+        if(strchr(list->input[j],'\\'))
+        {
+            // s = list->input[j];
+            list->input[j] = ft_escape_char(list->input[j]);  // Escape special characters
+            // free(s);
+        }
         j++;
     }
     if (strchr(list->input[0], '$') != NULL && strchr(list->input[0], '=') == NULL)
     {
+        printf("in this condition~~~~~~~~``");
         char *input_copy= ft_strdup(list->input[0]);
         new_name = process_variable(input_copy, env);
         if (*new_name=='\0')
         {
             print_env_sorted(env);  // Sorted environment display
-            free(input_copy);
-            free(new_name);
+            handle_memory_errors(input_copy, new_name);
             return;
         }
         if (check_input(new_name)==0 || check_input(new_name)==-1)
         {//export $hey9hh   //يعاد النظر
-            free(input_copy);
-            free(new_name);
+           handle_memory_errors(input_copy, new_name);
             return;
         }
-        free(input_copy);
-        free(new_name);
+        handle_memory_errors(input_copy, new_name);
     }
     i = 0;
     while (list->input[i])
     {
-        list->input[i]=remove_closing_quote_after_equals(list->input[i]);
+        char *first_quote = strchr(list->input[i], '"');  // Find the first quote
+        if (first_quote) {
+            char *equals_sign = strchr(first_quote + 1, '=');  // Find '=' after the first quote
+            if (equals_sign && *(equals_sign + 1) == '"') {
+                list->input[i] = remove_closing_quote_after_equals(list->input[i]);
+            }
+        }
+        // list->input[i]=remove_closing_quote_after_equals(list->input[i]);
         printf("the input: %s\n\n",list->input[i]);
         parse_export_input(list->input[i], &name, &value);  // Split input into name and value
         if (name!= NULL && check_input(name)==0)
         {
-            if (value)
-                free(value);
-            if(name)
-                free(name);
+            handle_memory_errors(name, value);
             i++;
             continue;
         }
-        value = ft_strtrim(value," ");
+        // s = value;
+        // value = ft_strtrim(value," ");
+        // free(s);
         if ((name!= NULL && strchr(name,';')) ||(value!= NULL && strchr(value,';')))
         {
             add_or_update_to_env(name, value, env);  // Update environment
-            if (value != NULL)
-                free(value);
-            if(name != NULL)
-                free(name);
+            // handle_memory_errors(name, value);
             break;
         }
         if (name)
         {
             add_or_update_to_env(name, value, env);  // Update environment
-            if (value != NULL)
-                free(value);
-            if(name != NULL)
-                free(name);
+            // if (value != NULL)
+            //     free(value);
+            // if(name != NULL)
+            //     free(name);
         }
         i++;  // Increment index manually
     }

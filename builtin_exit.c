@@ -64,6 +64,7 @@ void validate_numeric_input(char *input)
 
 void cleanup_and_exit(t_env *myenv)
 {
+    printf("cleaning up\n");
     ft_free_env(&myenv);
     exit(global_var);
 }

@@ -43,6 +43,8 @@ void replace_or_append_value(char **env_entry, char *new_name, char *new_value)
         new_len = name_len + strlen(new_value) + 1;
     else
         new_len = name_len + 1;
+    if(*env_entry != NULL)
+        free(*env_entry);
     *env_entry = malloc(new_len + 1);
     if (!*env_entry)
         return;  // Memory allocation error
@@ -85,6 +87,7 @@ int process_name_and_value(char *name, char *value, t_env *env, char **new_name,
         *new_value = process_variable(value, env);
     else
         *new_value = NULL;
+    handle_memory_errors(name, value);
     if (!(*new_name) || (value && !(*new_value)))
     {
         handle_memory_errors(*new_name, *new_value);
@@ -121,7 +124,14 @@ void add_or_update_to_env(char *name, char *value, t_env *env)
 
     new_name = NULL;
     new_value  = NULL;
-    check_input_status = process_name_and_value(name, value, env, &new_name, &new_value);
+    if(strcmp("SHLVL",name)== 0)
+    {
+        new_name = name;
+        new_value = value;
+        check_input_status = 1;
+    }
+    else
+        check_input_status = process_name_and_value(name, value, env, &new_name, &new_value);
     if (check_input_status == 0)
         return;  // Exit if an error occurred in processing
     if (find_and_update_env(check_input_status, new_name, new_value, env))
