@@ -12,7 +12,6 @@
 
 #include"mini_shell.h"
 
-
 char *concatenate_value(char *current_value, char *new_value)
 {
     size_t current_len;
@@ -68,7 +67,7 @@ void parse_export_input(char *input, char **name, char **value)
     if (equal_sign)
     {
         *name = ft_strndup(input, equal_sign - input);
-        printf("the len is: %ld and name len is %ld\n",equal_sign - input,strlen(*name));
+        // printf("the len is: %ld and name len is %ld\n",equal_sign - input,strlen(*name));
         *value = ft_strdup(equal_sign + 1);
     }
     else
@@ -99,16 +98,7 @@ int process_name_and_value(char *name, char *value, t_env *env, t_name_value *ne
         (new_nv->new_name)[strlen(new_nv->new_name) - 1] = '\0';  // Remove the '+' for proper name matching
     return (check_input_status);
 }
-int handle_shlvl_case(char *name, char *value, t_name_value *new_nv)
-{
-    if (strcmp("SHLVL", name) == 0)
-    {
-        new_nv->new_name = name;
-        new_nv->new_value = value;
-        return 1;
-    }
-    return 2;  // Return 0 to indicate it’s not the "SHLVL" case
-}
+
 
 int add_or_update_to_env(char *name, char *value, t_env *env)
 {
@@ -135,4 +125,3 @@ int add_or_update_to_env(char *name, char *value, t_env *env)
     env->env[i + 1] = NULL;  // Set the last element to NULL
     return(handle_memory_errors(new_nv.new_name, new_nv.new_value), 0);
 }
-

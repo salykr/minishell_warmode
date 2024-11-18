@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/18 15:38:43 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/18 19:35:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,51 +59,11 @@ void deal_with_quotes(t_parser *list, int i)
     }
 }
 
-
-// int builtin_export(t_parser *list, t_env *env)
-// {
-//     char *name;
-//     char *value;
-//     int i;
-//     int return_value;
-
-//     if (list->operations != NULL)
-//         return((void)printf("invalid option.\n"),2);
-//     if (!list->input || !list->input[0])
-//         return(print_env_sorted(env),0);
-//     deal_with_esc_char(list);
-//     return_value = deal_with_name_no_var(list, env);
-//     if(return_value != -1)
-//         return(return_value);
-//     i = 0;
-//     return_value = 0;
-//     while (list->input[i])
-//     {
-//         deal_with_quotes(list, i);
-//         parse_export_input(list->input[i], &name, &value);  // Split input into name and value
-//         if (name!= NULL && check_input(name)==0)
-//         {
-//             handle_memory_errors(name, value);
-//             return_value = 1;
-//             i++;
-//             continue;
-//         }
-//         if ((name!= NULL && strchr(name,';')) ||(value!= NULL && strchr(value,';')))
-//         {
-//             return_value = add_or_update_to_env(name, value, env);  // Update environment
-//             break;
-//         }
-//         if (name)
-//             return_value = add_or_update_to_env(name, value, env);  // Update environment
-//         i++;  // Increment index manually
-//     }
-//     return(return_value);
-// }
 int handle_export_input(char *input, t_env *env, int *return_value)
 {
     char *name;
     char *value;
-
+    int nb;
     parse_export_input(input, &name, &value);
     if (name && check_input(name) == 0)
     {
@@ -117,7 +77,11 @@ int handle_export_input(char *input, t_env *env, int *return_value)
         return(1);
     }
     if (name)
-        *return_value = add_or_update_to_env(name, value, env);
+    {
+        nb = add_or_update_to_env(name, value, env);
+        if(*return_value == 0)
+            *return_value = nb; 
+    }
     return 0;
 }
 
@@ -125,6 +89,7 @@ int builtin_export(t_parser *list, t_env *env)
 {
     int i;
     int return_value;
+    int nb;
 
     i = 0;
     return_value = 0;
@@ -133,13 +98,17 @@ int builtin_export(t_parser *list, t_env *env)
     if (!list->input || !list->input[0])
         return (print_env_sorted(env), 0);
     deal_with_esc_char(list);
-    if ((return_value = deal_with_name_no_var(list, env)) != -1)
-        return return_value;
+    if ((nb = deal_with_name_no_var(list, env)) != -1)
+    {
+        printf("hereeeeeee\n");   
+        return nb;
+    }
     while (list->input[i])
     {
         deal_with_quotes(list, i);
         if (handle_export_input(list->input[i++], env, &return_value))
             break;
     }
+    printf("eturn val is:%d\n",return_value);
     return return_value;
 }
