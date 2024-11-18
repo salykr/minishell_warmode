@@ -44,13 +44,12 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_export_helper_3.c \
                       $(SRC_DIR)builtin_export_helper_4.c \
                       $(SRC_DIR)builtin_export_helper_5.c \
+                      $(SRC_DIR)builtin_export_helper_6.c \
                       $(SRC_DIR)builtin_export_helper_utils.c\
                       $(SRC_DIR)printing.c
                  
 OBJS                = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 
-# Targets
-all:                $(NAME)
 
 $(NAME):            $(OBJS) $(LIBFT)
 	@$(CC) $(OBJS) $(LIBFT) $(CFLAGS) $(EXTRAFLAGS) -o $(NAME)
@@ -61,6 +60,10 @@ $(OBJ_DIR)%.o:      $(SRC_DIR)%.c
 
 $(LIBFT):
 	@make -C ./Libft
+
+
+# Targets
+all:                $(NAME)
 
 clean:
 	@$(RM) -r $(OBJ_DIR)

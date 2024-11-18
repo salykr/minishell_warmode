@@ -144,6 +144,7 @@ int update_existing_value(char **env_var, char *new_name, char *new_value, char 
     strcat(*env_var, "=");
     strcat(*env_var, updated_value);
     free(updated_value);
+
     return 1;  // Found and updated, return 1
 }
 
@@ -153,10 +154,15 @@ int handle_input_status_negative(char **env_var, char *new_name, char *new_value
 
     current_value = strchr(*env_var, '=');
     if (current_value)
-        return (update_existing_value(env_var, new_name, new_value, current_value));
+    {
+        update_existing_value(env_var, new_name, new_value, current_value);
+        handle_memory_errors(new_name,new_value);
+        return (1);
+    }
     //can have replace or append instead?
     // return (allocate_and_update_new_value(env_var, new_name, new_value));
     replace_or_append_value(env_var, new_name, new_value);
+    handle_memory_errors(new_name,new_value);
     return(1);
 }
 

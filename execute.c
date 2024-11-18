@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/13 01:00:14 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/16 18:16:52 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,7 +305,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 	}
 	else if (strcmp(parser->command, "export") == 0 && parser->next == NULL)
 	{
-		builtin_export(parser, env); // Update environment variables
+		global_var = builtin_export(parser, env); // Update environment variables
 		return ;
 	}
 	pid = fork();
@@ -334,7 +334,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		else if (strcmp(parser->command, "pwd") == 0)
 			builtin_pwd(parser, env); 
 		else if (strcmp(parser->command, "export") == 0)
-			builtin_export(parser, env);
+			global_var = builtin_export(parser, env);
 		printf("in child :%d\n",global_var);
 		// Exit the child process after execution
 		exit(EXIT_SUCCESS);

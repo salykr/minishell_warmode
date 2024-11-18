@@ -25,6 +25,7 @@ void check_semicolon(char *name, char **value)
         *semicolon_in_name = '\0';
         if (*value != NULL)
         {
+            free(*value);
             *value = NULL;
             return;
         }
@@ -43,7 +44,8 @@ int check_input(char *str)
     i = 0;
     if (str[0] == '\0' || (!isalpha(str[0]) && (str[0] != '_'  && str[0]!='\'' && str[0]!='\"' && str[0]!='$')))
     {
-        printf("Error: %c not a valid identifier.\n",str[0]);
+         printf("Error.\n");
+        // printf("Error: %c not a valid identifier.\n",str[0]);
         return (0);
     }
     while (str[++i])
@@ -55,7 +57,8 @@ int check_input(char *str)
         {
             if((i == ft_strlen(str) - 1) && str[ft_strlen(str) - 1] == '+')
                     return (-1);
-            printf("Error: %c not a valid identifier.\n",str[i]);
+            // printf("Error: %c not a valid identifier.\n",str[i]);
+            printf("Error.\n");
             return 0;
         }
     }
@@ -67,7 +70,8 @@ int check_input_end(char *str)
     i = 0;
     if (str[0] == '\0' || (!isalpha(str[0]) && str[0] != '_'))
     {
-        printf("Errorrr: %c not a valid identifier.\n",str[0]);
+        // printf("Errorrr: %c not a valid identifier.\n",str[0]);
+        printf("Error.\n");
         return (0);
     }
     while (str[++i])
@@ -77,7 +81,8 @@ int check_input_end(char *str)
         {
             if((i == ft_strlen(str) - 1) && str[ft_strlen(str) - 1] == '+')
                 return -1;
-            printf("Errorrr: %c not a valid identifier.\n",str[i]);
+            // printf("Errorrr: %c not a valid identifier.\n",str[i]);
+            printf("Error.\n");
             return (0);
         }
     }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/13 13:55:54 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/18 14:49:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,12 @@ typedef struct s_fd
 	int						fd_2;
 }							t_fd;
 
+typedef struct s_ij
+{
+	int						i;
+	int						j;
+}		t_ij;
+
 typedef struct s_quoted
 {
 	char					*single;
@@ -134,6 +140,11 @@ typedef struct s_env
 	int						exit_code;
 }							t_env;
 
+typedef struct s_name_value {
+    char *new_name;
+    char *new_value;
+} t_name_value;
+
 
 // void                        ctrl_c_press_here(int signal);
 void						ctrl_c_press(int signal_nb);
@@ -143,9 +154,9 @@ void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
 void						builtin_echo(t_parser *list, t_env env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
-void						add_or_update_to_env(char *name, char *value,
+int						add_or_update_to_env(char *name, char *value,
 								t_env *env);
-void						builtin_export(t_parser *list, t_env *env);
+int						builtin_export(t_parser *list, t_env *env);
 char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
