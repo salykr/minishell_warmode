@@ -12,7 +12,6 @@
 
 #include"mini_shell.h"
 
-
 char *concatenate_value(char *current_value, char *new_value)
 {
     size_t current_len;
@@ -37,7 +36,6 @@ void replace_or_append_value(char **env_entry, char *new_name, char *new_value)
 {
     size_t name_len;
     size_t new_len;
-
     name_len = strlen(new_name);
     if (new_value)
         new_len = name_len + strlen(new_value) + 1;
@@ -56,6 +54,7 @@ void replace_or_append_value(char **env_entry, char *new_name, char *new_value)
     }
     else
         ft_strcat(*env_entry, "");
+
 }
 
 void parse_export_input(char *input, char **name, char **value)
@@ -68,6 +67,7 @@ void parse_export_input(char *input, char **name, char **value)
     if (equal_sign)
     {
         *name = ft_strndup(input, equal_sign - input);
+        // printf("the len is: %ld and name len is %ld\n",equal_sign - input,strlen(*name));
         *value = ft_strdup(equal_sign + 1);
     }
     else
@@ -77,75 +77,51 @@ void parse_export_input(char *input, char **name, char **value)
     }
 }
 //the above add_or_update to_env will be split into two fts:
-int process_name_and_value(char *name, char *value, t_env *env, char **new_name, char **new_value)
+int process_name_and_value(char *name, char *value, t_env *env, t_name_value *new_nv)
 {
     //size_t len;
     int check_input_status;
 
-    *new_name = process_variable(name, env);    
+    new_nv->new_name = process_variable(name, env); 
     if (value != NULL)
-        *new_value = process_variable(value, env);
+        new_nv->new_value = process_variable(value, env);
     else
-        *new_value = NULL;
+        new_nv->new_value = NULL;
     handle_memory_errors(name, value);
-    if (!(*new_name) || (value && !(*new_value)))
-    {
-        handle_memory_errors(*new_name, *new_value);
-        return 0;  // Handle allocation error
-    }
-    check_semicolon(*new_name, new_value);
-    check_input_status = check_input_end(*new_name);
-    if (check_input_status == 0 || (value != NULL && *new_value != NULL && !check_value(*new_value)))
-    {
-        handle_memory_errors(*new_name, *new_value);
-        return 0;  // Invalid input or value check failed
-    }
-    if ((*new_name)[strlen(*new_name) - 1] == '+')
-        (*new_name)[strlen(*new_name) - 1] = '\0';  // Remove the '+' for proper name matching
+    if (!(new_nv->new_name)|| (value && !(new_nv->new_value)))
+        return (handle_memory_errors(new_nv->new_name, new_nv->new_value),0);  // Handle allocation error
+    check_semicolon(new_nv->new_name, &(new_nv->new_value));
+    check_input_status = check_input_end(new_nv->new_name);
+    if (check_input_status == 0 || (value != NULL && new_nv->new_value != NULL && !check_value(new_nv->new_value)))
+        return (handle_memory_errors(new_nv->new_name, new_nv->new_value),0);  // Invalid input or value check failed
+    if ((new_nv->new_name)[strlen(new_nv->new_name) - 1] == '+')
+        (new_nv->new_name)[strlen(new_nv->new_name) - 1] = '\0';  // Remove the '+' for proper name matching
     return (check_input_status);
 }
-/*incase sar ghlt fo2
-    if (check_input_status == -1)
-    {
-        len = strlen(*new_name);
-        if ((*new_name)[len - 1] == '+')
-            (*new_name)[len - 1] = '\0';  // Remove the '+' for proper name matching
-    }
-*/
 
 
-void add_or_update_to_env(char *name, char *value, t_env *env)
+int add_or_update_to_env(char *name, char *value, t_env *env)
 {
-    char *new_name;
-    char *new_value;
+    t_name_value new_nv;
     char **new_env;
     int check_input_status;    
     int i;
 
-    new_name = NULL;
-    new_value  = NULL;
-    if(strcmp("SHLVL",name)== 0)
-    {
-        new_name = name;
-        new_value = value;
-        check_input_status = 1;
-    }
-    else
-        check_input_status = process_name_and_value(name, value, env, &new_name, &new_value);
+    new_nv.new_name = NULL;
+    new_nv.new_value  = NULL;
+    check_input_status = handle_shlvl_case(name, value, &new_nv);
+    if(check_input_status == 2)
+        check_input_status = process_name_and_value(name, value, env, &new_nv);
     if (check_input_status == 0)
-        return;  // Exit if an error occurred in processing
-    if (find_and_update_env(check_input_status, new_name, new_value, env))
-        return;
+        return(1);  // Exit if an error occurred in processing
+    if (find_and_update_env(check_input_status, new_nv.new_name, new_nv.new_value, env))
+        return(0);
     i = ft_doublecharlen(env);  // Get the length of the environment array
     new_env = realloc(env->env, sizeof(char *) * (i + 2));  // Allocate space for the new variable
     if (!new_env)
-    {
-        handle_memory_errors(new_name, new_value);
-        return;
-    }
+        return(handle_memory_errors(new_nv.new_name, new_nv.new_value), 1);
     env->env = new_env;
-    replace_or_append_value(&env->env[i], new_name, new_value);
+    replace_or_append_value(&env->env[i], new_nv.new_name, new_nv.new_value);
     env->env[i + 1] = NULL;  // Set the last element to NULL
-    handle_memory_errors(new_name, new_value);
+    return(handle_memory_errors(new_nv.new_name, new_nv.new_value), 0);
 }
-

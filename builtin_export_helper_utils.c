@@ -37,12 +37,6 @@ void handle_memory_errors(char *new_name, char *new_value)
 }
 
 
-void free_name_and_value(char *new_name, char *new_value)
-{
-    free(new_name);
-    free(new_value);
-}
-
 int ft_doublecharlen(t_env *env)
 {
     int i;

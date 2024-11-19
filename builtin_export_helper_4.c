@@ -14,69 +14,26 @@
 
 //replace_or_append_value and concatenate_value
 
-/*
-int find_and_update_env(int check_input_status, char *new_name, char *new_value, t_env *env)
+char *resize_string(char *str, size_t new_size)
 {
-    int i;
-    size_t name_len;
-
-    i = 0;
-    name_len = strlen(new_name);
-    while (env->env[i] != NULL)
-    {
-        if (strncmp(env->env[i], new_name, strlen(new_name)) == 0 &&
-            (env->env[i][strlen(new_name)] == '=' || env->env[i][strlen(new_name)] == '\0'))
-            {
-                if (check_input_status == -1)
-                {
-                    char *current_value = strchr(env->env[i], '=');
-                    if (current_value) {
-                        current_value++;  // Move past the '='
-                        char *updated_value = concatenate_value(current_value, new_value);
-                        if (updated_value)
-                        {
-                            free(env->env[i]);
-                            env->env[i] = malloc(strlen(new_name) + strlen(updated_value) + 2);
-                            if (!env->env[i])
-                            {
-                                free_name_and_value(new_name, new_value);
-                                free(updated_value);
-                                return (1);  // Memory allocation error
-                            }
-                            strcpy(env->env[i], new_name);
-                            strcat(env->env[i], "=");
-                            strcat(env->env[i], updated_value);
-                            free(updated_value);
-                        }
-                    }
-                    else
-                    {
-                        size_t new_len = name_len + (new_value ? strlen(new_value) : 0) + 1;
-                        env->env[i] = malloc(new_len + 2);
-                        if (!env->env[i])
-                        {
-                            free_name_and_value(new_name, new_value);
-                            return (1);  // Memory allocation error
-                        }
-                        if (new_value)
-                            snprintf(env->env[i], new_len + 2, "%s=%s", new_name, new_value);
-                        else
-                            snprintf(env->env[i], new_len + 2, "%s=", new_name);
-                        free_name_and_value(new_name, new_value);
-                        return (1);  // Found and updated, return 1
-                    }
-                }
-                else
-                    replace_or_append_value(&env->env[i], new_name, new_value);
-                handle_memory_errors(new_name, new_value);
-                return (1);  // Found and updated, return 1
-        }
-        i++;
+    if (!str || new_size == 0) {
+        return NULL;  // Ensure the input is valid
     }
-    return (0);
-}
-*/
+    // Allocate new memory with the specified new size
+    char *new_str = (char *)malloc(new_size);
+    if (!new_str) {
+        free(str);  // Free the old string to prevent leaks
+        return NULL;  // Return NULL if memory allocation fails
+    }
 
+    // Copy the old content into the new allocated memory
+    strncpy(new_str, str, new_size - 1);
+    new_str[new_size - 1] = '\0';  // Ensure null termination
+
+    // Free the old memory
+    free(str);
+    return new_str;  // Return the resized string
+}
 // //tosgheer th above function
 int is_matching_env_var(char *env_var, char *new_name)
 {
@@ -85,22 +42,6 @@ int is_matching_env_var(char *env_var, char *new_name)
            (env_var[name_len] == '=' || env_var[name_len] == '\0'));
 }
 /*
-int allocate_and_update_new_value(char **env_var, char *new_name, char *new_value)
-{
-    size_t new_len = strlen(new_name) + (new_value ? strlen(new_value) : 0) + 1;
-
-    *env_var = malloc(new_len + 2);
-    if (!(*env_var))
-        return 1;  // Memory allocation error
-
-    if (new_value)
-        snprintf(*env_var, new_len + 2, "%s=%s", new_name, new_value);
-    else
-        snprintf(*env_var, new_len + 2, "%s=", new_name);
-
-    return 1;  // Found and updated, return 1
-}
-*/
 int allocate_and_update_new_value(char **env_var, char *new_name, char *new_value)
 {
     size_t new_len;
@@ -123,6 +64,7 @@ int allocate_and_update_new_value(char **env_var, char *new_name, char *new_valu
 
     return 1;  // Found and updated, return 1
 }
+*/
 
 int update_existing_value(char **env_var, char *new_name, char *new_value, char *current_value)
 {
@@ -144,6 +86,7 @@ int update_existing_value(char **env_var, char *new_name, char *new_value, char 
     strcat(*env_var, "=");
     strcat(*env_var, updated_value);
     free(updated_value);
+
     return 1;  // Found and updated, return 1
 }
 
@@ -153,10 +96,15 @@ int handle_input_status_negative(char **env_var, char *new_name, char *new_value
 
     current_value = strchr(*env_var, '=');
     if (current_value)
-        return (update_existing_value(env_var, new_name, new_value, current_value));
+    {
+        update_existing_value(env_var, new_name, new_value, current_value);
+        handle_memory_errors(new_name,new_value);
+        return (1);
+    }
     //can have replace or append instead?
     // return (allocate_and_update_new_value(env_var, new_name, new_value));
     replace_or_append_value(env_var, new_name, new_value);
+    handle_memory_errors(new_name,new_value);
     return(1);
 }
 
@@ -174,7 +122,7 @@ int find_and_update_env(int check_input_status, char *new_name, char *new_value,
             replace_or_append_value(&env->env[i], new_name, new_value);
             if(strcmp("SHLVL",new_name)!=0)
             {
-                printf("name and value: %s %s\n",new_name,new_value);
+                // printf("name and value: %s %s\n",new_name,new_value);
                 handle_memory_errors(new_name, new_value);
             }
             return 1;  // Found and updated, return 1

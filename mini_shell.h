@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/13 13:55:54 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/18 17:06:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,20 @@ typedef struct s_fd
 	int						fd_2;
 }							t_fd;
 
+typedef struct s_ij
+{
+	int						i;
+	int						j;
+}		t_ij;
+
 typedef struct s_quoted
 {
 	char					*single;
 	char					*doubles;
 }							t_quoted;
+
+
+
 
 typedef struct s_parser
 {
@@ -134,6 +143,23 @@ typedef struct s_env
 	int						exit_code;
 }							t_env;
 
+typedef struct s_name_value {
+    char *new_name;
+    char *new_value;
+} t_name_value;
+typedef struct s_context{
+    size_t total_size;  // Start with 1 for null terminator
+    char *start;
+    char *dollar;
+    char *new_str;
+    char *var_name;
+    char *end_of_var;
+    char temp_char;
+    char first_char;
+    char *input;
+    t_env env;
+    char *env_value;
+}t_context;
 
 // void                        ctrl_c_press_here(int signal);
 void						ctrl_c_press(int signal_nb);
@@ -143,9 +169,21 @@ void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
 void						builtin_echo(t_parser *list, t_env env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
-void						add_or_update_to_env(char *name, char *value,
+int						add_or_update_to_env(char *name, char *value,
 								t_env *env);
-void						builtin_export(t_parser *list, t_env *env);
+int						builtin_export(t_parser *list, t_env *env);
+int handle_shlvl_case(char *name, char *value, t_name_value *new_nv);
+char *resize_string(char *str, size_t new_size);
+size_t pv_count_backslashes(t_context *ctx);
+void pv_resize_concat(char **resized_str, size_t len_resize, char *concat_str, size_t len_concat);
+int pv_initialise_vars(t_context *ctx);
+int pv_backslashes_cases(t_context *ctx);
+int pv_question_mark(t_context *ctx);
+int pv_update_pointers(t_context *ctx);
+int pv_env_variable(t_context *ctx, char *env_value);
+void pv_fill_values(t_context *ctx);
+void pv_initialize_context(t_context *ctx, char *input, t_env *env);
+int pv_handle_backslashes(t_context *ctx);
 char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
@@ -171,7 +209,6 @@ void free_2d_array(char **array);
 char *process_variable(char *input, t_env *env);
 char *ft_trim_string(char *str);
 int ft_doublecharlen(t_env *env);
-void free_name_and_value(char *new_name, char *new_value);
 void free_input(char **input_array);
 void handle_memory_errors(char *new_name, char *new_value);
 void free_env(t_env *env);
