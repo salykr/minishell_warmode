@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/18 19:35:09 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/19 13:16:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int builtin_export(t_parser *list, t_env *env)
     deal_with_esc_char(list);
     if ((nb = deal_with_name_no_var(list, env)) != -1)
     {
-        printf("hereeeeeee\n");   
+        // printf("hereeeeeee\n");   
         return nb;
     }
     while (list->input[i])
@@ -109,6 +109,6 @@ int builtin_export(t_parser *list, t_env *env)
         if (handle_export_input(list->input[i++], env, &return_value))
             break;
     }
-    printf("eturn val is:%d\n",return_value);
+    // printf("eturn val is:%d\n",return_value);
     return return_value;
 }
