@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/18 18:00:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/24 14:36:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,36 +173,22 @@ int	is_builtin(t_parser *parser)
 	return (0);
 }
 
-#include <string.h>
+t_parser create_parser_list(void)
+{
+    t_parser new_parser;
 
-// int is_builtin(t_parser *parser)
-// {
-//     if (parser == NULL || parser->command == NULL)
-//         return (0);
-    
-//     if (parser->operations != NULL && parser->operations[0] != NULL)
-//     {
-//         if (strcmp(parser->command, "echo") == 0)
-//         {
-//             if (strcmp(parser->operations[0], "-n") != 0)
-//                     return (0); // Return 0 for invalid operations with echo
-//             return (1); // Valid echo command with only -n option
-//         }
-//         return (0); // Return 0 for other commands with operations
-//     }
-//     if (strcmp(parser->command, "cd") == 0 ||
-//         strcmp(parser->command, "pwd") == 0 ||
-//         strcmp(parser->command, "export") == 0 ||
-//         strcmp(parser->command, "unset") == 0 ||
-//         strcmp(parser->command, "env") == 0 ||
-//         strcmp(parser->command, "exit") == 0 ||
-//         strcmp(parser->command, "echo") == 0)
-//     {
-//         return (1); // Valid built-in command
-//     }
-
-//     return (0); // Not a built-in command
-// }
+    new_parser.command = NULL;
+    new_parser.input = NULL;
+    new_parser.args = NULL;
+    new_parser.operations = NULL;
+    new_parser.redirection = NULL;
+    new_parser.delimeter = NULL;
+    new_parser.prev = NULL;
+    new_parser.next = NULL;
+    new_parser.infile = NULL;
+    new_parser.outfile = NULL;
+    return (new_parser);
+}
 
 int	handle_heredoc(char **heredoc_content)
 {
@@ -230,6 +216,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	char	**args;
 	int		heredoc_fd;
 	pid_t	pid;
+	int status;
 
 	heredoc_fd = -1;
 	if (parser->delimeter != NULL && parser->redirection != NULL)
@@ -273,6 +260,9 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	}
 	else
 	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status)) 
+            global_var = WEXITSTATUS(status);
 		free_input(args);
 		free(cmd_path);
 		if (f.fd_2 != STDOUT_FILENO)
@@ -281,6 +271,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 			close(heredoc_fd);
 	}
 }
+
 void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 {
 	pid_t	pid;
@@ -292,21 +283,20 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 	}
 	else if (strcmp(parser->command, "cd") == 0 && parser->next == NULL)
 	{
-		if(builtin_cd(parser, env)==-1)
-			global_var = 1;
-		else
-			global_var = 0;
+		global_var = builtin_cd(parser, env);
 		return ;
 	}
-	else if (strcmp(parser->command, "exit") == 0 && parser->next == NULL)
-	{
-		builtin_exit(parser, env);
-		return ;
-	}
+
 	else if (strcmp(parser->command, "export") == 0 && parser->next == NULL)
 	{
 		global_var = builtin_export(parser, env); // Update environment variables
 		return ;
+	}
+	else if (strcmp(parser->command, "exit") == 0)
+	{
+		builtin_exit(parser, env);
+		printf("exit: %d\n",global_var);
+		// return ;
 	}
 	pid = fork();
 	if (pid == -1)
@@ -330,19 +320,48 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		if (strcmp(parser->command, "echo") == 0)
 			builtin_echo(parser, *env);
 		else if (strcmp(parser->command, "env") == 0)
-			builtin_env(parser, env);
+			global_var = builtin_env(parser, env);
 		else if (strcmp(parser->command, "pwd") == 0)
-			builtin_pwd(parser, env); 
+		{
+			printf("here\n");
+			
+			global_var = builtin_pwd(parser, env);
+			printf("global var :%d\n",global_var); 
+		}
+		// else if (strcmp(parser->command, "exit") == 0)
+		// {
+		// 	builtin_exit(parser, env);
+		// 	printf("exit: %d\n",global_var);
+		// 	// return ;
+		// }
 		else if (strcmp(parser->command, "export") == 0)
 			global_var = builtin_export(parser, env);
 		printf("in child :%d\n",global_var);
 		// Exit the child process after execution
-		exit(EXIT_SUCCESS);
+		exit(global_var);
+		// t_parser list=create_parser_list();
+		// char *inputs[]={itoa(global_var), NULL};
+		// list.input = inputs;
+		// printf("the input: %s\n",itoa(global_var));
+		// exit(&list, env);
 	}
 	else // Parent process
 	{
 		waitpid(pid, &status, 0);
-		global_var = status;
+        if (WIFEXITED(status)) 
+            global_var = WEXITSTATUS(status);
+		if (strcmp(parser->command, "exit") == 0)
+		{
+			printf("exit: %d\n",global_var);
+			parser->input = add_string_to_2d_array(parser->input, itoa(global_var));
+			printf("exit nb: %s\n",parser->input[0]);
+			builtin_exit(parser, env);
+			// return ;
+		}
+		// waitpid(pid, &status, 0);
+		// if (WIFEXITED(status)) 
+        //     global_var = WEXITSTATUS(status);
+		//  global_var = status;
 		printf("var: %d\n",global_var);
 		if (f.fd_2 != STDOUT_FILENO)
 			close(f.fd_2);

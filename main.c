@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 22:24:36 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/23 22:53:20 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,11 @@ int	main(int argc, char **argv, char **envp)
 		// Print parser nodes (for debugging)
 		printf("\nParsed commands:\n");
 		print_parser(parser);
+		free_token_list(token_list);
 
 		// Execute the parsed command
 		cmds_exec(parser, my_env);
 		free(line);
-		free_token_list(token_list);
 		free_parser(parser);
 	}
 	

@@ -37,7 +37,7 @@ void pv_fill_values(t_context *ctx)
 {
     ctx->total_size += (ctx->dollar - ctx->start);
     ctx->var_name = ctx->dollar + 1;
-    ctx->end_of_var = strpbrk(ctx->var_name, " '$?1234567890+\"");
+    ctx->end_of_var = strpbrk(ctx->var_name, " /'$?1234567890+\"");
     ctx->temp_char = '\0';
     ctx->first_char = *(ctx->var_name);
 }

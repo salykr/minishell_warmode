@@ -45,7 +45,11 @@ int is_executable_2(t_env env, char *cmd)
 
     cmd_1 = get_path_1(env,cmd);    
     if (access(cmd_1, X_OK)==0)
+    {
+        free(cmd_1);
         return 1;
+    }
+    free(cmd_1);
     return 0;
 }
 

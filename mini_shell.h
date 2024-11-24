@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/18 17:06:25 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/23 22:35:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ typedef struct s_context{
 void						ctrl_c_press(int signal_nb);
 int							ft_isprintable(char c);
 void						ft_redirection(t_parser *node);
-void builtin_pwd(t_parser *parser, t_env *env);
+int builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
 void						builtin_echo(t_parser *list, t_env env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
