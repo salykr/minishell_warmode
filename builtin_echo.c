@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/11/24 17:11:20 by root             ###   ########.fr       */
+/*   Updated: 2024/11/24 19:56:26 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	check_balanced_quotes(const char *input)
 	{
 		if (input[i] == '\\')
 		{
-			if (input[i+1] != '\'')
+			if (input[i + 1] != '\'')
 				i++;
 		}
 		else if (input[i] == '\'' || input[i] == '\"')
@@ -119,7 +119,7 @@ void	builtin_echo_helper(char **input, char quote, t_env env)
 		(*input)++;
 }
 
-void	builtin_echo(t_parser *list, t_env env)
+void	builtin_echo(t_parser *list, t_env *env)
 {
 	int		i;
 	char	*arg;
@@ -141,17 +141,17 @@ void	builtin_echo(t_parser *list, t_env env)
 			{
 				char quote = *arg;
 				arg++;
-				builtin_echo_helper(&arg, quote, env);
+				builtin_echo_helper(&arg, quote, *env);
 			}
 			else if (*arg == '$')
 			{
-				if (*(arg+1) == '\'' || *(arg +1) =='\"')
+				if (*(arg + 1) == '\'' || *(arg + 1) =='\"')
 				{
 					arg = remove_quotes(arg);
 					printf("%s",arg+1);
 					break;
 				}
-				print_expanded_input(&arg, false, env);
+				print_expanded_input(&arg, false, *env);
 			}
 			else
 			{
@@ -173,7 +173,5 @@ void	builtin_echo(t_parser *list, t_env env)
 /*
     Things to test again:
     ---------------------
-    echo "-n" Hi (the -n should work in this case but instead it's printing -n Hi/ same with echo '-n' Hi)
-    echo $?$ (is giving $0 instead of 0$)
     echo \-n hi (-n should work)
 */
