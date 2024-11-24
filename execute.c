@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/18 18:00:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/24 19:53:50 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,7 +328,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		}
 		// Execute the built-in command
 		if (strcmp(parser->command, "echo") == 0)
-			builtin_echo(parser, *env);
+			builtin_echo(parser, env);
 		else if (strcmp(parser->command, "env") == 0)
 			builtin_env(parser, env);
 		else if (strcmp(parser->command, "pwd") == 0)
