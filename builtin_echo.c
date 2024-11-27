@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/11/27 15:27:33 by root             ###   ########.fr       */
+/*   Updated: 2024/11/27 15:40:09 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,7 @@ int	builtin_echo(t_parser *list, t_env *env)
 				{
 					arg = remove_quotes(arg);
 					printf("%s",arg+1);
+					free(arg);
 					break;
 				}
 				print_expanded_input(&arg, false, *env);

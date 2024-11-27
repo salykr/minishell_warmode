@@ -55,27 +55,31 @@ void add_parser_node(t_parser **head, t_parser *new_node)
 
 char *remove_quotes(const char *str)
 {
-    char *result;
-    int j;
-    int i;
-    bool in_single = false;
-    bool in_double = false;
+	char	*result;
+	int		j;
+	int		i;
+	bool	in_single = false;
+	bool	in_double = false;
 
-    result = malloc(ft_strlen(str) + 1);
-    j = 0;
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '\'' && !in_double)
-            in_single = !in_single;
-        else if (str[i] == '"' && !in_single)
-            in_double = !in_double;
-        else
-            result[j++] = str[i];
-        i++;
-    }
-    result[j] = '\0';
-    return result;
+	if (!str)
+		return (NULL);
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return NULL;
+	j = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (str[i] == '"' && !in_single)
+			in_double = !in_double;
+		else
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	return (result);
 }
 
 bool count_dash(char *str)
