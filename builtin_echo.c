@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/11/24 19:56:26 by root             ###   ########.fr       */
+/*   Updated: 2024/11/27 15:40:09 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	is_special_char(char c)
 
 void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 {
+	char	*expanded;
 	if (**input == '$' && !inside_single_quotes)
 	{
 		(*input)++;
@@ -76,7 +77,7 @@ void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		else
 		{
 			(*input)--;  // Go back to the '$'
-			char *expanded = process_variable(*input, &env);
+			expanded = process_variable(*input, &env);
 			if (expanded)
 			{
 				printf("%s", expanded);  // Print the expanded variable value
@@ -119,27 +120,28 @@ void	builtin_echo_helper(char **input, char quote, t_env env)
 		(*input)++;
 }
 
-void	builtin_echo(t_parser *list, t_env *env)
+int	builtin_echo(t_parser *list, t_env *env)
 {
 	int		i;
 	char	*arg;
+	char	quote;
 
 	i = 0;
 	if (!list->input[i])
-		return;
+		return (1);
 	while (list->input[i])
 	{
 		if (!check_balanced_quotes(list->input[i]))
 		{
 			printf("Error: Unbalanced quotes in argument %d.\n", i + 1);
-			return;
+			return (1);
 		}
 		arg = list->input[i];
 		while (*arg)
 		{
 			if (*arg == '\'' || *arg == '\"')
 			{
-				char quote = *arg;
+				quote = *arg;
 				arg++;
 				builtin_echo_helper(&arg, quote, *env);
 			}
@@ -149,6 +151,7 @@ void	builtin_echo(t_parser *list, t_env *env)
 				{
 					arg = remove_quotes(arg);
 					printf("%s",arg+1);
+					free(arg);
 					break;
 				}
 				print_expanded_input(&arg, false, *env);
@@ -166,7 +169,8 @@ void	builtin_echo(t_parser *list, t_env *env)
 		i++;
 	}
 	if (list->operations == NULL)
-		printf("\n");    
+		printf("\n");   
+	return (0); 
 } 
 
 
