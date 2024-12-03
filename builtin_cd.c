@@ -3,49 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 23:06:28 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/28 23:20:48 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-
-
-char *expand_path(t_env *env, char *path)
+char	*expand_path(t_env *env, char *path)
 {
-    char *env_var;
-    size_t skip_len;
+	char *env_var;
+	size_t skip_len;
 	char *full_path;
 
 	env_var = NULL;
 	skip_len = 0;
-    if (ft_strncmp(path, "$PWD", 4) == 0)
-    {
-        env_var = ft_getenv(env, "PWD");
-        skip_len = 4;
-    }
-    else if (ft_strncmp(path, "$HOME", 5) == 0)
-    {
-        env_var = ft_getenv(env, "HOME");
-        skip_len = 5;
-    }
-    if (env_var == NULL)
-        return (NULL);
-    full_path = malloc(ft_strlen(env_var) + ft_strlen(path + skip_len) + 1);
-    if (full_path == NULL)
-        return (NULL);
-    ft_strcpy(full_path, env_var);
-    ft_strcat(full_path, path + skip_len);
-    return (full_path);
+	if (ft_strncmp(path, "$PWD", 4) == 0)
+	{
+		env_var = ft_getenv(env, "PWD");
+		skip_len = 4;
+	}
+	else if (ft_strncmp(path, "$HOME", 5) == 0)
+	{
+		env_var = ft_getenv(env, "HOME");
+		skip_len = 5;
+	}
+	if (env_var == NULL)
+		return (NULL);
+	full_path = malloc(ft_strlen(env_var) + ft_strlen(path + skip_len) + 1);
+	if (full_path == NULL)
+		return (NULL);
+	ft_strcpy(full_path, env_var);
+	ft_strcat(full_path, path + skip_len);
+	return (full_path);
 }
 
-
-
-
-int is_home_input(char **input)
+int	is_home_input(char **input)
 {
 	return (
 		input == NULL || ft_strcmp(*input, "") == 0 ||
@@ -54,11 +49,11 @@ int is_home_input(char **input)
 	);
 }
 
-
-
-int replace_with_env_var(char ***input, t_env *env, char *var_name, const char *error_msg)
+int	replace_with_env_var(char ***input, t_env *env, char *var_name, const char *error_msg)
 {
-	char *env_value = ft_getenv(env, var_name);
+	char	*env_value;
+
+	env_value = ft_getenv(env, var_name);
 	if (env_value == NULL)
 	{
 		printf("%s", error_msg);
@@ -67,8 +62,6 @@ int replace_with_env_var(char ***input, t_env *env, char *var_name, const char *
 	replace_with_str(input, env_value);
 	return (1);
 }
-
-
 
 int	handle_directory_input(t_parser *list, t_env *myenv)
 {

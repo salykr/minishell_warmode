@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/27 15:24:41 by root             ###   ########.fr       */
+/*   Updated: 2024/11/28 23:17:12 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,6 @@ int							ft_isprintable(char c);
 void						ft_redirection(t_parser *node);
 void builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(char **input, t_env *myenv);
-int						builtin_echo(t_parser *list, t_env *env);
 // void builtin_echo_helper(char **input, char quote, t_env env);
 int						add_or_update_to_env(char *name, char *value,
 								t_env *env);
@@ -332,4 +331,10 @@ void						update_pwd(t_env *myenv);
 void						replace_with_str(char ***array, char *new_str);
 int							is_oldpwd_input(const char *input);
 char *remove_quotes_with_free(char *str);
+
+//echo
+int						builtin_echo(t_parser *list, t_env *env);
+void					builtin_echo_helper(char **input, char quote, t_env env);
+void    				print_expanded_input(char **input, bool inside_single_quotes, t_env env);
+
 #endif

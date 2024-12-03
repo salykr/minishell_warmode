@@ -49,7 +49,8 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_export_helper_6.c \
                       $(SRC_DIR)builtin_export_helper_7.c \
                       $(SRC_DIR)builtin_export_helper_utils.c\
-                      $(SRC_DIR)printing.c
+                      $(SRC_DIR)printing.c \
+                      $(SRC_DIR)builtin_echo_helper.c
                  
 OBJS                = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 
