@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/05 13:27:33 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:39:32 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,10 @@ int	builtin_echo(t_parser *list, t_env *env)
 	int	i;
 
 	if (!list->input || !list->input[0])
+    {
+        printf("\n");
 		return (1);
+    }
 	i = 0;
 	while (list->input[i])
 	{
@@ -115,6 +118,7 @@ int	builtin_echo(t_parser *list, t_env *env)
     echo \-n hi (-n should work)
 	echo $USER$var\$USER$USER\$USERtest$USER
 	echo "$HO"ME
+    echo "'$HO''ME'"
 */
 
 //119 and 173
