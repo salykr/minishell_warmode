@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/03 10:02:20 by root             ###   ########.fr       */
+/*   Updated: 2024/12/05 13:27:33 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,13 @@ bool	check_balanced_quotes(const char *input)
 	return (quote == '\0');
 }
 
-void handle_variable_expansion(char **arg, t_env *env)
+void	handle_variable_expansion(char **arg, t_env *env)
 {
+	char	*temp;
+
 	if ((*arg)[1] == '\'' || (*arg)[1] == '\"')
 	{
-		char *temp = remove_quotes(*arg);
+		temp = remove_quotes(*arg);
 		printf("%s", temp + 1);
 		free(temp);
 		*arg += strlen(*arg); // Move to the end
@@ -51,9 +53,9 @@ void handle_variable_expansion(char **arg, t_env *env)
 		print_expanded_input(arg, false, *env);
 }
 
-void process_argument(char *arg, t_env *env)
+void	process_argument(char *arg, t_env *env)
 {
-	char quote;
+	char	quote;
 
 	while (*arg)
 	{
@@ -103,7 +105,6 @@ int	builtin_echo(t_parser *list, t_env *env)
 		printf("\n");
 	return (0);
 }
-
 
 /*
     Things to test again:

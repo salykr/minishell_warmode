@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/11/28 23:52:02 by root             ###   ########.fr       */
+/*   Updated: 2024/12/05 13:29:09 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		}
 		else
 		{
-			(*input)--;  // Go back to the '$'
+			(*input)--;// Go back to the '$'
 			expanded = process_variable(*input, &env);
 			if (expanded)
 			{
@@ -63,7 +63,7 @@ void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 	}
 }
 
-void printable(char **input)
+void	printable(char **input)
 {
 	if (**input == '\"' || **input == '\\')
 		printf("%c", **input);
