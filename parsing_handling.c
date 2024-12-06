@@ -70,7 +70,10 @@ int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
     temp_value= remove_quotes(tokens->value);
     if (temp_value == NULL)
         return -1;
-    value = expand_variable(temp_value, env);
+    if(curr->command == NULL)
+        value = expand_variable(temp_value, env);
+    else
+        value = ft_strdup(temp_value);
     free(temp_value);  
     // if (value == NULL || value[0] == '\0')
     //     return 1;
@@ -93,12 +96,12 @@ int handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 {
     if (tokens->type == T_HEREDOC && (tokens->next->type == T_ENV || tokens->next->type == T_IDENTIFIER))
     {
-        curr->delimeter = tokens->next->value;
+        curr->delimeter = ft_strdup(tokens->next->value);
         add_to_array(curr, 1);
     }
     else if (tokens->type == T_INPUT && tokens->next->type == T_IDENTIFIER)
     {
-        curr->infile = tokens->next->value;
+        curr->infile = ft_strdup(tokens->next->value);
         add_to_array(curr, 3);
     }
     else if (tokens->type == T_OUTPUT && tokens->next->type == T_IDENTIFIER)
@@ -128,5 +131,6 @@ int handle_parsing_redirection(t_input *tokens, t_parser *curr)
             }
             else
                 handle_parsing_redirection_helper(tokens,curr);
+    // *tokens = (*tokens)->next->next;
     return 0;
 }

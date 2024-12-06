@@ -125,12 +125,15 @@ int handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
         if  (return_value == 1 || return_value == -1)
             return return_value;
         temp_value = remove_quotes(tokens->value);
-        value = expand_variable(temp_value, env);
+        if(curr -> command == NULL)
+            value = process_variable(temp_value, &env);
+        else
+            value = ft_strdup(temp_value);
         free(temp_value);
         if (value == NULL || value[0] == '\0')
             return 1;
         else if ((is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || 
-                    ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || 
+              ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || 
                     ft_strncmp(value, "unset", 5) == 0) && (curr->command == NULL && !is_all_spaces(value)))
                        curr->command = value;
         else if(handle_parsing_identifier_helper(tokens,curr,value) < 0)

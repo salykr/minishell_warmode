@@ -25,6 +25,7 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)token_handling_2.c \
                       $(SRC_DIR)token_utils.c \
                       $(SRC_DIR)builtin_echo.c \
+                      $(SRC_DIR)builtin_echo_helper.c \
                       $(SRC_DIR)builtin_pwd.c \
                       $(SRC_DIR)builtin_exit.c \
                       $(SRC_DIR)builtin_exit_helper.c \
@@ -36,6 +37,9 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_cd.c \
                       $(SRC_DIR)builtin_cd_helper.c \
                       $(SRC_DIR)execute.c \
+                      $(SRC_DIR)execute_helpers_0.c \
+                      $(SRC_DIR)execute_helpers_1.c \
+                      $(SRC_DIR)execute_helpers_2.c \
                       $(SRC_DIR)signals.c\
                       $(SRC_DIR)main.c \
                       $(SRC_DIR)builtin_export_helper_0.c \

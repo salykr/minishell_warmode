@@ -28,8 +28,6 @@ char *compare_input_with_str(t_parser *list, const char *str)
     return (NULL);
 }
 
-
-
 void update_SHLVL(t_env *myenv)
 {
     char *prev_level;
@@ -98,7 +96,7 @@ int builtin_env(t_parser *list, t_env *myenv)
     if (mismatch_str != NULL)
     {
         printf("env: '%s':  No such file or directory\n", mismatch_str);
-        return (-1);
+        return (1);
     }
     if (list->input == NULL)
     {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/12 22:24:36 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/05 12:50:13 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,6 @@ void	ft_free_env(t_env **my_env)
 	free(*my_env);
 	*my_env = NULL;
 }
-
-
-
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -77,7 +74,6 @@ int	main(int argc, char **argv, char **envp)
 			free_token_list(token_list); // Free token list
 			continue ;
 		}
-
 		value = parse_tokens(&parser, token_list, *my_env);
 		// Check if parser is valid
 		if (!parser || !parser->command || value == -1)
@@ -88,18 +84,15 @@ int	main(int argc, char **argv, char **envp)
 			free_parser(parser);
 			continue ;
 		}
-
 		// Print parser nodes (for debugging)
 		printf("\nParsed commands:\n");
 		print_parser(parser);
-
+		free_token_list(token_list);
 		// Execute the parsed command
 		cmds_exec(parser, my_env);
 		free(line);
-		free_token_list(token_list);
 		free_parser(parser);
 	}
-	
 	ft_free_env(&my_env);
 	return (EXIT_SUCCESS);
 }

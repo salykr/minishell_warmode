@@ -17,8 +17,8 @@ void update_pwd(t_env *myenv)
 {
     char cwd[2048];
     char *oldpwd;
-    char* value;
-
+     char* value;
+    printf("in update pwd\n");
     oldpwd = ft_getenv(myenv, "PWD");
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
@@ -28,22 +28,27 @@ void update_pwd(t_env *myenv)
     if (oldpwd)
     {
         value = ft_strdup(oldpwd);
-        add_or_update_to_env("OLDPWD",value , myenv);
-        free(value);
+        add_or_update_to_env(strdup("OLDPWD"),value , myenv);
+        //  free(value);
     }
     value = ft_strdup(cwd);
-    add_or_update_to_env("PWD", value, myenv);
-    free(value);
+    add_or_update_to_env(ft_strdup("PWD"), value, myenv);
+    //  free(value);
 }
+// cd
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
-	if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
+    printf("input : %s\n",list->input[0]);
+    if(list->input != NULL && list->input[0][0] == '\0')
+        chdir(".");
+	else if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
 	{
+        printf("cmd_is_dir: %d\n", cmd_is_dir(list->input[0]));
+        printf("chdir: %d\n", chdir(list->input[0]));
 		printf("path: %s\n",list->input[0]);
-		perror("cd");
-		global_var = 1;
-		return (-1);
+		perror("cd:)");
+		return (1);
 	}
 	update_pwd(myenv);
 	return (0);

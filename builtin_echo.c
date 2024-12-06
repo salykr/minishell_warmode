@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/11/27 15:40:09 by root             ###   ########.fr       */
+/*   Updated: 2024/12/05 12:01:52 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,144 +38,91 @@ bool	check_balanced_quotes(const char *input)
 	return (quote == '\0');
 }
 
-int	is_special_char(char c)
+void handle_variable_expansion(char **arg, t_env *env)
 {
-	return (c == '$' || c == ':' || c == '=' || c == '+');
+	if ((*arg)[1] == '\'' || (*arg)[1] == '\"')
+	{
+		char *temp = remove_quotes(*arg);
+		printf("%s", temp + 1);
+		free(temp);
+		*arg += strlen(*arg); // Move to the end
+	}
+	else
+		print_expanded_input(arg, false, *env);
 }
 
-void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
+void process_argument(char *arg, t_env *env)
 {
-	char	*expanded;
-	if (**input == '$' && !inside_single_quotes)
+	char quote;
+
+	while (*arg)
 	{
-		(*input)++;
-		if (**input == '\0' || **input == '\"' || **input == ' ')
+		if (*arg == '\'' || *arg == '\"')
 		{
-			ft_putchar_fd('$', 1);
-			return;
+			quote = *arg++;
+			builtin_echo_helper(&arg, quote, *env);
 		}
-		else if (**input >= '0' && **input <= '9')
-		{
-			(*input)++;
-			while (**input && (isalnum(**input) || is_special_char(**input)))
-			{
-				ft_putchar_fd(**input, 1);
-				(*input)++;
-			}
-			return;
-		}
-		else if (is_special_char(**input))
-		{
-			ft_putchar_fd('$', 1);
-			while (**input && (isalnum(**input) || is_special_char(**input)))
-			{
-				ft_putchar_fd(**input, 1);
-				(*input)++;
-			}
-			return;
-		}
+		else if (*arg == '$')
+			handle_variable_expansion(&arg, env);
 		else
 		{
-			(*input)--;  // Go back to the '$'
-			expanded = process_variable(*input, &env);
-			if (expanded)
-			{
-				printf("%s", expanded);  // Print the expanded variable value
-				free(expanded);  // Free the expanded string
-			}
-			(*input) += strlen(*input);  // Move the pointer past the current input
-			return;
+			if (*arg == '\\')
+				arg++;
+			printf("%c", *arg++);
 		}
 	}
 }
 
-void	builtin_echo_helper(char **input, char quote, t_env env)
+int	handle_echo_argument(char *arg, t_env *env)
 {
-	bool	inside_single_quotes;
-
-	inside_single_quotes = (quote == '\'');
-	while (**input && **input != quote)
+	if (!check_balanced_quotes(arg))
 	{
-		if (**input == '\\' && !inside_single_quotes)
-		{
-			(*input)++;
-			if (**input == '\"' || **input == '\\')
-				printf("%c", **input);
-			else
-				printf("\\%c", **input);
-			(*input)++;
-		}
-		else if (**input == '$' && !inside_single_quotes)
-		{
-			print_expanded_input(input, inside_single_quotes, env);
-			continue;
-		}
-		else
-		{
-			printf("%c", **input);
-			(*input)++;
-		}
+		printf("Error: Unbalanced quotes in argument.\n");
+		return (0);
 	}
-	if (**input == quote)
-		(*input)++;
+	// if ()
+	// {
+	// 	printf("Error.\n");
+	// 	return (0);
+	// }
+	process_argument(arg, env);
+	return (1);
 }
 
 int	builtin_echo(t_parser *list, t_env *env)
 {
-	int		i;
-	char	*arg;
-	char	quote;
+	int	i;
 
-	i = 0;
-	if (!list->input[i])
+	if (!list->input || !list->input[0])
+	{
+		printf("\n");
 		return (1);
+	}
+	i = 0;
 	while (list->input[i])
 	{
-		if (!check_balanced_quotes(list->input[i]))
-		{
-			printf("Error: Unbalanced quotes in argument %d.\n", i + 1);
+		if (!handle_echo_argument(list->input[i], env))
 			return (1);
-		}
-		arg = list->input[i];
-		while (*arg)
-		{
-			if (*arg == '\'' || *arg == '\"')
-			{
-				quote = *arg;
-				arg++;
-				builtin_echo_helper(&arg, quote, *env);
-			}
-			else if (*arg == '$')
-			{
-				if (*(arg + 1) == '\'' || *(arg + 1) =='\"')
-				{
-					arg = remove_quotes(arg);
-					printf("%s",arg+1);
-					free(arg);
-					break;
-				}
-				print_expanded_input(&arg, false, *env);
-			}
-			else
-			{
-				if (*arg == '\\')
-					arg++;
-				printf("%c", *arg);
-				arg++;
-			}
-		}
 		if (list->input[i + 1])
 			printf(" ");
 		i++;
 	}
-	if (list->operations == NULL)
-		printf("\n");   
-	return (0); 
-} 
+	if (!list->operations)
+		printf("\n");
+	return (0);
+}
 
 
 /*
     Things to test again:
     ---------------------
+	echo my shit terminal is [$TERM]
+	echo $HOME4 (should give nothing)
+	echo $HOME% (should return /root%)
     echo \-n hi (-n should work)
+	echo $USER$var\$USER$USER\$USERtest$USER
+	echo "$HO"ME
+	echo "'$HO''ME'"
 */
+
+//119 and 173

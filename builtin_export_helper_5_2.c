@@ -37,7 +37,15 @@ void pv_fill_values(t_context *ctx)
 {
     ctx->total_size += (ctx->dollar - ctx->start);
     ctx->var_name = ctx->dollar + 1;
-    ctx->end_of_var = strpbrk(ctx->var_name, " '$?1234567890+\"");
+    ctx->end_of_var = strpbrk(ctx->var_name, " ./'\"$?1234567890+\\");
+    if(ctx->end_of_var != NULL && (strcmp(ctx->end_of_var ,"\"")|| strcmp(ctx->end_of_var ,"\"")))
+        ctx->end_of_var = ctx->end_of_var + 1;
+    // printf("here: %s\n", ctx->end_of_var);
+    if (ctx->end_of_var != NULL && ft_isdigit((unsigned char)*(ctx->end_of_var)))
+    {
+        if(strcmp(ctx->end_of_var - 1,"$"))
+            ctx->end_of_var = strpbrk(ctx->var_name, " /'$?+\"");
+    }
     ctx->temp_char = '\0';
     ctx->first_char = *(ctx->var_name);
 }
