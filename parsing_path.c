@@ -39,11 +39,11 @@ int is_executable(char *cmd)
     free(path_copy);
     return (0);
 }
-int is_executable_2(t_env env, char *cmd)
+int is_executable_PWD(t_env env, char *cmd)
 {
     char *cmd_1;
 
-    cmd_1 = get_path_1(env,cmd);    
+    cmd_1 = get_path_PWD(env,cmd);    
     if (access(cmd_1, X_OK)==0)
     {
         free(cmd_1);
@@ -57,7 +57,7 @@ int handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env)
 {
 
     if (curr->command == NULL && 
-        (is_executable(tokens->value) || is_executable_2(env, tokens->value)))
+        (is_executable(tokens->value) || is_executable_PWD(env, tokens->value)))
     {
         curr->command = ft_strdup(tokens->value);
         if (curr->command == NULL)

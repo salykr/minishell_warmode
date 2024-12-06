@@ -35,13 +35,17 @@ void update_pwd(t_env *myenv)
     add_or_update_to_env(ft_strdup("PWD"), value, myenv);
     //  free(value);
 }
+// cd
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
+    printf("input : %s\n",list->input[0]);
     if(list->input != NULL && list->input[0][0] == '\0')
         chdir(".");
 	else if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
 	{
+        printf("cmd_is_dir: %d\n", cmd_is_dir(list->input[0]));
+        printf("chdir: %d\n", chdir(list->input[0]));
 		printf("path: %s\n",list->input[0]);
 		perror("cd:)");
 		return (1);

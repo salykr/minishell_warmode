@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2024/11/11 15:26:43 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/24 17:55:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,37 +67,35 @@ char *expand_variable(const char *input ,t_env env)
     return result;
 }
 
-int parse_tokens_helper(t_input *tokens, t_parser *curr,t_env env)
+int parse_tokens_helper(t_input **tokens, t_parser *curr,t_env env)
 {
-    if (tokens->type == T_IDENTIFIER)
+    if ((*tokens)->type == T_IDENTIFIER)
     {  
-        if (handle_parsing_identifier(tokens, curr, env) < 0)
+        if (handle_parsing_identifier(*tokens, curr, env) < 0)
             return -1;
     }
-    else if (tokens->type == T_PATH)
-        return(handle_parsing_path(tokens, curr, env));
-    else if (tokens->type == T_ARGUMENT)
+    else if ((*tokens)->type == T_PATH)
+        return(handle_parsing_path(*tokens, curr, env));
+    else if ((*tokens)->type == T_ARGUMENT)
     {
-        if (handle_parsing_argument(tokens, curr) < 0)
+        if (handle_parsing_argument(*tokens, curr) < 0)
             return -1;
     }
-     else if (tokens->type == T_TILDE)
-            curr->input = add_string_to_2d_array(curr->input, tokens->value);
-    else if (tokens->type == T_ENV || tokens->type == T_NUMBER || tokens->type == T_PERIODS || tokens->type == T_QUOTE)
+     else if ((*tokens)->type == T_TILDE)
+            curr->input = add_string_to_2d_array(curr->input, (*tokens)->value);
+    else if ((*tokens)->type == T_ENV || (*tokens)->type == T_NUMBER || (*tokens)->type == T_PERIODS || (*tokens)->type == T_QUOTE)
     {
-        if (handle_parsing_quotes(tokens, curr,env) < 0)
+        if (handle_parsing_quotes(*tokens, curr,env) < 0)
             return -1;
     }
-    else if (tokens->type == T_APPEND || tokens->type == T_HEREDOC || tokens->type == T_OUTPUT || tokens->type == T_INPUT)
+    else if ((*tokens)->type == T_APPEND || (*tokens)->type == T_HEREDOC || (*tokens)->type == T_OUTPUT || (*tokens)->type == T_INPUT)
     {
-        if (handle_parsing_redirection(tokens, curr) < 0)
+        if (handle_parsing_redirection(*tokens, curr) < 0)
             return -1;
+        *tokens = (*tokens)->next;
     }
     return 0;
 }
-
-
-
 
 int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
 {
@@ -120,7 +118,7 @@ int parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
             add_parser_node(parser, create_parser());
             curr = curr->next;
         }
-        else if (parse_tokens_helper(tokens,curr,env)< 0)
+        else if (parse_tokens_helper(&tokens,curr,env)< 0)
            return -1;
         tokens = tokens->next;
     }

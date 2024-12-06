@@ -22,7 +22,7 @@ void free_input(char **input_array)
 		return;
 	while (*ptr)
 	{
-		printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
+		// printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
 		free(*ptr);
 		ptr++;
 	}
@@ -67,9 +67,12 @@ void free_parser(t_parser *parser)
 
 	while (parser)
 	{
+		// printf("freeing parser\n\n");
 		next = parser->next;
 		if (parser->input)
 			free_input(parser->input);
+		if (parser->delimeter)
+			free(parser->delimeter);
 		if (parser->operations)
 			free_operations(parser->operations);
 		if (parser->outfile)

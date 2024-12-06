@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/24 14:52:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/05 12:57:12 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-
-
 
 char *expand_path(t_env *env, char *path)
 {
@@ -43,8 +41,6 @@ char *expand_path(t_env *env, char *path)
 }
 
 
-
-
 int is_home_input(char **input)
 {
 	return (
@@ -53,8 +49,6 @@ int is_home_input(char **input)
 		ft_strcmp(*input, "~/") == 0 || ft_strcmp(*input, "--") == 0
 	);
 }
-
-
 
 int replace_with_env_var(char ***input, t_env *env, char *var_name)
 {
@@ -74,7 +68,9 @@ int replace_with_env_var(char ***input, t_env *env, char *var_name)
 int	handle_directory_input(t_parser *list, t_env *myenv)
 {
 	char *val;
-	 if (is_home_input(list->input))
+
+	val = NULL;
+	if (is_home_input(list->input))
 	{
 		if (!replace_with_env_var(&list->input, myenv, "HOME"))
 			return (-1);
@@ -100,7 +96,8 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
 	}
-	free(val);
+	if (val != NULL)
+		free(val);
 	return (0);
 }
 //-- oldpwd
@@ -129,3 +126,20 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 	print_2d_array(list->input);
 	return (change_directory_and_update(list, myenv));
 }
+
+/*
+in this case:
+Mkdir -p a/b/c/d
+Cd a/b/c/d
+
+Rm -rf ../../../../a
+Pwd
+Cd ..
+Pwd 
+Cd ..
+Echo $OLDPWD
+Echo $PWD
+Cd ..
+
+how is the folder becoming ..? evenm tho th prev one is deleted?
+*/
