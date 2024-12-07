@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/12/05 12:04:40 by root             ###   ########.fr       */
+/*   Updated: 2024/12/07 10:27:01 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,17 @@ int	is_special_char(char c)
 	return (c == '$' || c == ':' || c == '=' || c == '+');
 }
 
-void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
+void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 {
 	char	*expanded;
+
 	if (**input == '$' && !inside_single_quotes)
 	{
 		(*input)++;
 		if (**input == '\0' || **input == '\"' || **input == ' ')
 		{
 			ft_putchar_fd('$', 1);
-			return;
+			return ;
 		}
 		else if (**input >= '0' && **input <= '9')
 		{
@@ -36,7 +37,7 @@ void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 				ft_putchar_fd(**input, 1);
 				(*input)++;
 			}
-			return;
+			return ;
 		}
 		else if (is_special_char(**input))
 		{
@@ -46,24 +47,24 @@ void    print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 				ft_putchar_fd(**input, 1);
 				(*input)++;
 			}
-			return;
+			return ;
 		}
 		else
 		{
-			(*input)--;  // Go back to the '$'
+			(*input)--;
 			expanded = process_variable(*input, &env);
 			if (expanded)
 			{
-				printf("%s", expanded);  // Print the expanded variable value
-				free(expanded);  // Free the expanded string
+				printf("%s", expanded);
+				free(expanded);
 			}
-			(*input) += strlen(*input);  // Move the pointer past the current input
-			return;
+			(*input) += strlen(*input);
+			return ;
 		}
 	}
 }
 
-void printable(char **input)
+void	printable(char **input)
 {
 	if (**input == '\"' || **input == '\\')
 		printf("%c", **input);
@@ -87,7 +88,7 @@ void	builtin_echo_helper(char **input, char quote, t_env env)
 		else if (**input == '$' && !inside_single_quotes)
 		{
 			print_expanded_input(input, inside_single_quotes, env);
-			continue;
+			continue ;
 		}
 		else
 		{
