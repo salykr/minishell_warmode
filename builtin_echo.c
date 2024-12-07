@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/07 10:27:35 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/07 13:03:47 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,11 @@ int	builtin_echo(t_parser *list, t_env *env)
 {
 	int	i;
 
-	if (!list->input || !list->input[0])
+	if (!list->input)
 	{
-		printf("\n");
-		return (1);
+		if (!list->operations)
+			printf("\n");
+		return (0);
 	}
 	i = 0;
 	while (list->input[i])
@@ -106,10 +107,9 @@ int	builtin_echo(t_parser *list, t_env *env)
     Things to test again:
     ---------------------
 	echo my shit terminal is [$TERM]
-	echo $HOME4 (should give nothing)
 	echo $HOME% (should return /root%)
     echo \-n hi (-n should work)
 	echo $USER$var\$USER$USER\$USERtest$USER
-	echo "$HO"ME
 	echo "'$HO''ME'"
+	echo $?$
 */

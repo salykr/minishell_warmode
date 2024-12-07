@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/12/07 10:53:00 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:12:44 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		(*input)++;
 		if (**input == '\0' || **input == '\"' || **input == ' ')
 		{
-			ft_putchar_fd('$', 1);
+			printf("$");
 			return ;
 		}
 		else if (**input >= '0' && **input <= '9')
@@ -34,17 +34,17 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 			(*input)++;
 			while (**input && (isalnum(**input) || is_special_char(**input)))
 			{
-				ft_putchar_fd(**input, 1);
+				printf("%c", **input);
 				(*input)++;
 			}
 			return ;
 		}
 		else if (is_special_char(**input))
 		{
-			ft_putchar_fd('$', 1);
+			printf("$");
 			while (**input && (isalnum(**input) || is_special_char(**input)))
 			{
-				ft_putchar_fd(**input, 1);
+				printf("%c", **input);
 				(*input)++;
 			}
 			return ;
