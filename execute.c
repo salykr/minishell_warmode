@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/06 13:10:46 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/08 22:44:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	char	**args;
 	int		heredoc_fd;
 	pid_t	pid;
+		printf("parent pid %d\n",getpid());
 
 	args = initialize_execution(&heredoc_fd, parser, env, &cmd_path);
 	pid = fork();
@@ -26,8 +27,9 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	if (pid == 0)
 	{
 		manage_input_output(heredoc_fd, &f);
-		execve(cmd_path, args, env->env);
-		perror("execve failed");
+		if(ft_getenv(env, "PATH")!=NULL)
+			execve(cmd_path, args, env->env);
+		perror("Error");
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -42,11 +44,13 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 {
 	pid_t	pid;
 	int heredoc_fd;
+		printf("parent pid %d\n",getpid());
 
 	initialize_heredoc(&heredoc_fd, parser);
 	//&&(strcmp(parser->command, "exit") == 0 || strcmp(parser->command, "cd") == 0)
 	if (parser -> next == NULL)
 		buitlin(parser, env);//ll exit
+	
 	else
 	{
 		pid = fork();
@@ -60,6 +64,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 		}
 		else // Parent process
 			handle_child_exit(pid, &heredoc_fd, &f, parser);
+			
 	}
 }
 

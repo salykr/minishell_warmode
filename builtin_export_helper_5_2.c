@@ -33,18 +33,34 @@ int pv_env_variable(t_context *ctx, char *env_value)
     return 1;  // Return 1 to indicate success
 }
 
+bool ft_special_char(char c) {
+    // List of special characters
+    const char special_chars[] = "%[],.:-+=/{}/@#$!?\"'";
+    int i = 0;
+
+    // Use a while loop to check each character
+    while (special_chars[i] != '\0') {
+        if (c == special_chars[i]) {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
 void pv_fill_values(t_context *ctx)
 {
     ctx->total_size += (ctx->dollar - ctx->start);
     ctx->var_name = ctx->dollar + 1;
-    ctx->end_of_var = strpbrk(ctx->var_name, " ./'\"$?1234567890+\\");
-    if(ctx->end_of_var != NULL && (strcmp(ctx->end_of_var ,"\"")|| strcmp(ctx->end_of_var ,"\"")))
+    ctx->end_of_var = strpbrk(ctx->var_name, " ./'\"$%[],:-+=/{}@#$!?1234567890#\\+");
+    printf("here 1: %s\n", ctx->end_of_var);
+    if(ctx->end_of_var != NULL && ( *(ctx->end_of_var)=='\"' ))
         ctx->end_of_var = ctx->end_of_var + 1;
-    // printf("here: %s\n", ctx->end_of_var);
+     printf("here 2: %s\n", ctx->end_of_var);
     if (ctx->end_of_var != NULL && ft_isdigit((unsigned char)*(ctx->end_of_var)))
     {
         if(strcmp(ctx->end_of_var - 1,"$"))
-            ctx->end_of_var = strpbrk(ctx->var_name, " /'$?+\"");
+            ctx->end_of_var = strpbrk(ctx->var_name,  " ./'\"$%[],:-+=/{}@#$!?\"#\\+");
     }
     ctx->temp_char = '\0';
     ctx->first_char = *(ctx->var_name);

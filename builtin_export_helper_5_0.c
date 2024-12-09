@@ -86,6 +86,7 @@ char *process_variable(char *input, t_env *env)
         ctx.total_size = pv_initialise_vars(&ctx);
         pv_process_dollar_sign(&ctx);
         pv_resize_concat(&(ctx.new_str), strlen(ctx.new_str) + strlen(ctx.start) + 1, ctx.start, (size_t)-1);
+        printf("the name is %s\n",ctx.new_str);
         return remove_paired_quotes(ctx.new_str);
     }
     return remove_paired_quotes(strdup(input));

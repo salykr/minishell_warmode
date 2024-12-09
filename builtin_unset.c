@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2024/10/06 12:35:27 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/07 21:42:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,10 @@ int	find_env_var(t_env *myenv, const char *name)
     size_t	name_len;
     char	*full_name;
 
-    if (!myenv || !name) {
+    if (!myenv || !name)
         return (-1);
-    }
-
     full_name = process_variable((char*)name, myenv);
 	printf("full_name:%s\n", full_name);
-
     name_len = strlen(full_name);
     i = 0;
     while (myenv->env[i])
@@ -247,6 +244,7 @@ int	builtin_unset(t_parser *parser, t_env *myenv)
 			if (!keep_global_var)
 			{
 				printf("unset: `%s': not a valid identifier\n", name);
+				free(name);
 				global_var = 1;
 			}
 		}

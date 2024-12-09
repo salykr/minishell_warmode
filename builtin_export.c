@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/19 13:16:38 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/07 22:19:23 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int deal_with_name_no_var(t_parser *list, t_env *env)
     
     if (strchr(list->input[0], '$') != NULL && strchr(list->input[0], '=') == NULL)
     {
+        // if (check_input(list->input[0])==0 || check_input(list->input[0])==-1)
+        //     return(1);
         input_copy= ft_strdup(list->input[0]);
         new_name = process_variable(input_copy, env);
         if (*new_name=='\0')
