@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/08 22:00:25 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/10 16:22:01 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@
 # include <unistd.h>
 #include <termios.h>
 # include <sys/stat.h>
+# include "get_next_line.h"
 
 # define CMD_NOT_EXECUTABLE 126
 # ifndef GLOBALS_H
 #  define GLOBALS_H
 
 extern int global_var; // Declare the global variable
-
+extern volatile sig_atomic_t g_interrupt;
 
 # endif
 

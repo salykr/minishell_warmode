@@ -95,25 +95,36 @@ char	*get_path_PWD(t_env env, char *cmd)
 	return (NULL);
 }
 
-void	ft_redirection_delimiter(t_parser *node)
+void ft_redirection_delimiter(t_parser *node)
 {
-	char	*lineread;
+    char *line = NULL;
+    size_t line_len = 0;
+    // Continuously prompt and read input until the delimiter is found
+    while (1)
+    {
+        write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
+        line = get_next_line(0); // Read input from stdin
+        if (!line) // Handle EOF or error
+            break;
+        // Remove the newline character if present
+        line_len = strlen(line);
+        if (line[line_len - 1] == '\n')
+            line[line_len - 1] = '\0';
 
-	while (1)
-	{
-		lineread = readline(">");
-		if (!lineread) // If EOF is reached, break the loop
-			break ;
-		// printf("line read: %s\n", lineread);
-		if (ft_strcmp(lineread, node->delimeter) == 0)
-		{
-			free(lineread);
-			break ;
-		}
-		node->input = add_string_to_2d_array(node->input, lineread);
-		free(lineread);
-	}
+        // Check if the input matches the delimiter
+        if (strcmp(line, node->delimeter) == 0)
+        {
+            free(line);
+            break;
+        }
+        // Add the input line to the 2D array
+        node->input = add_string_to_2d_array(node->input, line);
+        free(line); // Free the line buffer after processing
+    }
 }
+
+
+
 
 
 int	handle_heredoc(char **heredoc_content)
