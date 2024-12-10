@@ -40,7 +40,7 @@ int handle_parsing_quotes_helper_2(t_input *tokens,char * value)
 
 int handle_parsing_quotes_helper(t_input *tokens, t_parser *curr,char* value)
 {
-    if (curr->command!=NULL &&!ft_strcmp (curr->command,"echo")) //&& (!ft_strchr(tokens->value,'$')
+    if (curr->command!=NULL &&(!ft_strcmp (curr->command,"echo") || !ft_strcmp(curr->command,"export"))) //&& (!ft_strchr(tokens->value,'$')
         curr->input = add_string_to_2d_array(curr->input, tokens->value);
     else if (curr->command == NULL && cmd_is_dir(value))
     {
