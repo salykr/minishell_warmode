@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/12/07 16:12:44 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/11 11:20:08 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		else
 		{
 			(*input)--;
+			printf("the inut is: %s\n",*input);//sally added this ffor the error
 			expanded = process_variable(*input, &env);
 			if (expanded)
 			{

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/10 16:22:01 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/11 12:35:24 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ typedef struct s_parser
 	char					**args;
 	char					*infile;
 	char					**outfile;
+	char					**heredoc;
 	struct s_parser			*prev;
 	struct s_parser			*next;
 }							t_parser;

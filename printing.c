@@ -22,7 +22,7 @@ void	print_2d_array(char **array)
 	i = 0;
 	while (array && array[i] != NULL)
 	{
-		printf("%s\n", array[i]);
+		printf("%d: %s\n",i, array[i]);
 		i++;
 	}
 }

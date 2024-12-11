@@ -49,12 +49,14 @@ void initialize_heredoc(int *heredoc_fd, t_parser *parser)
 	if (parser->delimeter != NULL && parser->redirection != NULL)
 	{
 		if (parser->redirection[0] == T_HEREDOC)
-			*heredoc_fd = handle_heredoc(parser->input);
+			*heredoc_fd = handle_heredoc(parser->heredoc);
 	}
 }
 char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path)
 {
 	initialize_heredoc(heredoc_fd, parser);
+	printf("in initialize_execution\n");
+	print_2d_array(parser->heredoc);
 	if (!strncmp(parser->command, "./", 2))
 		*cmd_path = get_path_PWD(*env, parser->command);
 	else

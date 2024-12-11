@@ -25,25 +25,31 @@ char	**ft_create_args(t_parser *parser)
 	{
 		while (parser->operations[i])
 		{
+			printf("if 1 \n");
 			path = add_string_to_2d_array(path, parser->operations[i]);
 			i++;
 		}
-	}
-	if(strcmp(parser->command, "set")==0 || strcmp(parser->command, "declare")==0)
-	{
-		printf("hiiiiiiiiiiiii\\n\n");
-		path = add_string_to_2d_array(path, ft_strdup("-c"));
 	}
 	i = 0;
 	if (parser->input != NULL && parser->redirection == NULL)
 	{
 		while (parser->input[i])
 		{
-			printf("command : %s\n", parser->command);
+			printf("if 2 \n");
 			path = add_string_to_2d_array(path, parser->input[i]);
 			i++;
 		}
 	}
+	// 	i = 0;
+	// if (parser->heredoc != NULL)
+	// {
+	// 	while (parser->heredoc[i])
+	// 	{
+	// 		printf("if 3 \n");
+	// 		path = add_string_to_2d_array(path, parser->heredoc[i]);
+	// 		i++;
+	// 	}
+	// }
 	return (path);
 }
 
@@ -118,7 +124,7 @@ void ft_redirection_delimiter(t_parser *node)
             break;
         }
         // Add the input line to the 2D array
-        node->input = add_string_to_2d_array(node->input, line);
+        node->heredoc = add_string_to_2d_array(node->heredoc, line);
         free(line); // Free the line buffer after processing
     }
 }

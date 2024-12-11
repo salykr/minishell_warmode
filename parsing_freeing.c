@@ -71,6 +71,8 @@ void free_parser(t_parser *parser)
 		next = parser->next;
 		if (parser->input)
 			free_input(parser->input);
+		if (parser->heredoc)
+			free_input(parser->heredoc);
 		if (parser->delimeter)
 			free(parser->delimeter);
 		if (parser->operations)

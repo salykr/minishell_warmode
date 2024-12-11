@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/08 22:44:33 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/11 13:00:37 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env)
 	char	**args;
 	int		heredoc_fd;
 	pid_t	pid;
-		printf("parent pid %d\n",getpid());
 
 	args = initialize_execution(&heredoc_fd, parser, env, &cmd_path);
+	printf("args\n");
+	print_2d_array(args);
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
