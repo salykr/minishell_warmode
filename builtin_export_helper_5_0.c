@@ -90,3 +90,49 @@ char *process_variable(char *input, t_env *env)
     }
     return remove_paired_quotes(strdup(input));
 }
+
+
+
+// char *process_variable2(char *input, t_env *env)
+// {
+//     if (input == NULL)
+//         return NULL;
+//     char *dollar;
+//     char *start;
+//     char *env_value;
+//     char *var_name;
+//     char *new_str;
+//     dollar = strchr(input, '$');
+//     if(dollar == NULL)
+//         return(strdup(input));
+//     start = input;
+//     new_str = malloc (1);
+//     if (!new_str) // Check if malloc failed
+//         return NULL; // Indicate error
+//     (new_str)[0] = '\0'; // Initialize as an empty string
+//     if(start - 1 >= input)
+//         pv_resize_concat(&new_str, dollar - start  + 1, dollar - start,(size_t) - 1);
+//     while(dollar)
+//     {
+//         if(strchr(input, '$') != dollar)//yaani msh awwl call
+//             dollar = strchr(start, '$');
+//         if(isdigit(dollar + 1))
+//         {
+//             start = dollar + 2;
+//             continue;
+//         }
+//         var_name = strpbrk(dollar, " ./'$%[],:-+=/{}@!?#\"\\+");
+//         if(start - 1 >= input && *(start - 1) != '\'')
+//         {
+//             env_value = get_env_value(env, var_name);
+//             if (env_value == NULL)
+//                 env_value = "";        
+//             pv_resize_concat(&new_str, strlen(new_str) + strlen(env_value) + 1, env_value, (size_t)-1);
+//             if (env_value && *(env_value) != '\0')
+//                 free(env_value);
+//             start = 
+//         }
+//         return(new_str);
+
+//     }
+// }
