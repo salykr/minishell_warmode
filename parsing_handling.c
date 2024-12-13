@@ -84,8 +84,8 @@ int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
         curr->command = value;
         return 0;
     }
-    else if (!strncmp(tokens->value,"\"-",2) || !strncmp(tokens->value,"\'-",2))
-        curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
+    // else if (!strncmp(tokens->value,"\"-",2) || !strncmp(tokens->value,"\'-",2))
+    //     curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
     else if( handle_parsing_quotes_helper(tokens,curr,value) == -1)
         return -1;
     free(value);

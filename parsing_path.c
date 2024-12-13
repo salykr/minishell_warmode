@@ -111,7 +111,8 @@ int handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 {
     if (tokens->type == T_PATH)
     {
-
+        if (curr->command!=NULL)
+            return 1;
         if (curr->command == NULL && cmd_is_dir(tokens->value))
         {
             errmsg_cmd(tokens->value, NULL, "Is a directory");
