@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2024/11/24 17:55:38 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/13 11:51:45 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ int handle_parsing_argument(t_input *tokens, t_parser *curr)
     int  i;
 
     i = 0;
-    if (!ft_strcmp(curr->command,"echo"))
+    if (curr->command == NULL)
+        return -1;
+    else if (!ft_strcmp(curr->command,"echo"))
     {
                 
         if(count_dash(tokens->value) && i ==0 && !ft_check_n_operation(tokens->value) && curr->input ==NULL)
