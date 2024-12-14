@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/07 13:03:47 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:47:16 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ int	builtin_echo(t_parser *list, t_env *env)
     Things to test again:
     ---------------------
 	echo my shit terminal is [$TERM]
-	echo $HOME% (should return /root%)
     echo \-n hi (-n should work)
 	echo $USER$var\$USER$USER\$USERtest$USER
 	echo "'$HO''ME'"

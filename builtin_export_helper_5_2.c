@@ -38,7 +38,7 @@ void pv_fill_values(t_context *ctx)
     ctx->total_size += (ctx->dollar - ctx->start);
     ctx->var_name = ctx->dollar + 1;
     ctx->end_of_var = strpbrk(ctx->var_name, " ./'$%[],:-+=/{}@#$!?1234567890#\"\\+");
-    printf("ctx->end_of_var: %s\n",ctx->end_of_var);
+    //printf("ctx->end_of_var: %s\n",ctx->end_of_var);
     // if(ctx->end_of_var != NULL && ( *(ctx->end_of_var)=='\"' ))
     // {
     //     printf("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n");
