@@ -6,11 +6,17 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/14 10:47:16 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/14 12:33:23 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
+int	is_special_char(char c)
+{
+	return (c == '$' || c == ':' || c == '=' || c == '+' || c == '/'
+		|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
+}
 
 bool	check_balanced_quotes(const char *input)
 {

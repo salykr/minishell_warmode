@@ -5,82 +5,34 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/12/14 11:55:41 by rdennaou         ###   ########.fr       */
+/*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
+/*   Updated: 2024/12/14 12:38:49 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-int	is_special_char(char c)
-{
-	return (c == '$' || c == ':' || c == '=' || c == '+');
-}
-
-// void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
-// {
-// 	char	*expanded;
-
-// 	if (**input == '$' && !inside_single_quotes)
-// 	{
-// 		(*input)++;
-// 		if (**input == '\0' || **input == '\"' || **input == ' ')
-// 		{
-// 			printf("$");
-// 			return ;
-// 		}
-// 		else if (**input >= '0' && **input <= '9')
-// 		{
-// 			(*input)++;
-// 			while (**input && (isalnum(**input) || is_special_char(**input)))
-// 			{
-// 				printf("%c", **input);
-// 				(*input)++;
-// 			}
-// 			return ;
-// 		}
-// 		else if (is_special_char(**input))
-// 		{
-// 			printf("$");
-// 			while (**input && (isalnum(**input) || is_special_char(**input)))
-// 			{
-// 				printf("%c", **input);
-// 				(*input)++;
-// 			}
-// 			return ;
-// 		}
-// 		else
-// 		{
-// 			(*input)--;
-// 			expanded = process_variable(*input, &env);
-// 			if (expanded)
-// 			{
-// 				printf("%s", expanded);
-// 				free(expanded);
-// 			}
-// 			(*input) += strlen(*input);
-// 			return ;
-// 		}
-// 	}
-// }
-
-void	process_numeric_variable(char **input)
-{
-	(*input)++;
-	while (**input && (isalnum(**input) || is_special_char(**input)))
-	{
-		printf("%c", **input);
-		(*input)++;
-	}
-}
-
 void	process_special_variable(char **input)
 {
-	printf("$");
-	while (**input && (isalnum(**input) || is_special_char(**input)))
+	if (**input >= '0' && **input <= '9')
 	{
-		printf("%c", **input);
 		(*input)++;
+		while (**input && (isalnum(**input) || is_special_char(**input)))
+		{
+			printf("%c", **input);
+			(*input)++;
+		}
+		return ;
+	}
+	else if (is_special_char(**input))
+	{
+		printf("$");
+		while (**input && (isalnum(**input) || is_special_char(**input)))
+		{
+			printf("%c", **input);
+			(*input)++;
+		}
+		return ;
 	}
 }
 
@@ -88,10 +40,10 @@ void	process_normal_variable(char **input, t_env env)
 {
 	char	*expanded;
 
-    (*input)--;
+	(*input)--;
 	if ((**input == '$') && ((*input)[-1] == '\'' || (*input)[-1] == '\"'))
-        (*input)--;
-	printf("expnaded = %s\n", *input); // check what goes to process variable
+		(*input)--;
+	//printf("expnaded = %s\n", *input); // check what goes to process variable
 	expanded = process_variable(*input, &env);
 	if (expanded)
 	{
@@ -111,12 +63,7 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 			printf("$");
 			return ;
 		}
-		else if (**input >= '0' && **input <= '9')
-		{
-			process_numeric_variable(input);
-			return ;
-		}
-		else if (is_special_char(**input))
+		else if ((**input >= '0' && **input <= '9') || is_special_char(**input))
 		{
 			process_special_variable(input);
 			return ;
