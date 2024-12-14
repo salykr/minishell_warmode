@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/11 12:35:24 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/14 12:36:13 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,8 +182,8 @@ int builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(t_parser *parser, t_env *myenv);
 int						builtin_echo(t_parser *list, t_env *env);
 void builtin_echo_helper(char **input, char quote, t_env env); 
-void     print_expanded_input(char **input, bool inside_single_quotes, t_env env);
-// void builtin_echo_helper(char **input, char quote, t_env env);
+void	print_expanded_input(char **input, bool inside_single_quotes, t_env env);
+int		is_special_char(char c);
 int						add_or_update_to_env(char *name, char *value,
 								t_env *env);
 int						builtin_export(t_parser *list, t_env *env);

@@ -58,7 +58,7 @@ char *remove_paired_quotes(char *str)
     }
     if (indexes.j < len)
         strncat(result, str + indexes.j, len - indexes.j);
-    printf("the name is:! %s\n",result);
+    //printf("the name is:! %s\n",result);
     return (free(str),result);
 }
 
