@@ -94,8 +94,9 @@ int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
 
 int handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 {
-    if (tokens->type == T_HEREDOC && (tokens->next->type == T_ENV || tokens->next->type == T_IDENTIFIER))
+    if (tokens->type == T_HEREDOC && (tokens->next->type == T_ENV || tokens->next->type == T_IDENTIFIER || tokens->next->type == T_QUOTE))
     {
+        printf("hi");
         curr->delimeter = ft_strdup(tokens->next->value);
         add_to_array(curr, 1);
     }

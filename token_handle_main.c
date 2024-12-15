@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handle_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 16:16:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/11/11 22:18:44 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/15 13:00:48 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,12 @@ void handle_quote_identifier(const char **p)
         (*p)++;
     }
     end = ft_find_str(p, quote_char);
-    *p = end +1;
+    // end = *p;
+    // while (*end != quote_char && *end != '\0')
+    // {
+    //     end++;
+    // }
+    *p = end;
 }
 
 void handle_identifier(const char **p, t_tokenlist *token_list)

@@ -31,7 +31,6 @@ void ft_find_str_helper( const char ***str,const char **last_c, char c)
 char *ft_find_str( const char **str, char c)
 {
     const char *last_c = NULL;
-
     ft_find_str_helper(&str,&last_c ,c);
     if (last_c && *(last_c + 1) == '=')
     {
