@@ -149,6 +149,7 @@ int	handle_heredoc(char **heredoc_content, t_env *env)
 	{
 		val = process_variable(heredoc_content[i],env);
 		write(pipefd[1],val, strlen(val));
+		free(val);
 		write(pipefd[1], "\n", 1);
 		i++;
 	}
