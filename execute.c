@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/11 13:00:37 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/16 11:10:02 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env)
 	int heredoc_fd;
 		printf("parent pid %d\n",getpid());
 
-	initialize_heredoc(&heredoc_fd, parser);
+	initialize_heredoc(&heredoc_fd, parser, env);
 	//&&(strcmp(parser->command, "exit") == 0 || strcmp(parser->command, "cd") == 0)
 	if (parser -> next == NULL)
 		buitlin(parser, env);//ll exit

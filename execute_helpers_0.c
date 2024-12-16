@@ -133,10 +133,11 @@ void ft_redirection_delimiter(t_parser *node)
 
 
 
-int	handle_heredoc(char **heredoc_content)
+int	handle_heredoc(char **heredoc_content, t_env *env)
 {
 	int	pipefd[2];
 	int	i;
+	char *val;
 
 	i = 0;
 	if (pipe(pipefd) == -1)
@@ -146,7 +147,8 @@ int	handle_heredoc(char **heredoc_content)
 	}
 	while (heredoc_content != NULL && heredoc_content[i] != NULL)
 	{
-		write(pipefd[1], heredoc_content[i], strlen(heredoc_content[i]));
+		val = process_variable(heredoc_content[i],env);
+		write(pipefd[1],val, strlen(val));
 		write(pipefd[1], "\n", 1);
 		i++;
 	}
