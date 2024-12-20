@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/14 12:38:49 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/20 20:36:34 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ void	process_special_variable(char **input)
 	}
 }
 
-void	process_normal_variable(char **input, t_env env)
+void	process_normal_variable(char **input, int i, t_env env)
 {
 	char	*expanded;
 
 	(*input)--;
-	if ((**input == '$') && ((*input)[-1] == '\'' || (*input)[-1] == '\"'))
+	if (i == 1) // if there's a quote before
 		(*input)--;
-	//printf("expnaded = %s\n", *input); // check what goes to process variable
+	printf("expanded = %s\n", *input); // check what goes to process variable
 	expanded = process_variable(*input, &env);
 	if (expanded)
 	{
@@ -53,7 +53,7 @@ void	process_normal_variable(char **input, t_env env)
 	(*input) += strlen(*input);
 }
 
-void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
+void	print_expanded_input(char **input, bool inside_single_quotes, int i, t_env env)
 {
 	if (**input == '$' && !inside_single_quotes)
 	{
@@ -70,7 +70,7 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		}
 		else
 		{
-			process_normal_variable(input, env);
+			process_normal_variable(input, i, env);
 			return ;
 		}
 	}
@@ -99,7 +99,7 @@ void	builtin_echo_helper(char **input, char quote, t_env env)
 		}
 		else if (**input == '$' && !inside_single_quotes)
 		{
-			print_expanded_input(input, inside_single_quotes, env);
+			print_expanded_input(input, inside_single_quotes, 1, env);
 			continue ;
 		}
 		else
