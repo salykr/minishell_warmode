@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/14 12:33:23 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/20 20:31:23 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	handle_variable_expansion(char **arg, t_env *env)
 		*arg += strlen(*arg);
 	}
 	else
-		print_expanded_input(arg, false, *env);
+		print_expanded_input(arg, false, 0, *env);
 }
 
 void	process_argument(char *arg, t_env *env)
