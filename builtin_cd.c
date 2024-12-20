@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/05 12:57:12 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/20 13:47:35 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int replace_with_env_var(char ***input, t_env *env, char *var_name)
 int	handle_directory_input(t_parser *list, t_env *myenv)
 {
 	char *val;
-
+	printf("hi\n");
 	val = NULL;
 	if (is_home_input(list->input))
 	{
@@ -103,8 +103,6 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 //-- oldpwd
 int	builtin_cd(t_parser *list, t_env *myenv)
 {
-	printf("list had:\n");
-	print_2d_array(list->input);
 	//i added these two conditions incase sar she
 	if (list->input != NULL && (strcmp(list->input[0],"---")==0))
 	{
@@ -118,11 +116,12 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 	}
 	if (list->input != NULL && (strchr(list->input[0],'\'') ||strchr(list->input[0],'"')))
 		list->input[0]=remove_quotes_with_free(list->input[0]);
-	if (list->input != NULL &&(list->input[1] != NULL || !ft_strncmp(list->input[0], "/home", 5)))
+	if (list->input != NULL && list->input[0] != NULL && strchr(list->input[0],'$') != NULL)
+	   replace_with_str(&list->input, process_variable(list->input[0],myenv));
+	if (list->input != NULL &&(list->input[1] != NULL /*|| !ft_strncmp(list->input[0], "/home", 5))*/))
         return (1);
 	if (handle_directory_input(list, myenv) != 0)
 		return (1);
-	printf("list now has:\n");
 	print_2d_array(list->input);
 	return (change_directory_and_update(list, myenv));
 }
@@ -142,4 +141,9 @@ Echo $PWD
 Cd ..
 
 how is the folder becoming ..? evenm tho th prev one is deleted?
+*/
+
+/*
+unset pwd
+cd $PWD
 */

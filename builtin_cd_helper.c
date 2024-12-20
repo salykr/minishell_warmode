@@ -13,7 +13,7 @@
 #include "mini_shell.h"
 
 
-void update_pwd(t_env *myenv)
+void update_pwd(t_parser *list, t_env *myenv)
 {
     char cwd[2048];
     char *oldpwd;
@@ -23,10 +23,17 @@ void update_pwd(t_env *myenv)
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
         perror("getcwd");
+        if(strcmp(list->input[0],"..")==0 && oldpwd)
+        {  
+            add_or_update_to_env(strdup("OLDPWD"),ft_strdup(oldpwd) , myenv);
+            oldpwd = ft_strjoin(oldpwd,"/..");
+            add_or_update_to_env(ft_strdup("PWD"), oldpwd, myenv);
+        }
         return;
     }
     if (oldpwd)
     {
+        printf("it is : %s\n",oldpwd);
         value = ft_strdup(oldpwd);
         add_or_update_to_env(strdup("OLDPWD"),value , myenv);
         //  free(value);
@@ -50,7 +57,7 @@ int	change_directory_and_update(t_parser *list, t_env *myenv)
 		perror("cd:)");
 		return (1);
 	}
-	update_pwd(myenv);
+	update_pwd(list, myenv);
 	return (0);
 }
 
@@ -113,3 +120,4 @@ char *remove_quotes_with_free(char *str)
     free(str);
     return result;
 }
+

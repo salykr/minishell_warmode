@@ -31,7 +31,8 @@ char	**ft_create_args(t_parser *parser)
 		}
 	}
 	i = 0;
-	if (parser->input != NULL && parser->redirection == NULL)
+	//&& parser->redirection == NULL
+	if (parser->input != NULL)
 	{
 		while (parser->input[i])
 		{
@@ -106,7 +107,7 @@ void ft_redirection_delimiter(t_parser *node)
     char *line = NULL;
     size_t line_len = 0;
     // Continuously prompt and read input until the delimiter is found
-    while (1)
+    while (1 && global_var!=130)
     {
         write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
         line = get_next_line(0); // Read input from stdin
@@ -133,11 +134,10 @@ void ft_redirection_delimiter(t_parser *node)
 
 
 
-int	handle_heredoc(char **heredoc_content, t_env *env)
+int	handle_heredoc(t_parser *parser)
 {
 	int	pipefd[2];
 	int	i;
-	char *val;
 
 	i = 0;
 	if (pipe(pipefd) == -1)
@@ -145,14 +145,20 @@ int	handle_heredoc(char **heredoc_content, t_env *env)
 		perror("Error creating pipe");
 		exit(EXIT_FAILURE);
 	}
-	while (heredoc_content != NULL && heredoc_content[i] != NULL)
+	// while (parser->input != NULL && parser->input[i] != NULL)
+	// {
+	// 	write(pipefd[1], parser->input[i], strlen(parser->input[i]));
+	// 	write(pipefd[1], "\n", 1);
+	// 	i++;
+	// }
+	// i = 0;
+	while (parser->heredoc != NULL && parser->heredoc[i] != NULL)
 	{
-		val = process_variable(heredoc_content[i],env);
-		write(pipefd[1],val, strlen(val));
-		free(val);
+		write(pipefd[1], parser->heredoc[i], strlen(parser->heredoc[i]));
 		write(pipefd[1], "\n", 1);
 		i++;
 	}
+
 
 	close(pipefd[1]);
 	return (pipefd[0]);

@@ -14,26 +14,26 @@
 
 //replace_or_append_value and concatenate_value
 
-char *resize_string(char *str, size_t new_size)
-{
-    if (!str || new_size == 0) {
-        return NULL;  // Ensure the input is valid
-    }
-    // Allocate new memory with the specified new size
-    char *new_str = (char *)malloc(new_size);
-    if (!new_str) {
-        free(str);  // Free the old string to prevent leaks
-        return NULL;  // Return NULL if memory allocation fails
-    }
+// char *resize_string(char *str, size_t new_size)
+// {
+//     if (!str || new_size == 0) {
+//         return NULL;  // Ensure the input is valid
+//     }
+//     // Allocate new memory with the specified new size
+//     char *new_str = (char *)malloc(new_size);
+//     if (!new_str) {
+//         free(str);  // Free the old string to prevent leaks
+//         return NULL;  // Return NULL if memory allocation fails
+//     }
 
-    // Copy the old content into the new allocated memory
-    strncpy(new_str, str, new_size - 1);
-    new_str[new_size - 1] = '\0';  // Ensure null termination
+//     // Copy the old content into the new allocated memory
+//     strncpy(new_str, str, new_size - 1);
+//     new_str[new_size - 1] = '\0';  // Ensure null termination
 
-    // Free the old memory
-    free(str);
-    return new_str;  // Return the resized string
-}
+//     // Free the old memory
+//     free(str);
+//     return new_str;  // Return the resized string
+// }
 // //tosgheer th above function
 int is_matching_env_var(char *env_var, char *new_name)
 {

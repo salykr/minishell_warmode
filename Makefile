@@ -7,7 +7,7 @@ OBJ_DIR             = obj/
 
 # Compiler and Flags
 CC                  = gcc
-CFLAGS              = -Wall -Werror -Wextra -I$(INC)
+CFLAGS              = -Wall -Werror -Wextra -I$(INC) -g
 EXTRAFLAGS          = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
 RM                  = rm -f
 # Source and Object Files
@@ -47,6 +47,7 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)builtin_export_helper_2.c \
                       $(SRC_DIR)builtin_export_helper_3.c \
                       $(SRC_DIR)builtin_export_helper_4.c \
+                      $(SRC_DIR)builtin_export_helper_5.c \
                       $(SRC_DIR)builtin_export_helper_5_0.c \
                       $(SRC_DIR)builtin_export_helper_5_1.c \
                       $(SRC_DIR)builtin_export_helper_5_2.c \

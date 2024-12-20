@@ -22,21 +22,41 @@ void manage_T_input(t_parser *parser, int re, int *fd)
 			perror("Error: Input file not specified");
 	}
 }
+
+int count_strings(char **strings) {
+    int count = 0;
+    if (!strings) {
+        return 0; // Handle NULL pointer input
+    }
+
+    while (strings[count] != NULL) {
+        count++;
+    }
+
+    return count;
+}
+
 void manage_T_output(t_parser *parser, int re, int *fd)
 {
 	int i;
 	i = -1;
+
 	if (re == T_OUTPUT)
 	{
 		if (parser->outfile != NULL)
 		{
 			while (parser->outfile[++i])
+			{
 				*fd = open(parser->outfile[i], O_WRONLY | O_CREAT | O_TRUNC,
 						0644);
+				if(parser->outfile[i + 1] != NULL)
+					close(*fd);
+			}
 		}
 		else
 			perror("Error: Output file not specified");
 	}
+
 }
 void manage_T_append(t_parser *parser, int re, int *fd)
 {
@@ -72,10 +92,21 @@ int	ft_handle_redirections(t_parser *parser, int re)
 
 void buitlin(t_parser *parser, t_env *env)
 {
+	char *value;
+
 	if (strcmp(parser->command, "echo") == 0)
 		global_var = builtin_echo(parser, env);
 	else if (strcmp(parser->command, "env") == 0)
-		global_var = builtin_env(parser, env);
+	{
+		value = get_env_value(env,"PATH");
+		if(value != NULL)
+		{
+			global_var = builtin_env(parser, env);
+			free(value);
+		}
+		else
+			printf("env: No such file or directory\n");
+	}
 	else if (strcmp(parser->command, "pwd") == 0)
 		global_var = builtin_pwd(parser, env);
 	else if (strcmp(parser->command, "export") == 0)
@@ -87,3 +118,40 @@ void buitlin(t_parser *parser, t_env *env)
 	else if (strcmp(parser->command, "exit") == 0)
 		builtin_exit(parser, env);
 }
+
+// void buitlin(t_parser *parser, t_env *env)
+//  {
+//     char *path_value = get_env_value(env, "PATH");
+
+//     if (!path_value) {
+//         printf("No such file or directory\n");
+//     }
+
+//     if (strcmp(parser->command, "echo") == 0) {
+//         global_var = builtin_echo(parser, env);
+//     } else if (strcmp(parser->command, "env") == 0) {
+//         if (path_value != NULL) {
+//             global_var = builtin_env(parser, env);
+//         } else {
+//             printf("env: No such file or directory\n");
+//         }
+//     } else if (strcmp(parser->command, "pwd") == 0) {
+//         global_var = builtin_pwd(parser, env);
+//     } else if (strcmp(parser->command, "export") == 0) {
+//         global_var = builtin_export(parser, env);
+//     } else if (strcmp(parser->command, "unset") == 0 && parser->next == NULL) {
+//         builtin_unset(parser, env);
+//     } else if (strcmp(parser->command, "cd") == 0 && parser->next == NULL) {
+//         global_var = builtin_cd(parser, env);
+//     } else if (strcmp(parser->command, "exit") == 0) {
+//         builtin_exit(parser, env);
+//     } else {
+//         if (path_value == NULL) {
+//             printf("No such file or directory\n");
+//         } else {
+//             // Add code to execute external commands
+//         }
+//     }
+
+
+// }

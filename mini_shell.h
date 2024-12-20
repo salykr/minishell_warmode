@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/16 11:10:08 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/20 14:00:22 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,8 @@ typedef struct s_context{
 
 //execution
 int	is_builtin(t_parser *parser);
-void manage_input_output(int heredoc_fd, t_fd *f);
-void initialize_heredoc(int *heredoc_fd, t_parser *parser, t_env *env);
+void manage_input_output(int heredoc_fd, t_fd *f, int fd[2],t_parser *parser);
+void initialize_heredoc(int *heredoc_fd, t_parser *parser);
 char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path);
 void handle_child_exit(pid_t pid, int *heredoc_fd, t_fd *f, t_parser *parser);
 int	ft_handle_redirections(t_parser *parser, int re);
@@ -204,11 +204,11 @@ int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-void						update_pwd(t_env *myenv);
+void update_pwd(t_parser *list, t_env *myenv);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
-int	handle_heredoc(char **heredoc_content, t_env *env);
+int	handle_heredoc(t_parser *parser);
 char						*get_path_PWD(t_env env, char *cmd);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
@@ -344,7 +344,6 @@ void						update_SHLVL(t_env *myenv);
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);
 int							change_directory_and_update(t_parser *list, t_env *myenv);
-void						update_pwd(t_env *myenv);
 void						replace_with_str(char ***array, char *new_str);
 int							is_oldpwd_input(const char *input);
 char *remove_quotes_with_free(char *str);
