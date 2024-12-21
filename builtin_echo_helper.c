@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/21 10:48:47 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:39:02 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	process_expanded_variable(char **input, t_env env)
 	if (var_name_length > 0)
 	{
 		var_name = (char *)malloc(var_name_length + 1);
-		strncpy(var_name, var_name_start, var_name_length);
+		ft_strncpy(var_name, var_name_start, var_name_length);
 		var_name[var_name_length] = '\0';
 		value = ft_getenv(&env, var_name);
 		if (value)

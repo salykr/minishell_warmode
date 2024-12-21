@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 13:56:59 by skreik            #+#    #+#             */
-/*   Updated: 2024/10/19 15:45:45 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/21 12:42:59 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ void	ft_putendl_fd(char *s, int fd);
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 char	*ft_strcat(char *dest, const char *src);
 char	*ft_strcpy(char *dest, const char *src);
+char	*ft_strncpy(char *dest, char *src, unsigned int n);
 char	*ft_strndup(const char *start, size_t length);
 char	*ft_strtok(char *str, const char *delim);
 bool	ft_isspace(int c);
-char *ft_str_join(char *s1, char *s2);
+char	*ft_str_join(char *s1, char *s2);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/21 10:48:24 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:38:31 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	handle_variable_expansion(char **arg, t_env *env)
 		temp = remove_quotes(*arg);
 		printf("%s", temp + 1);
 		free(temp);
-		*arg += strlen(*arg);
+		*arg += ft_strlen(*arg);
 	}
 	else
 		print_expanded_input(arg, false, *env);
