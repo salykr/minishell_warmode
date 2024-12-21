@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/20 20:32:55 by root             ###   ########.fr       */
+/*   Updated: 2024/12/21 10:05:58 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,7 @@ void						free_parser(t_parser *parser);
 //_______echo
 int						builtin_echo(t_parser *list, t_env *env);
 void					builtin_echo_helper(char **input, char quote, t_env env); 
-void					print_expanded_input(char **input, bool inside_single_quotes, int i, t_env env);
+void					print_expanded_input(char **input, bool inside_single_quotes, t_env env);
 int						is_special_char(char c);
 
 //_______exit
