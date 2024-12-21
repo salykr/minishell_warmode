@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/20 20:36:34 by root             ###   ########.fr       */
+/*   Updated: 2024/12/20 20:54:46 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,19 @@ void	process_normal_variable(char **input, int i, t_env env)
 
 void	print_expanded_input(char **input, bool inside_single_quotes, int i, t_env env)
 {
+	(void)i;
 	if (**input == '$' && !inside_single_quotes)
 	{
 		(*input)++;
 		if (**input == '\0' || **input == '\"' || **input == ' ')
 		{
 			printf("$");
+			return ;
+		}
+		else if (**input == '?')
+		{
+			printf("%d", global_var);
+			(*input)++;
 			return ;
 		}
 		else if ((**input >= '0' && **input <= '9') || is_special_char(**input))
@@ -70,8 +77,29 @@ void	print_expanded_input(char **input, bool inside_single_quotes, int i, t_env 
 		}
 		else
 		{
-			process_normal_variable(input, i, env);
-			return ;
+			while (**input)
+			{
+				char *var_name_start = *input;
+				while (**input && (isalnum(**input) || **input == '_'))
+					(*input)++;
+				size_t var_name_length = *input - var_name_start;
+				if (var_name_length > 0)
+				{
+					char var_name[var_name_length + 1];
+					strncpy(var_name, var_name_start, var_name_length);
+					var_name[var_name_length] = '\0';
+					char *value = ft_getenv(&env, var_name);
+					if (value)
+						printf("%s", value);
+				}
+				if (**input == '$')
+				{
+					(*input)++;
+					continue;
+				}
+				else
+					break;
+			}
 		}
 	}
 }
