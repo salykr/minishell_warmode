@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/21 13:53:44 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/21 16:07:26 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,9 @@ int	builtin_pwd(t_parser *parser, t_env *env)
 	char	*buffer;
 
 	size = INITIAL_SIZE;
-	if (parser->operations != NULL)
-	{
-		printf("bash: pwd: too many arguments\n");
-		return (2);
-	}
+	if (parser->operations != NULL || (parser->input != NULL
+			&& parser->input[0][0] == '-'))
+		return (printf("bash: pwd: invalid option\n"), 2);
 	buffer = (char *)malloc(size);
 	if (buffer == NULL)
 		return (1);

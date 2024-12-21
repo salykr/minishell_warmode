@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/07 21:42:26 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/21 14:44:01 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,11 +251,11 @@ int	builtin_unset(t_parser *parser, t_env *myenv)
 		else
 		{
 			index = find_env_var(myenv, name);
-			printf("\nindex:%d\n", index);
+			printf("index:%d\n", index);
 			if (index != -1)
 			{
 				remove_env_var(myenv, index);
-				printf("\nremoving\n");
+				printf("removing\n");
 			}
 			if (name)
 			{
