@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/20 20:31:23 by root             ###   ########.fr       */
+/*   Updated: 2024/12/21 10:48:24 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	handle_variable_expansion(char **arg, t_env *env)
 		*arg += strlen(*arg);
 	}
 	else
-		print_expanded_input(arg, false, 0, *env);
+		print_expanded_input(arg, false, *env);
 }
 
 void	process_argument(char *arg, t_env *env)
@@ -108,13 +108,3 @@ int	builtin_echo(t_parser *list, t_env *env)
 		printf("\n");
 	return (0);
 }
-
-/*
-    Things to test again:
-    ---------------------
-	echo my shit terminal is [$TERM]
-    echo \-n hi (-n should work)
-	echo $USER$var\$USER$USER\$USERtest$USER
-	echo "'$HO''ME'"
-	echo $?$
-*/
