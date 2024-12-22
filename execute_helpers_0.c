@@ -31,7 +31,8 @@ char	**ft_create_args(t_parser *parser)
 		}
 	}
 	i = 0;
-	if (parser->input != NULL && parser->redirection == NULL)
+	//&& parser->redirection == NULL
+	if (parser->input != NULL )
 	{
 		while (parser->input[i])
 		{

@@ -26,17 +26,23 @@ void manage_T_output(t_parser *parser, int re, int *fd)
 {
 	int i;
 	i = -1;
+
 	if (re == T_OUTPUT)
 	{
 		if (parser->outfile != NULL)
 		{
 			while (parser->outfile[++i])
+			{
 				*fd = open(parser->outfile[i], O_WRONLY | O_CREAT | O_TRUNC,
 						0644);
+				if(parser->outfile[i + 1] != NULL)
+					close(*fd);
+			}
 		}
 		else
 			perror("Error: Output file not specified");
 	}
+
 }
 void manage_T_append(t_parser *parser, int re, int *fd)
 {
@@ -65,7 +71,7 @@ int	ft_handle_redirections(t_parser *parser, int re)
 	if (fd == -1)
 	{
 		perror("Error opening file");
-		exit(1);
+		// exit(1);
 	}
 	return (fd);
 }
