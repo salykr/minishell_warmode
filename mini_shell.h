@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/22 11:00:35 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/23 10:56:49 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,6 @@ int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-void						update_pwd(t_env *myenv);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
@@ -344,7 +343,8 @@ void						update_SHLVL(t_env *myenv);
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);
 int							change_directory_and_update(t_parser *list, t_env *myenv);
-void						update_pwd(t_env *myenv);
+
+void	update_pwd(t_parser *list, t_env *myenv);
 void						replace_with_str(char ***array, char *new_str);
 int							is_oldpwd_input(const char *input);
 char *remove_quotes_with_free(char *str);
