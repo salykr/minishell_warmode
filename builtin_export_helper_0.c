@@ -22,11 +22,13 @@ char *get_env_value(t_env *env, const char *var)
     int i = 0;
     char *entry;
     char *equals;
+    // char *slash;
 
     // Iterate through the environment list
     while ((entry = env->env[i]) != NULL) 
     {
         equals = strchr(entry, '=');
+        // slash = strchr(entry, '/');
         if (equals)
         {
             // Calculate the length of the variable name
@@ -35,9 +37,14 @@ char *get_env_value(t_env *env, const char *var)
             if (strncmp(entry, var, var_len) == 0 && strlen(var) == var_len)
                 return strdup(equals + 1); // Return the value after '='
         }
+        // if (slash)
+        // {
+        //     size_t var_len2 = equals - entry;
+        //     printf("%s\n", )
+        // }
         i++;
     }
-    return(NULL); 
+    return (NULL); 
 }
 
 //for sorting: print_env_sorted
