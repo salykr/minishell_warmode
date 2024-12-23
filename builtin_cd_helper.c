@@ -17,7 +17,7 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	char cwd[2048];
 	char *oldpwd;
 		char* value;
-	printf("in update pwd\n");
+	//printf("in update pwd\n");
 	oldpwd = ft_getenv(myenv, "PWD");
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
@@ -32,7 +32,7 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	}
 	if (oldpwd)
 	{
-		printf("it is : %s\n",oldpwd);
+		//printf("it is : %s\n",oldpwd);
 		value = ft_strdup(oldpwd);
 		add_or_update_to_env(strdup("OLDPWD"),value , myenv);
 		//  free(value);
@@ -41,7 +41,6 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	add_or_update_to_env(ft_strdup("PWD"), value, myenv);
 	//  free(value);
 }
-// cd
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
@@ -88,11 +87,11 @@ void	replace_with_str(char ***array, char *new_str)
 	(*array)[1] = NULL;
 }
 
-
 int	is_oldpwd_input(const char *input)
 {
 	return (ft_strcmp(input, "-") == 0);
 }
+
 char	*remove_quotes_with_free(char *str)
 {
 	char *result;
@@ -118,4 +117,3 @@ char	*remove_quotes_with_free(char *str)
 	free(str);
 	return result;
 }
-
