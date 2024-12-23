@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/21 10:05:58 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/22 11:00:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ typedef struct s_context{
 
 //execution
 int	is_builtin(t_parser *parser);
-void manage_input_output(int heredoc_fd, t_fd *f, int fd[2],t_parser *parser);
+void manage_input_output(int heredoc_fd, t_fd *f);
 void initialize_heredoc(int *heredoc_fd, t_parser *parser);
 char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path);
 void handle_child_exit(pid_t pid, int *heredoc_fd, t_fd *f, t_parser *parser);
@@ -180,6 +180,10 @@ int							ft_isprintable(char c);
 void						ft_redirection(t_parser *node);
 int builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(t_parser *parser, t_env *myenv);
+int						builtin_echo(t_parser *list, t_env *env);
+void builtin_echo_helper(char **input, char quote, t_env env); 
+void	print_expanded_input(char **input, bool inside_single_quotes, t_env env);
+int		is_special_char(char c);
 int						add_or_update_to_env(char *name, char *value,
 								t_env *env);
 int						builtin_export(t_parser *list, t_env *env);
@@ -200,12 +204,14 @@ int							ft_checkft(t_parser *parser);
 int							ft_handle_redirections(t_parser *parser, int re);
 void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-void update_pwd(t_parser *list, t_env *myenv);
+void						update_pwd(t_env *myenv);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
-int	handle_heredoc(t_parser *parser);
+int							handle_heredoc(char **heredoc_content);
 char						*get_path_PWD(t_env env, char *cmd);
+void						print_expanded_input(char **input,
+								bool inside_single_quotes, t_env env);
 int check_args_nb(t_parser *list);
 void replace_with_str(char ***array, char *new_str);
 void print_env_sorted(t_env *env);
@@ -316,11 +322,9 @@ void	print_2d_array(char **array);
 void						ft_free_env(t_env **myenv);
 void						free_parser(t_parser *parser);
 
-//_______echo
-int						builtin_echo(t_parser *list, t_env *env);
-void					builtin_echo_helper(char **input, char quote, t_env env); 
-void					print_expanded_input(char **input, bool inside_single_quotes, t_env env);
-int						is_special_char(char c);
+
+//----------------------build-ins
+
 
 //_______exit
 void						builtin_exit(t_parser *parser, t_env *myenv);
@@ -340,6 +344,7 @@ void						update_SHLVL(t_env *myenv);
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);
 int							change_directory_and_update(t_parser *list, t_env *myenv);
+void						update_pwd(t_env *myenv);
 void						replace_with_str(char ***array, char *new_str);
 int							is_oldpwd_input(const char *input);
 char *remove_quotes_with_free(char *str);
