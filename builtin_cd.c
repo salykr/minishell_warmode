@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/23 16:47:03 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:54:00 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,20 +86,10 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 			return (-1);
 		printf("path: %s\n", list->input[0]);
 	}
-	else if(strrchr(list->input[0], '~')!=NULL)
+	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0 || ft_strncmp(list->input[0], "$HOME", 5) == 0 || ft_strchr(list->input[0], '$') != NULL || strrchr(list->input[0], '~') != NULL)
 	{
-		list->input[0] = ft_strjoin(strdup("$HOME"), list->input[0] + 1);
-		val = process_variable(list->input[0], myenv);
-		replace_with_str(&list->input, val);
-			
-	}
-	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0 || ft_strncmp(list->input[0], "$HOME", 5) == 0)
-	{
-		val = process_variable(list->input[0], myenv);
-		replace_with_str(&list->input, val);
-	}
-	else if (ft_strchr(list->input[0], '$') != NULL)
-	{
+		if(strrchr(list->input[0], '~')!=NULL)
+			list->input[0] = ft_strjoin(strdup("$HOME"), list->input[0] + 1);
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
 	}

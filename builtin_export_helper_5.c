@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/23 15:59:24 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:52:44 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,17 +266,7 @@ void	process_dollar_signs(t_context *ctx, t_env *env)
 char	*process_variable(char *input, t_env *env)
 {
 	t_context	ctx;
-	char *expanded_input;
 
-	if (input[0] == '~')
-    {
-        expanded_input = expand_path(env, input); // This function will replace '~' with the user's home directory
-        if (expanded_input == NULL)
-            return (NULL);  // Return NULL if expansion fails
-
-        // Now, handle the rest of the variable expansion in the string (after tilde expansion)
-        input = expanded_input;  // Update the input to the expanded version
-    }
 	if (!initialize_context(&ctx, input))
 		return (NULL);
 	if (!strchr(ctx.input, '$'))
