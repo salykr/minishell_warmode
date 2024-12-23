@@ -6,7 +6,7 @@
 /*   By: adokmak <adokmak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:55:26 by adokmak           #+#    #+#             */
-/*   Updated: 2024/12/22 18:35:01 by adokmak          ###   ########.fr       */
+/*   Updated: 2024/12/23 12:53:40 by adokmak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	cmds_exec(t_parser *parser, t_env *env)
             perror("Pipe failed");
             exit(EXIT_FAILURE);
         }
-        input_redirection();
-        output_redirection();
+        input_redirection(parser, &f);
+        output_redirection(parser, &f, fd);
         if (is_builtin(parser))
             execute_builtin_command(parser, f, env, fd);
         else
@@ -127,3 +127,83 @@ void output_redirection(t_parser *parser, t_fd *f, int fd[2])
         f->fd_2 = fd[1];
     }
 }
+
+int ft_redirection_delimiter(t_parser *parser, int re)
+{
+    int fd;
+    
+    fd = -1;
+    /*Input (<) via manage_T_input.
+    Output (>) via manage_T_output.
+    Append (>>) via manage_T_append*/
+    manage_T_input(parser, re, &fd);
+    manage_T_output(parser, re, &fd);
+    manage_T_append();
+    if (fd == -1)
+    {
+        /*If no valid file descriptor is obtained (fd == -1), 
+        it reports an error and exits.*/
+        perror("Error opening file");
+        exit(1);
+    }
+    return (fd);
+}
+
+void    manage_T_input(t_parser *parser, int re,int *fd)
+{
+    if (re == T_INPUT)
+    {
+       if (parser->infile != NULL)
+            *fd = open(parser->infile,O_RDONLY);
+        else
+            perror("Error: Input file not specified");
+    }
+}
+
+void    manage_T_output(t_parser *parser, int re, int *fd)
+{
+    int i;
+
+    i = -1;
+    if (re == T_OUTPUT)
+    {
+        /*pointer l2n bade 3adel 3ala file b2albo
+        why? ye3ne ana b2alb lfd fi l address lal fd
+        fa ana eza htyt fd bala pointer y3ne bkun 3am 3adel 
+        3a shu 3amle pointer l fd
+        kermel hyk lezem hot *fd l2n bade 3adel aal 
+        file directly li b2albo ye3nee*/
+        if (parser->outfile != NULL)
+        {   
+            while(parser->outfile[++i])
+            { 
+                *fd = open(parser->outfile,O_WRONLY, O_CREAT, O_TRUNC, 0644);
+                if(parser->outfile[i + 1] != '\0')
+                    close(*fd);    
+            }
+        }
+        else
+            perror("Error: Output file not specified");
+    }
+}
+
+void    manage_T_append(t_parser *parser, int re, int *fd)
+{
+    int i;
+
+    i = -1;
+    if (re == T_APPEND)
+    {
+        while (parser->outfile[++i] != NULL)
+        {
+            *fd = open(parser->outfile, )
+        }
+    }
+}
+
+/* Summary of ft_handle_redirections
+Purpose: Centralizes logic for handling all types of redirections.
+Flexibility: Supports multiple redirection types (<, >, >>).
+Integration: Used by input_redirection 
+and output_redirection to open files and manage file descriptors.
+*/
