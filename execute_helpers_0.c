@@ -12,47 +12,112 @@
 
 #include"mini_shell.h"
 
-
-char	**ft_create_args(t_parser *parser)
-{
-	char	**path;
-	int		i;
-
-	path = NULL;
-	path = add_string_to_2d_array(path, parser->command);
-	i = 0;
-	if (parser->operations != NULL)
-	{
-		while (parser->operations[i])
-		{
-			printf("if 1 \n");
-			path = add_string_to_2d_array(path, parser->operations[i]);
-			i++;
-		}
-	}
-	i = 0;
-	//&& parser->redirection == NULL
-	if (parser->input != NULL )
-	{
-		while (parser->input[i])
-		{
-			printf("if 2 \n");
-			path = add_string_to_2d_array(path, parser->input[i]);
-			i++;
-		}
-	}
-	// 	i = 0;
-	// if (parser->heredoc != NULL)
-	// {
-	// 	while (parser->heredoc[i])
-	// 	{
-	// 		printf("if 3 \n");
-	// 		path = add_string_to_2d_array(path, parser->heredoc[i]);
-	// 		i++;
-	// 	}
-	// }
-	return (path);
+// Function to strip quotes from a string
+char *strip_quotes(const char *str) {
+    if (!str || strlen(str) < 2) {
+        return strdup(str); // Return a copy if the string is too short or NULL
+    }
+    size_t len = strlen(str);
+    if ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"' && str[len - 1] == '"')) {
+        char *new_str = malloc(len - 1); // Allocate space for stripped string
+        if (!new_str) {
+            perror("malloc");
+            return NULL;
+        }
+        strncpy(new_str, str + 1, len - 2);
+        new_str[len - 2] = '\0'; // Null-terminate the string
+        return new_str;
+    }
+    return strdup(str); // Return a copy if no quotes to strip
 }
+
+char **ft_create_args(t_parser *parser, t_tokenlist *token) {
+    char **path;
+    t_input *current;
+    int operation_index = 0;
+    int input_index = 0;
+
+    path = NULL;
+
+    if (!token || !token->head || !parser) {
+        return path; // Return if token list or parser is invalid
+    }
+
+    current = token->head;
+
+    // Traverse the token list to find the command
+    while (current) {
+        if (strcmp(current->value, parser->command) == 0) {
+            path = add_string_to_2d_array(path, current->value);
+            current = current->next;
+            break;
+        }
+        current = current->next;
+    }
+
+    // Process subsequent tokens
+    while (current && (parser->input || parser->operations)) {
+        char *stripped_value = strip_quotes(current->value);
+        if (parser->operations && parser->operations[operation_index] &&
+            strcmp(stripped_value, parser->operations[operation_index]) == 0) {
+            printf("Adding operation: %s\n", current->value);
+            path = add_string_to_2d_array(path, parser->operations[operation_index]);
+            operation_index++;
+        } else if (parser->input && parser->input[input_index] &&
+                   strcmp(stripped_value, parser->input[input_index]) == 0) {
+            printf("Adding input: %s\n", current->value);
+            path = add_string_to_2d_array(path, parser->input[input_index]);
+            input_index++;
+        }
+        free(stripped_value); // Free the allocated memory
+        current = current->next;
+    }
+
+    return path;
+}
+
+
+// char	**ft_create_args(t_parser *parser, t_tokenlist *token)
+// {
+// 	char	**path;
+// 	int		i;
+
+// 	path = NULL;
+// 	path = add_string_to_2d_array(path, parser->command);
+
+// 	i = 0;
+// 	if (parser->operations != NULL)
+// 	{
+// 		while (parser->operations[i])
+// 		{
+// 			printf("if 1 \n");
+// 			path = add_string_to_2d_array(path, parser->operations[i]);
+// 			i++;
+// 		}
+// 	}
+// 	i = 0;
+// 	//&& parser->redirection == NULL
+// 	if (parser->input != NULL )
+// 	{
+// 		while (parser->input[i])
+// 		{
+// 			printf("if 2 \n");
+// 			path = add_string_to_2d_array(path, parser->input[i]);
+// 			i++;
+// 		}
+// 	}
+// 	// 	i = 0;
+// 	// if (parser->heredoc != NULL)
+// 	// {
+// 	// 	while (parser->heredoc[i])
+// 	// 	{
+// 	// 		printf("if 3 \n");
+// 	// 		path = add_string_to_2d_array(path, parser->heredoc[i]);
+// 	// 		i++;
+// 	// 	}
+// 	// }
+// 	return (path);
+// }
 
 char	*get_path(t_env env, char *cmd)
 {
@@ -106,8 +171,9 @@ void ft_redirection_delimiter(t_parser *node)
 {
     char *line = NULL;
     size_t line_len = 0;
+	global_var = 0;
     // Continuously prompt and read input until the delimiter is found
-    while (1)
+    while (global_var != 130)
     {
         write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
         line = get_next_line(0); // Read input from stdin

@@ -49,7 +49,8 @@ void	print_parser(t_parser *parser)
 			}
 		}
 		printf("Delimiter: %s\n", curr->delimeter ? curr->delimeter : "None");
-		printf("Infile: %s\n", curr->infile ? curr->infile : "None");
+		printf("Infile:\n");
+		print_2d_array(curr->infile);
 		printf("Outfile:\n");
 		print_2d_array(curr->outfile);
 		printf("-----\n");

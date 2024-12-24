@@ -102,7 +102,7 @@ int handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
     }
     else if (tokens->type == T_INPUT && tokens->next->type == T_IDENTIFIER)
     {
-        curr->infile = ft_strdup(tokens->next->value);
+        curr->infile = add_string_to_2d_array(curr->infile, tokens->next->value);
         add_to_array(curr, 3);
     }
     else if (tokens->type == T_OUTPUT && tokens->next->type == T_IDENTIFIER)

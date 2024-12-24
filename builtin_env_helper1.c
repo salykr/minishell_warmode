@@ -56,7 +56,7 @@ int check_ls_pwd_in_env(t_parser *list, t_env *myenv)
             free(parser);
             return (1);
         }
-        cmds_exec(parser, myenv);
+        cmds_exec(parser, myenv,NULL);
         free(parser);
         return (0);
     }

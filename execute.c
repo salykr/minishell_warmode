@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/22 11:55:59 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:50:43 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
+void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2], t_tokenlist *token)
 {
 	char	*cmd_path;
 	char	**args;
@@ -20,7 +20,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	pid_t	pid;
 	(void)fd;
 
-	args = initialize_execution(&heredoc_fd, parser, env, &cmd_path);
+	args = initialize_execution(&heredoc_fd, parser, env, &cmd_path, token);
 	printf("args\n");
 	print_2d_array(args);
 	pid = fork();
@@ -30,7 +30,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	{
 		manage_input_output(heredoc_fd, &f);
 		if(f.fd_1 == -1 ||  f.fd_2 == -1)
-			exit(EXIT_FAILURE);
+			return;
 		if(ft_getenv(env, "PATH")!=NULL)
 			execve(cmd_path, args, env->env);
 		perror("Error");
@@ -111,10 +111,8 @@ void input_redirection(t_parser *parser, t_fd *f)
 			if (parser->input == NULL && parser->delimeter != NULL
 				&& parser->redirection[0] == T_HEREDOC)
 				ft_redirection_delimiter(parser);
-			if (parser->infile != NULL && parser->redirection != NULL
-				&& (parser->redirection[0] == T_INPUT
-					|| parser->redirection[0] == T_HEREDOC))
-				f->fd_1 = ft_handle_redirections(parser, parser->redirection[0]);
+			if (parser->infile != NULL && parser->redirection != NULL)
+				f->fd_1 = ft_handle_redirections(parser);
 		}
 }
 void output_redirection(t_parser *parser, t_fd *f, int fd[2])
@@ -123,26 +121,19 @@ void output_redirection(t_parser *parser, t_fd *f, int fd[2])
 		{
 			if (parser->outfile == NULL)
 				f->fd_2 = STDOUT_FILENO;
-			else if (parser->outfile != NULL && parser->redirection != NULL
-				&& ((parser->redirection[0] == T_OUTPUT
-						|| parser->redirection[0] == T_APPEND)
-					|| (parser->redirection[1] != '\0'
-						&& (parser->redirection[1] == T_OUTPUT
-							|| parser->redirection[1] == T_APPEND))))
+			else if (parser->outfile != NULL && parser->redirection != NULL)
 			{
 				if (parser->redirection[1] != '\0')
-					f->fd_2 = ft_handle_redirections(parser,
-							parser->redirection[1]);
+					f->fd_2 = ft_handle_redirections(parser);
 				else
-					f->fd_2 = ft_handle_redirections(parser,
-							parser->redirection[0]);
+					f->fd_2 = ft_handle_redirections(parser);
 			}
 		}
 	else
 		f->fd_2 = fd[1];
 }
 
-void	cmds_exec(t_parser *parser, t_env *env)
+void	cmds_exec(t_parser *parser, t_env *env, t_tokenlist *token_list)
 {
 	t_fd f;
 	int fd[2];
@@ -157,10 +148,12 @@ void	cmds_exec(t_parser *parser, t_env *env)
 			pipe(fd);
 		input_redirection(parser, &f);
 		output_redirection(parser, &f, fd);
+			printf("in cmds_exec : fd_1: %d\n fd_ 2:%d\nss",f.fd_1,f.fd_2);
+
 		if (is_builtin(parser))
 			execute_builtin_command(parser, f, env, fd);
 		else
-			execute_command(parser, f, env, fd);
+			execute_command(parser, f, env, fd, token_list);
 		if (parser->next) // to handle input of cmd
 		{
 			close(fd[1]);

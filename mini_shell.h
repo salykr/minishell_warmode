@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/23 10:56:49 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:49:06 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ typedef struct s_parser
 	int						*redirection;
 	char					*delimeter;
 	char					**args;
-	char					*infile;
+	char					**infile;
 	char					**outfile;
 	char					**heredoc;
 	struct s_parser			*prev;
@@ -168,9 +168,9 @@ typedef struct s_context{
 int	is_builtin(t_parser *parser);
 void manage_input_output(int heredoc_fd, t_fd *f);
 void initialize_heredoc(int *heredoc_fd, t_parser *parser);
-char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path);
+char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path, t_tokenlist *token);
 void handle_child_exit(pid_t pid, int *heredoc_fd, t_fd *f, t_parser *parser);
-int	ft_handle_redirections(t_parser *parser, int re);
+int	ft_handle_redirections(t_parser *parser);
 void buitlin(t_parser *parser, t_env *env);
 
 // void                        ctrl_c_press_here(int signal);
@@ -201,9 +201,9 @@ void pv_initialize_context(t_context *ctx, char *input, t_env *env);
 int pv_handle_backslashes(t_context *ctx);
 char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
-int							ft_handle_redirections(t_parser *parser, int re);
+int							ft_handle_redirections(t_parser *parser);
 void						ft_redirection_delimiter(t_parser *node);
-void						cmds_exec(t_parser *parser, t_env *env);
+void	cmds_exec(t_parser *parser, t_env *env, t_tokenlist *token_list);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
@@ -295,7 +295,7 @@ int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
 int			is_executable(char *cmd);
 int			is_executable_PWD(t_env env, char *cmd);
 char	*get_path(t_env env, char *cmd);
-char	**ft_create_args(t_parser *parser);
+char	**ft_create_args(t_parser *parser, t_tokenlist *token);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
 int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
 int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);
