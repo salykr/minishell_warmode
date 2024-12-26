@@ -9,8 +9,12 @@
 /*   Updated: 2024/11/12 20:09:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "mini_shell.h"
+
+int	is_oldpwd_input(const char *input)
+{
+	return (ft_strcmp(input, "-") == 0);
+}
 
 void	update_pwd(t_parser *list, t_env *myenv)
 {
@@ -18,15 +22,14 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	char	*oldpwd;
 	char	*value;
 
-	//printf("in update pwd\n");
 	oldpwd = ft_getenv(myenv, "PWD");
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd");
-		if(strcmp(list->input[0],"..")==0 && oldpwd)
-		{  
-			add_or_update_to_env(strdup("OLDPWD"),ft_strdup(oldpwd) , myenv);
-			oldpwd = ft_strjoin(oldpwd,"/..");
+		if (strcmp(list->input[0], "..") == 0 && oldpwd)
+		{
+			add_or_update_to_env(strdup("OLDPWD"), ft_strdup(oldpwd), myenv);
+			oldpwd = ft_strjoin(oldpwd, "/..");
 			add_or_update_to_env(ft_strdup("PWD"), oldpwd, myenv);
 		}
 		return ;
@@ -34,25 +37,22 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	if (oldpwd)
 	{
 		value = ft_strdup(oldpwd);
-		add_or_update_to_env(strdup("OLDPWD"),value , myenv);
-		//  free(value);
+		add_or_update_to_env(strdup("OLDPWD"), value, myenv);
 	}
 	value = ft_strdup(cwd);
 	add_or_update_to_env(ft_strdup("PWD"), value, myenv);
-	//  free(value);
 }
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
-	//printf("input : %s\n",list->input[0]);
-	if(list->input != NULL && list->input[0][0] == '\0')
+	if (list->input != NULL && list->input[0][0] == '\0')
 		chdir(".");
 	else if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
 	{
 		printf("cmd_is_dir: %d\n", cmd_is_dir(list->input[0]));
 		printf("chdir: %d\n", chdir(list->input[0]));
-		printf("path: %s\n",list->input[0]);
-		perror("cd:)");
+		printf("path: %s\n", list->input[0]);
+		perror("cd");
 		return (1);
 	}
 	update_pwd(list, myenv);
@@ -61,10 +61,10 @@ int	change_directory_and_update(t_parser *list, t_env *myenv)
 
 void	replace_with_str(char ***array, char *new_str)
 {
-	size_t i;
+	size_t	i;
 
 	if (!array || !new_str)
-		return;
+		return ;
 	if (*array != NULL)
 	{
 		i = 0;
@@ -77,30 +77,27 @@ void	replace_with_str(char ***array, char *new_str)
 	}
 	*array = (char **)malloc(sizeof(char *) * 2);
 	if (*array == NULL)
-		return; 
+		return ;
 	(*array)[0] = ft_strdup(new_str);
 	if ((*array)[0] == NULL)
 	{
 		free(*array);
-		return;
+		return ;
 	}
 	(*array)[1] = NULL;
 }
 
-int	is_oldpwd_input(const char *input)
-{
-	return (ft_strcmp(input, "-") == 0);
-}
-
 char	*remove_quotes_with_free(char *str)
 {
-	char *result;
-	int j;
-	int i;
-	bool in_single = false;
-	bool in_double = false;
+	char	*result;
+	int		j;
+	int		i;
+	bool	in_single;
+	bool	in_double;
 
 	result = malloc(ft_strlen(str) + 1);
+	in_single = false;
+	in_double = false;
 	j = 0;
 	i = 0;
 	while (str[i])
@@ -115,5 +112,5 @@ char	*remove_quotes_with_free(char *str)
 	}
 	result[j] = '\0';
 	free(str);
-	return result;
+	return (result);
 }

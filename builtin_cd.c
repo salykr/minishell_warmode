@@ -6,39 +6,11 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 11:06:21 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 12:28:32 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-
-char	*expand_path(t_env *env, char *path)
-{
-	char	*env_var;
-	size_t	skip_len;
-	char	*full_path;
-
-	env_var = NULL;
-	skip_len = 0;
-	if (ft_strncmp(path, "$PWD", 4) == 0)
-	{
-		env_var = ft_getenv(env, "PWD");
-		skip_len = 4;
-	}
-	else if (ft_strncmp(path, "$HOME", 5) == 0)
-	{
-		env_var = ft_getenv(env, "HOME");
-		skip_len = 5;
-	}
-	if (env_var == NULL)
-		return (NULL);
-	full_path = malloc(ft_strlen(env_var) + ft_strlen(path + skip_len) + 1);
-	if (full_path == NULL)
-		return (NULL);
-	ft_strcpy(full_path, env_var);
-	ft_strcat(full_path, path + skip_len);
-	return (full_path);
-}
 
 int	is_home_input(char **input)
 {
@@ -58,9 +30,24 @@ int	replace_with_env_var(char ***input, t_env *env, char *var_name)
 		perror("cd");
 		return (0);
 	}
-	//printf("the val is: %s \n", env_value);
 	replace_with_str(input, env_value);
 	return (1);
+}
+
+int	handle_input(t_parser *list, t_env *myenv)
+{
+	if (is_home_input(list->input))
+	{
+		if (!replace_with_env_var(&list->input, myenv, "HOME"))
+			return (-1);
+	}
+	else if (is_oldpwd_input(list->input[0]))
+	{
+		if (!replace_with_env_var(&list->input, myenv, "OLDPWD"))
+			return (-1);
+		printf("%s\n", list->input[0]);
+	}
+	return (0);
 }
 
 int	handle_directory_input(t_parser *list, t_env *myenv)
@@ -68,23 +55,18 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 	char	*val;
 
 	val = NULL;
-	if (is_home_input(list->input))
-	{
-		if (!replace_with_env_var(&list->input, myenv, "HOME"))
-			return (-1);
-	}
-	else if (ft_strnstr(list->input[0], "$HOME", ft_strlen(list->input[0])) != NULL)
+	if (is_home_input(list->input) || is_oldpwd_input(list->input[0]))
+		return (handle_input(list, myenv));
+	else if (ft_strnstr(list->input[0], "$HOME",
+			ft_strlen(list->input[0])) != NULL)
 	{
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
 	}	
-	else if (is_oldpwd_input(list->input[0]))
-	{
-		if (!replace_with_env_var(&list->input, myenv, "OLDPWD"))
-			return (-1);
-		printf("%s\n", list->input[0]);
-	}
-	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0 || ft_strncmp(list->input[0], "$HOME", 5) == 0 || ft_strchr(list->input[0], '$') != NULL || strrchr(list->input[0], '~') != NULL)
+	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0
+		|| ft_strncmp(list->input[0], "$HOME", 5) == 0
+		|| ft_strchr(list->input[0], '$') != NULL
+		|| strrchr(list->input[0], '~') != NULL)
 	{
 		if (strrchr(list->input[0], '~') != NULL)
 			list->input[0] = ft_strjoin(strdup("$HOME"), list->input[0] + 1);
@@ -98,8 +80,8 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 
 int	builtin_cd(t_parser *list, t_env *myenv)
 {
-	//i added these two conditions incase sar she
-	if (list->input != NULL && (strcmp(list->input[0], "---") == 0))
+	if (list->input != NULL && (ft_strlen(list->input[0]) > 2
+			&& list->input[0][2] == '-'))
 	{
 		printf("cd: Invalid option.\n");
 		return (2);
@@ -114,13 +96,11 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 			|| strchr(list->input[0], '"')))
 		list->input[0] = remove_quotes_with_free(list->input[0]);
 	if (list->input != NULL && list->input[0] != NULL
-			&& strchr(list->input[0], '$') != NULL)
+		&& strchr(list->input[0], '$') != NULL)
 		replace_with_str(&list->input, process_variable(list->input[0], myenv));
-	if (list->input != NULL && (list->input[1] != NULL)) //|| !ft_strncmp(list->input[0], "/home", 5))
+	if (list->input != NULL && (list->input[1] != NULL))
 		return (1);
 	if (handle_directory_input(list, myenv) != 0)
 		return (1);
-	//printf("%s\n", list->input[0]);
-	//print_2d_array(list->input);
 	return (change_directory_and_update(list, myenv));
 }
