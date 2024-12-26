@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 10:45:52 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 13:00:19 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,7 +338,7 @@ char						*check_env_input(t_parser *list);
 int							check_ls_pwd_in_env(t_parser *list, t_env *myenv);
 void						print_env_vars(t_env *myenv, char **input_list);
 void						print_all_env_vars(t_env *myenv);
-void						update_SHLVL(t_env *myenv);
+void						update_shlvl(t_env *myenv);
 
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);
