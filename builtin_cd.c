@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/23 16:54:00 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:06:21 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	replace_with_env_var(char ***input, t_env *env, char *var_name)
 		perror("cd");
 		return (0);
 	}
-	printf("the val is: %s \n", env_value);
+	//printf("the val is: %s \n", env_value);
 	replace_with_str(input, env_value);
 	return (1);
 }
@@ -71,9 +71,7 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 	if (is_home_input(list->input))
 	{
 		if (!replace_with_env_var(&list->input, myenv, "HOME"))
-		{
 			return (-1);
-		}
 	}
 	else if (ft_strnstr(list->input[0], "$HOME", ft_strlen(list->input[0])) != NULL)
 	{
@@ -84,11 +82,11 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 	{
 		if (!replace_with_env_var(&list->input, myenv, "OLDPWD"))
 			return (-1);
-		printf("path: %s\n", list->input[0]);
+		printf("%s\n", list->input[0]);
 	}
 	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0 || ft_strncmp(list->input[0], "$HOME", 5) == 0 || ft_strchr(list->input[0], '$') != NULL || strrchr(list->input[0], '~') != NULL)
 	{
-		if(strrchr(list->input[0], '~')!=NULL)
+		if (strrchr(list->input[0], '~') != NULL)
 			list->input[0] = ft_strjoin(strdup("$HOME"), list->input[0] + 1);
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
@@ -98,7 +96,6 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 	return (0);
 }
 
-//-- oldpwd
 int	builtin_cd(t_parser *list, t_env *myenv)
 {
 	//i added these two conditions incase sar she
@@ -118,9 +115,7 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 		list->input[0] = remove_quotes_with_free(list->input[0]);
 	if (list->input != NULL && list->input[0] != NULL
 			&& strchr(list->input[0], '$') != NULL)
-		{
 		replace_with_str(&list->input, process_variable(list->input[0], myenv));
-		}
 	if (list->input != NULL && (list->input[1] != NULL)) //|| !ft_strncmp(list->input[0], "/home", 5))
 		return (1);
 	if (handle_directory_input(list, myenv) != 0)

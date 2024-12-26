@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/23 10:51:33 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 10:44:14 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,14 +274,3 @@ void	print_env(t_env *myenv)
 		i++;
 	}
 }
-
-
-
-// $> pwd
-// $> unset PWD
-// $> env | grep PWD
-// $> cd $PWD
-// $> pwd
-
-
-

@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/23 16:00:50 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 10:45:52 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ int			isempty(const char *str);
 char		*expand_variable(const char *input ,t_env env);
 int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
 int			is_executable(char *cmd);
-int			is_executable_PWD(t_env env, char *cmd);
+int			is_executable_pwd(t_env env, char *cmd);
 char	*get_path(t_env env, char *cmd);
 char	**ft_create_args(t_parser *parser);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
