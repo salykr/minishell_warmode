@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 13:00:19 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/26 13:22:02 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,6 @@ void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
-char						*remove_quotes_new(const char *str);
 int							handle_heredoc(char **heredoc_content);
 char						*get_path_PWD(t_env env, char *cmd);
 void						print_expanded_input(char **input,
@@ -233,7 +232,6 @@ void parse_export_input(char *input, char **name, char **value);
 char *itoa(int num);
 char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
-char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(char *str);
 void memory_free(char *str1, char *str2);
 char *remove_closing_quote_after_equals(char *str);

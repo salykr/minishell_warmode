@@ -70,24 +70,3 @@ int count_quote(const char *str)
     }
     return (count);
 }
-char *remove_quotes_new_new(const char *str)
-{
-    int i;
-    int j;
-    char *new_str;
-    
-    i = 0;
-    j = 0;
-    new_str = (char *)malloc(sizeof(char) * (strlen(str) - count_quote(str)) + 1);
-    while(str[i] != '\0')
-    {
-        if (str[i]!='\'' && str[i]!='"')
-        {
-            new_str[j] = str[i];
-            j++;
-        }
-        i++;
-    }
-    new_str[j]='\0';
-    return(new_str);
-}
