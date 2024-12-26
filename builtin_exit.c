@@ -16,7 +16,6 @@ void	handle_exit_input(t_parser *parser)
 {
 	if (parser->input != NULL && parser->input[0] != NULL)
 		parser->input[0] = remove_paired_quotes(parser->input[0]);
-	//parser->input[0] = remove_quotes(parser->input[0]);
 }
 
 int	adjust_number(int num)
