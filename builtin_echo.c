@@ -6,11 +6,17 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/07 13:03:47 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:38:31 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
+int	is_special_char(char c)
+{
+	return (c == '$' || c == ':' || c == '=' || c == '+' || c == '/'
+		|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
+}
 
 bool	check_balanced_quotes(const char *input)
 {
@@ -47,7 +53,7 @@ void	handle_variable_expansion(char **arg, t_env *env)
 		temp = remove_quotes(*arg);
 		printf("%s", temp + 1);
 		free(temp);
-		*arg += strlen(*arg);
+		*arg += ft_strlen(*arg);
 	}
 	else
 		print_expanded_input(arg, false, *env);
@@ -102,14 +108,3 @@ int	builtin_echo(t_parser *list, t_env *env)
 		printf("\n");
 	return (0);
 }
-
-/*
-    Things to test again:
-    ---------------------
-	echo my shit terminal is [$TERM]
-	echo $HOME% (should return /root%)
-    echo \-n hi (-n should work)
-	echo $USER$var\$USER$USER\$USERtest$USER
-	echo "'$HO''ME'"
-	echo $?$
-*/

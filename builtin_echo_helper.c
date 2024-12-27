@@ -5,62 +5,84 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 17:33:29 by root              #+#    #+#             */
-/*   Updated: 2024/12/07 16:12:44 by rdennaou         ###   ########.fr       */
+/*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
+/*   Updated: 2024/12/21 12:39:02 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-int	is_special_char(char c)
+void	process_special_variable(char **input)
 {
-	return (c == '$' || c == ':' || c == '=' || c == '+');
+	if (**input >= '0' && **input <= '9')
+	{
+		(*input)++;
+		while (**input && (isalnum(**input) || is_special_char(**input)))
+		{
+			printf("%c", **input);
+			(*input)++;
+		}
+		return ;
+	}
+	else if (is_special_char(**input))
+	{
+		printf("$");
+		while (**input && (isalnum(**input) || is_special_char(**input)))
+		{
+			printf("%c", **input);
+			(*input)++;
+		}
+		return ;
+	}
+}
+
+void	process_expanded_variable(char **input, t_env env)
+{
+	char	*var_name_start;
+	size_t	var_name_length;
+	char	*var_name;
+	char	*value;
+
+	var_name_start = *input;
+	while (**input && (isalnum(**input) || **input == '_'))
+		(*input)++;
+	var_name_length = *input - var_name_start;
+	if (var_name_length > 0)
+	{
+		var_name = (char *)malloc(var_name_length + 1);
+		ft_strncpy(var_name, var_name_start, var_name_length);
+		var_name[var_name_length] = '\0';
+		value = ft_getenv(&env, var_name);
+		if (value)
+			printf("%s", value);
+		free(var_name);
+	}
 }
 
 void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 {
-	char	*expanded;
-
 	if (**input == '$' && !inside_single_quotes)
 	{
 		(*input)++;
-		if (**input == '\0' || **input == '\"' || **input == ' ')
+		if (**input == '\0' || **input == '\"' || **input == '\''
+			|| **input == ' ')
 		{
 			printf("$");
 			return ;
 		}
-		else if (**input >= '0' && **input <= '9')
+		else if (**input == '?')
 		{
+			printf("%d", global_var);
 			(*input)++;
-			while (**input && (isalnum(**input) || is_special_char(**input)))
-			{
-				printf("%c", **input);
-				(*input)++;
-			}
 			return ;
 		}
-		else if (is_special_char(**input))
+		else if ((**input >= '0' && **input <= '9') || is_special_char(**input))
 		{
-			printf("$");
-			while (**input && (isalnum(**input) || is_special_char(**input)))
-			{
-				printf("%c", **input);
-				(*input)++;
-			}
+			process_special_variable(input);
 			return ;
 		}
 		else
-		{
-			(*input)--;
-			expanded = process_variable(*input, &env);
-			if (expanded)
-			{
-				printf("%s", expanded);
-				free(expanded);
-			}
-			(*input) += strlen(*input);
-			return ;
-		}
+			process_expanded_variable(input, env);
 	}
 }
 

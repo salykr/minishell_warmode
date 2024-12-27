@@ -12,7 +12,7 @@
 
 #include "mini_shell.h"
 
-char *get_env_value(t_env *env, const char *var) 
+char *get_env_value(t_env *env, const char *var)
 {
     if (var[0] == '$') 
         var++; // Skip the '$' character

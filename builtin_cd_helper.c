@@ -12,104 +12,110 @@
 
 #include "mini_shell.h"
 
-
-void update_pwd(t_env *myenv)
+void	update_pwd(t_parser *list, t_env *myenv)
 {
-    char cwd[2048];
-    char *oldpwd;
-     char* value;
-    printf("in update pwd\n");
-    oldpwd = ft_getenv(myenv, "PWD");
-    if (getcwd(cwd, sizeof(cwd)) == NULL)
-    {
-        perror("getcwd");
-        return;
-    }
-    if (oldpwd)
-    {
-        value = ft_strdup(oldpwd);
-        add_or_update_to_env(strdup("OLDPWD"),value , myenv);
-        //  free(value);
-    }
-    value = ft_strdup(cwd);
-    add_or_update_to_env(ft_strdup("PWD"), value, myenv);
-    //  free(value);
+	char cwd[2048];
+	char *oldpwd;
+		char* value;
+	printf("in update pwd\n");
+	oldpwd = ft_getenv(myenv, "PWD");
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("getcwd");
+		if(strcmp(list->input[0],"..")==0 && oldpwd)
+		{  
+			add_or_update_to_env(strdup("OLDPWD"),ft_strdup(oldpwd) , myenv);
+			oldpwd = ft_strjoin(oldpwd,"/..");
+			add_or_update_to_env(ft_strdup("PWD"), oldpwd, myenv);
+		}
+		return;
+	}
+	if (oldpwd)
+	{
+		printf("it is : %s\n",oldpwd);
+		value = ft_strdup(oldpwd);
+		add_or_update_to_env(strdup("OLDPWD"),value , myenv);
+		//  free(value);
+	}
+	value = ft_strdup(cwd);
+	add_or_update_to_env(ft_strdup("PWD"), value, myenv);
+	//  free(value);
 }
 // cd
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
-    printf("input : %s\n",list->input[0]);
-    if(list->input != NULL && list->input[0][0] == '\0')
-        chdir(".");
+	printf("input : %s\n",list->input[0]);
+	if(list->input != NULL && list->input[0][0] == '\0')
+		chdir(".");
 	else if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
 	{
-        printf("cmd_is_dir: %d\n", cmd_is_dir(list->input[0]));
-        printf("chdir: %d\n", chdir(list->input[0]));
+		printf("cmd_is_dir: %d\n", cmd_is_dir(list->input[0]));
+		printf("chdir: %d\n", chdir(list->input[0]));
 		printf("path: %s\n",list->input[0]);
 		perror("cd:)");
 		return (1);
 	}
-	update_pwd(myenv);
+	update_pwd(list, myenv);
 	return (0);
 }
 
-
-void replace_with_str(char ***array, char *new_str)
+void	replace_with_str(char ***array, char *new_str)
 {
 	size_t i;
 
-    if (!array || !new_str)
-        return;
-    if (*array != NULL)
-    {
-        i = 0;
-        while ((*array)[i] != NULL)
-        {
-            free((*array)[i]);
-            i++;
-        }
-        free(*array);
-    }
-    *array = (char **)malloc(sizeof(char *) * 2);
-    if (*array == NULL)
-        return; 
-    (*array)[0] = ft_strdup(new_str);
-    if ((*array)[0] == NULL)
-    {
-        free(*array);
-        return;
-    }
-    (*array)[1] = NULL;
+	if (!array || !new_str)
+		return;
+	if (*array != NULL)
+	{
+		i = 0;
+		while ((*array)[i] != NULL)
+		{
+			free((*array)[i]);
+			i++;
+		}
+		free(*array);
+	}
+	*array = (char **)malloc(sizeof(char *) * 2);
+	if (*array == NULL)
+		return; 
+	(*array)[0] = ft_strdup(new_str);
+	if ((*array)[0] == NULL)
+	{
+		free(*array);
+		return;
+	}
+	(*array)[1] = NULL;
 }
 
 
-int is_oldpwd_input(const char *input)
+int	is_oldpwd_input(const char *input)
 {
 	return (ft_strcmp(input, "-") == 0);
 }
-char *remove_quotes_with_free(char *str)
+char	*remove_quotes_with_free(char *str)
 {
-    char *result;
-    int j;
-    int i;
-    bool in_single = false;
-    bool in_double = false;
+	char *result;
+	int j;
+	int i;
+	bool in_single = false;
+	bool in_double = false;
 
-    result = malloc(ft_strlen(str) + 1);
-    j = 0;
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '\'' && !in_double)
-            in_single = !in_single;
-        else if (str[i] == '"' && !in_single)
-            in_double = !in_double;
-        else
-            result[j++] = str[i];
-        i++;
-    }
-    result[j] = '\0';
-    free(str);
-    return result;
+	result = malloc(ft_strlen(str) + 1);
+	j = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (str[i] == '"' && !in_single)
+			in_double = !in_double;
+		else
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	free(str);
+	return result;
 }
+

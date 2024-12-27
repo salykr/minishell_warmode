@@ -24,6 +24,7 @@ t_parser *create_parser(void)
         return (NULL);
     new_parser->command = NULL;
     new_parser->input = NULL;
+    new_parser->heredoc = NULL;
     new_parser->args = NULL;
     new_parser->operations = NULL;
     new_parser->redirection = NULL;

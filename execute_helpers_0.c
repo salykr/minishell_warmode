@@ -13,40 +13,6 @@
 #include"mini_shell.h"
 
 
-char	**ft_create_args(t_parser *parser)
-{
-	char	**path;
-	int		i;
-
-	path = NULL;
-	path = add_string_to_2d_array(path, parser->command);
-	i = 0;
-	if (parser->operations != NULL)
-	{
-		while (parser->operations[i])
-		{
-			path = add_string_to_2d_array(path, parser->operations[i]);
-			i++;
-		}
-	}
-	if(strcmp(parser->command, "set")==0 || strcmp(parser->command, "declare")==0)
-	{
-		printf("hiiiiiiiiiiiii\\n\n");
-		path = add_string_to_2d_array(path, ft_strdup("-c"));
-	}
-	i = 0;
-	if (parser->input != NULL && parser->redirection == NULL)
-	{
-		while (parser->input[i])
-		{
-			printf("command : %s\n", parser->command);
-			path = add_string_to_2d_array(path, parser->input[i]);
-			i++;
-		}
-	}
-	return (path);
-}
-
 char	*get_path(t_env env, char *cmd)
 {
 	int		i;
@@ -87,34 +53,70 @@ char	*get_path_PWD(t_env env, char *cmd)
 	if (!env_path)
 		return (NULL);
 	p = ft_strjoin(env_path, &cmd[1]);
-	printf("str: %s\n", p);
+	// printf("str: %s\n", p);
 	if (access(p, X_OK) == 0)
 		return (p);
 	else
+	{
+		printf("bash: %s: Permission denied\n",p);
 		free(p);
+	}
 	return (NULL);
 }
-
-void	ft_redirection_delimiter(t_parser *node)
+//ft_redirection_delimiter
+void free_heredoc(char **input_array)
 {
-	char	*lineread;
+	char **ptr;
 
-	while (1)
+	ptr = input_array;
+	if (!input_array)
+		return;
+	while (*ptr)
 	{
-		lineread = readline(">");
-		if (!lineread) // If EOF is reached, break the loop
-			break ;
-		// printf("line read: %s\n", lineread);
-		if (ft_strcmp(lineread, node->delimeter) == 0)
+		// printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
+		free(*ptr);
+		ptr++;
+	}
+	free(input_array);
+	*input_array = NULL;
+}
+void write_in_heredoc(t_parser *node)
+{
+    char *line;
+	size_t line_len;
+	int i;
+
+	line = NULL;
+    line_len = 0;
+	global_var = 0;
+	i = 0;
+	while(node->delimeter != NULL && node->delimeter[i] != NULL && global_var != 130 )
+	{
+		if(node->heredoc != NULL)
 		{
-			free(lineread);
-			break ;
+			free_input(node->heredoc);
+			node->heredoc = NULL;
 		}
-		node->input = add_string_to_2d_array(node->input, lineread);
-		free(lineread);
+		while(1)
+		{
+			write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
+			line = get_next_line(0); // Read input from stdin
+			if (!line) // Handle EOF or error
+				break;
+			line_len = strlen(line);
+			if (line[line_len - 1] == '\n')
+				line[line_len - 1] = '\0';
+			if (strcmp(line, node->delimeter[i]) == 0)
+			{
+				free(line);
+				break;
+			}
+			node->heredoc = add_string_to_2d_array(node->heredoc, line);
+			free(line); // Free the line buffer after processing
+		}
+		i++;
 	}
 }
-
 
 int	handle_heredoc(char **heredoc_content)
 {
@@ -133,33 +135,7 @@ int	handle_heredoc(char **heredoc_content)
 		write(pipefd[1], "\n", 1);
 		i++;
 	}
-
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
 
-/*
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-int main() {
-    // Prepare arguments for execve
-    char *args[] = {"/bin/bash", "-c", "echo $abc", NULL};  // Run echo to print the value of $abc
-    
-    // Set environment variables (including abc=hi)
-    char *envp[] = {
-        "abc=hi",  // Set abc to "hi"
-        NULL       // End of environment variables
-    };
-
-    // Execute the command using execve
-    if (execve("/bin/bash", args, envp) == -1) {
-        perror("execve");
-        exit(EXIT_FAILURE);
-    }
-
-    return 0;
-}
-
-*/

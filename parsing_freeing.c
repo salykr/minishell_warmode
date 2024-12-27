@@ -71,12 +71,16 @@ void free_parser(t_parser *parser)
 		next = parser->next;
 		if (parser->input)
 			free_input(parser->input);
+		if (parser->heredoc)
+			free_input(parser->heredoc);
 		if (parser->delimeter)
-			free(parser->delimeter);
+			free_input(parser->delimeter);
 		if (parser->operations)
 			free_operations(parser->operations);
 		if (parser->outfile)
 			free_output(parser->outfile);
+		if (parser->args)
+			free_output(parser->args);
 		if (parser->redirection)
 			free(parser->redirection);
 		if (parser->command)
