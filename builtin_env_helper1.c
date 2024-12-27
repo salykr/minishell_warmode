@@ -37,7 +37,7 @@ char *check_env_input(t_parser *list)
 int check_ls_pwd_in_env(t_parser *list, t_env *myenv)
 {
     int i;
-  t_parser *parser;
+    t_parser *parser;
 
     if (list == NULL || list->input == NULL)
         return 1;
@@ -56,7 +56,7 @@ int check_ls_pwd_in_env(t_parser *list, t_env *myenv)
             free(parser);
             return (1);
         }
-        cmds_exec(parser, myenv,NULL);
+        cmds_exec(parser, myenv);
         free(parser);
         return (0);
     }

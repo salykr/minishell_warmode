@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/23 16:58:54 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/26 11:45:35 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ int     main(int argc, char **argv, char **envp)
                 print_parser(parser);
                 // free_token_list(token_list);
                 // Execute the parsed command
-                cmds_exec(parser, my_env, token_list);
                 free_token_list(token_list);
+                cmds_exec(parser, my_env);
                 free(line);
                 free_parser(parser);
         }

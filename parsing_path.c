@@ -55,6 +55,7 @@ int is_executable_PWD(t_env env, char *cmd)
 
 int handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env)
 {
+    struct stat path_stat;
 
     if (curr->command == NULL && 
         (is_executable(tokens->value) || is_executable_PWD(env, tokens->value)))
@@ -66,8 +67,11 @@ int handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env)
             return -1;
         }
     }
-    else if (curr->command != NULL && cmd_is_dir(tokens->value))
+    else if ((curr->command != NULL && cmd_is_dir(tokens->value)) || stat(tokens->value, &path_stat)==0)
+    {
         curr->input = add_string_to_2d_array(curr->input, tokens->value);
+        curr->args = add_string_to_2d_array(curr->args, tokens->value);
+    }
     else
     {
         printf("bash: %s : No such file or directory\n", tokens->value);
@@ -111,7 +115,7 @@ int handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 {
     if (tokens->type == T_PATH)
     {
-        if (curr->command!=NULL)
+        if (curr->command!=NULL && !strcmp(curr->command,"pwd"))
             return 1;
         if (curr->command == NULL && cmd_is_dir(tokens->value))
         {

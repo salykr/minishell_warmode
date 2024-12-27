@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 12:26:55 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/24 09:45:35 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/26 11:18:31 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 void ctrl_c_press(int sig)
 {
     (void)sig;
+    global_var = 130;
     // g_interrupt = 1; // Set the interrupt flag
     write(STDOUT_FILENO, "\n", 1);
     rl_on_new_line();

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/20 10:29:42 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/26 10:12:07 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,8 @@ void pv_handling_3(t_context *ctx)
 //export hi$USER'$USER'"$USER"$USER\\$USER\$USER$HOME9.
 //export hi$USER'$USER'"$USER"$USER\\$USER\$USER$HOME9$.
 
-char *handle_env_value(t_context *ctx, t_env *env) {
+char *handle_env_value(t_context *ctx, t_env *env)
+{
     ctx->env_value = get_env_value(env, ctx->var_name);
     if (ctx->env_value == NULL)
         ctx->env_value = "";
