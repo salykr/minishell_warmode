@@ -25,8 +25,6 @@ char	*get_path(t_env env, char *cmd)
 	if (!env_path)
 		return (NULL);
 	path = ft_split(env_path, ':');
-	// path = add_string_to_2d_array(path, ft_strdup("/bin/bash"));
-	// print_2d_array(path);
 	if (!path)
 		return (NULL);
 	i = 0;
@@ -34,7 +32,6 @@ char	*get_path(t_env env, char *cmd)
 	{
 		back_slash = ft_strjoin("/", cmd);
 		p = ft_strjoin(path[i], back_slash);
-		// printf("path is: %s\n", p);
 		free(back_slash);
 		if (access(p, X_OK) == 0)
 			return (free_input(path), p);
@@ -53,7 +50,6 @@ char	*get_path_PWD(t_env env, char *cmd)
 	if (!env_path)
 		return (NULL);
 	p = ft_strjoin(env_path, &cmd[1]);
-	// printf("str: %s\n", p);
 	if (access(p, X_OK) == 0)
 		return (p);
 	else
@@ -73,7 +69,6 @@ void free_heredoc(char **input_array)
 		return;
 	while (*ptr)
 	{
-		// printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
 		free(*ptr);
 		ptr++;
 	}
@@ -85,13 +80,17 @@ void write_in_heredoc(t_parser *node)
     char *line;
 	size_t line_len;
 	int i;
-
+	int j;
+	j = 0;
+    set_signal_handler(ctrl_c_press_heredoc);
+    // handle_child_signals(ctrl_c_press_heredoc);
 	line = NULL;
     line_len = 0;
 	global_var = 0;
 	i = 0;
 	while(node->delimeter != NULL && node->delimeter[i] != NULL && global_var != 130 )
 	{
+		printf("in OUTER loop for %dth time global var %d \n",j, global_var);
 		if(node->heredoc != NULL)
 		{
 			free_input(node->heredoc);
@@ -99,6 +98,7 @@ void write_in_heredoc(t_parser *node)
 		}
 		while(1)
 		{
+			printf("in  loop for %dth time global var %d \n",j, global_var);
 			write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
 			line = get_next_line(0); // Read input from stdin
 			if (!line) // Handle EOF or error
@@ -113,9 +113,19 @@ void write_in_heredoc(t_parser *node)
 			}
 			node->heredoc = add_string_to_2d_array(node->heredoc, line);
 			free(line); // Free the line buffer after processing
+			j++;
 		}
 		i++;
 	}
+	if (global_var == 130)
+	{
+		free_input(node->heredoc);
+		node->heredoc = NULL;
+	}
+	set_signal_handler(ctrl_c_press);
+	// setup_signal_handlers();
+	// if(global_var)
+	// printf("global var is: %d\n",global_var);
 }
 
 int	handle_heredoc(char **heredoc_content)

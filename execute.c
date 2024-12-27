@@ -6,89 +6,108 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/27 12:11:47 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/27 16:45:06 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// void manage_redirection_input(t_parser *parser, int *fd)
-// {
-// 	int i;
-// 	int j;
-// 	int fd_heredoc;
-// 	int fd_file;
-
-// 	fd_file = -1 ;
-// 	fd_heredoc  = -1;
-// 	i = 0;
-// 	j = 0;
-// 	if(parser->redirection && check_heredoc_existence(parser->redirection))
-// 	{
-// 		write_in_heredoc(parser);
-// 		fd_heredoc = handle_heredoc(parser->heredoc);	
-// 	}
-// 	while(parser->redirection && parser->redirection[i]!='\0') //increment i here eza badi aamel pre increment
-// 	{
-// 		if(parser->redirection[i] == T_INPUT)
-// 		{
-// 			if (parser->infile != NULL && parser->infile[j] != NULL && parser->redirection[i] == T_INPUT)
-// 			{
-// 				if(j != 0)
-// 					close(fd_file);
-// 				fd_file = open(parser->infile[j], O_RDONLY);
-// 				if(fd_file == -1)
-// 					perror("Error: Input file");
-// 				j++;
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	if(parser->redirection[get_last_input_redirection(parser->redirection)] == T_HEREDOC)
-// 	{
-// 		if(fd_file != -1)
-// 			close(fd_file);
-// 		*fd = fd_heredoc;
-// 	}
-// 	else if (parser->redirection[get_last_input_redirection(parser->redirection)] == T_INPUT)
-// 	{
-// 		if(fd_heredoc != -1)
-// 			close(fd_heredoc);
-// 		*fd = fd_file;
-// 	}
-// }
 #include "mini_shell.h"
 
 void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 {
 	char	*cmd_path;
-	// char	**args;
-	// int		heredoc_fd;
 	pid_t	pid;
-	(void)fd;
 
 	initialize_execution(parser, env, &cmd_path);
-	printf("args\n");
-	print_2d_array(parser->args);
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
 	if (pid == 0)
 	{
-		printf("cmd: %s\n",parser->command);
+		set_signal_handler(ctrl_backslash);
 		manage_input_output(&f, fd, parser);
-		if(f.fd_1 == -1 ||  f.fd_2 == -1)
-			return;
 		if(ft_getenv(env, "PATH")!=NULL)
-			execve(cmd_path, parser->args, env->env);
-		perror("Error");
-		exit(EXIT_FAILURE);
+		{
+			if (execve(cmd_path, parser->args, env->env) == -1)
+			{
+				perror("execve");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			printf("Error: PATH environment variable not set\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
-		handle_child_exit(pid,&f, parser);
-		// free_input(args);
+		handle_child_exit(&f);
 		free(cmd_path);
 	}
 }
+
+
+int check_permissions(const char *filepath, int flag)
+{
+    struct stat file_stat;
+
+    if (flag == 0 && stat(filepath, &file_stat) == -1)
+	{
+        perror("stat");
+        return (0);
+    }
+	if (flag == 0 && !(file_stat.st_mode & S_IRUSR))
+	{
+        printf("Permission denied\n");
+		return (0);
+    }
+	if ( flag ==1 && stat(filepath, &file_stat) != -1)
+	{
+		if (!(file_stat.st_mode & (S_IRUSR | S_IWUSR | S_IXUSR)))
+		{
+			printf("Permission denied\n");
+			return (0);
+		}
+	}
+	return(1);
+}
+
+int check_heredoc_existence(int *redirection)
+{
+	int i;
+	
+	i = 0;
+	while(redirection[i]!='\0')
+	{
+		if(redirection[i] == T_HEREDOC)
+			return (1);
+		i++;
+	}
+	return(0);
+}
+
+int	handle_input_output(t_parser *parser,t_fd *f, int fd[2])
+{	
+	manage_pipe(parser,f, fd);
+	if(parser->redirection)
+	{
+		if(parser->infile != NULL || parser->delimeter != NULL)
+		{
+			int val = manage_redirection_input(parser,&f->fd_1);
+			if(val == 1)
+				return (0);
+			else if(val == -1)
+				return(-1);
+		}
+		if(parser->outfile !=NULL)
+		{
+			if(manage_redirection_output(parser,&f->fd_2) == 1)	
+				return (0);
+		}
+	}
+	return(1);
+}
+
 
 int save_original_fds(int *original_stdin, int *original_stdout)
 {
@@ -97,9 +116,9 @@ int save_original_fds(int *original_stdin, int *original_stdout)
     if (*original_stdin == -1 || *original_stdout == -1)
 	{
         perror("Error saving original file descriptors");
-        return -1;
+        return (-1);
     }
-    return 0;
+    return (0);
 }
 void restore_original_fds(int original_stdin, int original_stdout)
 {
@@ -137,48 +156,11 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 			exit(global_var);
 		}
 		else // Parent process
-			handle_child_exit(pid, &f, parser);
+			handle_child_exit(&f);
 	}
 }
 
 
-int check_permissions(const char *filepath, int flag)
-{
-	//input flag = 0
-	//output flag =1
-    struct stat file_stat;
-
-    if (flag == 0 && stat(filepath, &file_stat) == -1)
-	{
-        perror("Error");
-        return (0);
-    }
-	if (flag == 0 && !(file_stat.st_mode & S_IRUSR))
-	{
-        printf("Permission denied\n");
-		return (0);
-    }
-	if ( flag ==1 && stat(filepath, &file_stat) != -1)
-	{
-		if (!(file_stat.st_mode & (S_IRUSR | S_IWUSR | S_IXUSR)))
-		{
-			printf("Permission denied\n");
-			return (0);
-		}
-	}
-	return(1);
-}
-
-// int check_permissions(const char *filepath)
-// {
-//     // Check read, write, and execute permissions
-//     if (access(filepath, R_OK | W_OK | X_OK) != 0)
-// 	{
-//         printf("Permission denied\n");
-// 		return (0);
-// 	}
-// 	return(1);
-// }
 int manage_redirection_output(t_parser *parser, int *fd)
 {
 	int i;
@@ -200,7 +182,6 @@ int manage_redirection_output(t_parser *parser, int *fd)
 				if(j!=0)
 					close(*fd);
 				*fd = open(parser->outfile[j], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				// j++;
 			}
 			else if (parser->outfile != NULL && parser->outfile[j] != NULL && parser->redirection[i] == T_APPEND)
 			{
@@ -218,20 +199,6 @@ int manage_redirection_output(t_parser *parser, int *fd)
 	return(0);
 }
 
-
-int check_heredoc_existence(int *redirection)
-{
-	int i;
-	
-	i = 0;
-	while(redirection[i]!='\0')
-	{
-		if(redirection[i] == T_HEREDOC)
-			return (1);
-		i++;
-	}
-	return(0);
-}
 
 int get_last_input_redirection(int *redirection)
 {
@@ -265,6 +232,8 @@ int manage_redirection_input(t_parser *parser, int *fd)
     if (parser->redirection && check_heredoc_existence(parser->redirection))
     {
         write_in_heredoc(parser);
+		if(global_var == 130)
+			return (-1);
         fd_heredoc = handle_heredoc(parser->heredoc);
     }
     while (parser->redirection && parser->redirection[++i] != '\0')  // Pre-increment i
@@ -305,24 +274,7 @@ void manage_pipe(t_parser *parser,t_fd *f, int fd[2])
 	if(parser->next != NULL)
 		f->fd_2 = fd[1];
 }
-int	handle_input_output(t_parser *parser,t_fd *f, int fd[2])
-{	
-	manage_pipe(parser,f, fd);
-	if(parser->redirection)
-	{
-		if(parser->infile != NULL || parser->delimeter != NULL)
-		{
-			if(manage_redirection_input(parser,&f->fd_1) == 1)
-				return (0);
-		}
-		if(parser->outfile !=NULL)
-		{
-			if(manage_redirection_output(parser,&f->fd_2) == 1)	
-				return (0);
-		}
-	}
-	return(1);
-}
+
 
 void	cmds_exec(t_parser *parser, t_env *env)
 {
@@ -336,8 +288,15 @@ void	cmds_exec(t_parser *parser, t_env *env)
 		if (parser->next)
 			pipe(fd);
 		f.fd_2 = STDOUT_FILENO;
-		if(handle_input_output(parser,&f, fd) == 0)
+		int val;
+		val = handle_input_output(parser,&f, fd); 
+		if(val == 0)
 			return;
+		else if(val == -1)
+		{
+			global_var = 130;
+			return;
+		}
 		if (is_builtin(parser))
 			execute_builtin_command(parser, f, env, fd);
 		else
@@ -354,6 +313,9 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	while (wait(&status) > 0)
 	{
 		if (WIFEXITED(status))
+		{
 			global_var = WEXITSTATUS(status);
+			// printf("global var is %d\n",global_var);
+		}
 	}
 }

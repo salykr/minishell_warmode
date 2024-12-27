@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/27 11:14:25 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/27 16:45:02 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@
 #  define GLOBALS_H
 
 extern int global_var; // Declare the global variable
-extern volatile sig_atomic_t g_interrupt;
 
 # endif
 
@@ -165,12 +164,21 @@ typedef struct s_context{
     char *env_value;
 }t_context;
 
+void set_signal_handler(void (*handler)(int));
+void ctrl_c_press_heredoc(int sig);
+void manage_pipe(t_parser *parser,t_fd *f, int fd[2]);
+int get_last_input_redirection(int *redirection);
+int manage_redirection_input(t_parser *parser, int *fd);
+int manage_redirection_output(t_parser *parser, int *fd);
+void setup_signal_handlers(void);
+void handle_child_signals(void(*handler)(int));
+void ctrl_backslash(int sig);
 //execution
 int	is_builtin(t_parser *parser);
 void manage_input_output( t_fd *f, int fd[2], t_parser *parser);
 void initialize_heredoc(int *heredoc_fd, t_parser *parser);
 void initialize_execution(t_parser *parser,t_env *env,char **cmd_path);
-void handle_child_exit(pid_t pid,  t_fd *f, t_parser *parser);
+void handle_child_exit(t_fd *f);
 int	ft_handle_redirections(t_parser *parser);
 void buitlin(t_parser *parser, t_env *env);
 void write_in_heredoc(t_parser *node);

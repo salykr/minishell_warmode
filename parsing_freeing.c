@@ -67,7 +67,6 @@ void free_parser(t_parser *parser)
 
 	while (parser)
 	{
-		// printf("freeing parser\n\n");
 		next = parser->next;
 		if (parser->input)
 			free_input(parser->input);
@@ -78,9 +77,11 @@ void free_parser(t_parser *parser)
 		if (parser->operations)
 			free_operations(parser->operations);
 		if (parser->outfile)
-			free_output(parser->outfile);
+			free_input(parser->outfile);
+		if (parser->infile)
+			free_input(parser->infile);
 		if (parser->args)
-			free_output(parser->args);
+			free_input(parser->args);
 		if (parser->redirection)
 			free(parser->redirection);
 		if (parser->command)

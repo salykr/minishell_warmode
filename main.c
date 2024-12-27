@@ -6,14 +6,13 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 11:45:35 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/27 16:19:44 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
 int global_var = 0;
-volatile sig_atomic_t g_interrupt = 0;
 void    ft_free_env(t_env **my_env)
 {
         int     i;
@@ -31,7 +30,58 @@ void    ft_free_env(t_env **my_env)
         free(*my_env);
         *my_env = NULL;
 }
+void set_signal_handler(void (*handler)(int))
+{
+    struct sigaction sa;
+    sa.sa_handler = handler;
+    sa.sa_flags = 0; // Use default behavior
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+//     sa.sa_handler = SIG_IGN;
+//     sigaction(SIGQUIT, &sa, NULL);
 
+}
+
+void setup_signal_handlers(void)
+{
+    struct sigaction sa;
+
+    // Handle SIGINT (Ctrl+C) in the shell
+    sa.sa_handler = ctrl_c_press;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+
+    // Ignore SIGQUIT (Ctrl+\)
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+}
+void handle_child_signals(void (*handler)(int))
+{
+    struct sigaction sa;
+
+    // Restore default behavior for SIGINT in child processes
+    sa.sa_handler = handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+
+    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+}
 int     main(int argc, char **argv, char **envp)
 {
         (void)argc;
@@ -42,7 +92,8 @@ int     main(int argc, char **argv, char **envp)
         t_parser *parser;
         int value ;
         my_env = init_env(envp);
-        signal(SIGINT, ctrl_c_press);
+        set_signal_handler(ctrl_c_press);
+        // setup_signal_handlers();
         while (1)
         {
                 line = readline("minishell>");
