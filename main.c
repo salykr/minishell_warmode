@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/27 16:19:44 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/29 12:13:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ int     main(int argc, char **argv, char **envp)
         t_tokenlist *token_list;
         t_parser *parser;
         int value ;
+        if(envp == NULL || *envp == NULL)
+                return 0;
         my_env = init_env(envp);
         set_signal_handler(ctrl_c_press);
         // setup_signal_handlers();

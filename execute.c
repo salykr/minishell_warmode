@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/27 16:45:06 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/29 12:14:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 		exit(EXIT_FAILURE);
 	if (pid == 0)
 	{
-		set_signal_handler(ctrl_backslash);
+		// set_signal_handler(ctrl_backslash);
 		manage_input_output(&f, fd, parser);
 		if(ft_getenv(env, "PATH")!=NULL)
 		{
@@ -314,7 +314,8 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	{
 		if (WIFEXITED(status))
 		{
-			global_var = WEXITSTATUS(status);
+			if(parser && parser->next!=NULL)
+				global_var = WEXITSTATUS(status);
 			// printf("global var is %d\n",global_var);
 		}
 	}
