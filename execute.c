@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/29 12:14:45 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/29 12:17:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,7 +314,7 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	{
 		if (WIFEXITED(status))
 		{
-			if(parser && parser->next!=NULL)
+			if(parser && parser->next==NULL)
 				global_var = WEXITSTATUS(status);
 			// printf("global var is %d\n",global_var);
 		}
