@@ -59,75 +59,57 @@ char	*get_path_PWD(t_env env, char *cmd)
 	}
 	return (NULL);
 }
-//ft_redirection_delimiter
-void free_heredoc(char **input_array)
+void free_heredoc(t_parser *node)
 {
-	char **ptr;
-
-	ptr = input_array;
-	if (!input_array)
-		return;
-	while (*ptr)
-	{
-		free(*ptr);
-		ptr++;
-	}
-	free(input_array);
-	*input_array = NULL;
+    if (node && node->heredoc)
+    {
+        free_input(node->heredoc);
+        node->heredoc = NULL;
+    }
 }
-void write_in_heredoc(t_parser *node)
+
+void handle_input_line(t_parser *node, int delimiter_index)
 {
     char *line;
-	size_t line_len;
-	int i;
-	int j;
-	j = 0;
-    set_signal_handler(ctrl_c_press_heredoc);
-    // handle_child_signals(ctrl_c_press_heredoc);
-	line = NULL;
-    line_len = 0;
-	global_var = 0;
-	i = 0;
-	while(node->delimeter != NULL && node->delimeter[i] != NULL && global_var != 130 )
+    size_t line_len;
+
+    while (1)
 	{
-		printf("in OUTER loop for %dth time global var %d \n",j, global_var);
-		if(node->heredoc != NULL)
+        write(STDOUT_FILENO, "> ", 2);
+        line = get_next_line(0);
+        if (!line) break;
+        
+        line_len = strlen(line);
+        if (line[line_len - 1] == '\n') 
+            line[line_len - 1] = '\0';
+
+        if (strcmp(line, node->delimeter[delimiter_index]) == 0)
 		{
-			free_input(node->heredoc);
-			node->heredoc = NULL;
-		}
-		while(1)
-		{
-			printf("in  loop for %dth time global var %d \n",j, global_var);
-			write(STDOUT_FILENO, "> ", 2); // Write the prompt directly to stdout
-			line = get_next_line(0); // Read input from stdin
-			if (!line) // Handle EOF or error
-				break;
-			line_len = strlen(line);
-			if (line[line_len - 1] == '\n')
-				line[line_len - 1] = '\0';
-			if (strcmp(line, node->delimeter[i]) == 0)
-			{
-				free(line);
-				break;
-			}
-			node->heredoc = add_string_to_2d_array(node->heredoc, line);
-			free(line); // Free the line buffer after processing
-			j++;
-		}
-		i++;
-	}
-	if (global_var == 130)
-	{
-		free_input(node->heredoc);
-		node->heredoc = NULL;
-	}
-	set_signal_handler(ctrl_c_press);
-	// setup_signal_handlers();
-	// if(global_var)
-	// printf("global var is: %d\n",global_var);
+            free(line);
+            break;
+        }
+        node->heredoc = add_string_to_2d_array(node->heredoc, line);
+        free(line);
+    }
 }
 
+void write_in_heredoc(t_parser *node)
+{
+    int i;
+
+	global_var = 0;
+    set_signal_handler_heredoc();
+    i = -1;
+    while (node->delimeter != NULL && node->delimeter[++i] != NULL && global_var != 130)
+	{
+        if (node->heredoc != NULL)
+            free_heredoc(node);
+        handle_input_line(node, i);
+    }
+    if (global_var == 130)
+        free_heredoc(node);
+    restore_signals();
+}
 int	handle_heredoc(char **heredoc_content)
 {
 	int	pipefd[2];

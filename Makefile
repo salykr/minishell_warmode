@@ -40,6 +40,8 @@ SRCS                = $(SRC_DIR)parsing_creation.c \
                       $(SRC_DIR)execute_helpers_0.c \
                       $(SRC_DIR)execute_helpers_1.c \
                       $(SRC_DIR)execute_helpers_2.c \
+                      $(SRC_DIR)execute_helpers_3.c \
+                      $(SRC_DIR)execute_helpers_4.c \
                       $(SRC_DIR)signals.c\
                       $(SRC_DIR)main.c \
                       $(SRC_DIR)builtin_export_helper_0.c \

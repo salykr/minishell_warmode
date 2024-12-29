@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/29 12:13:33 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/29 16:22:14 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,58 +30,7 @@ void    ft_free_env(t_env **my_env)
         free(*my_env);
         *my_env = NULL;
 }
-void set_signal_handler(void (*handler)(int))
-{
-    struct sigaction sa;
-    sa.sa_handler = handler;
-    sa.sa_flags = 0; // Use default behavior
-    sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-//     sa.sa_handler = SIG_IGN;
-//     sigaction(SIGQUIT, &sa, NULL);
 
-}
-
-void setup_signal_handlers(void)
-{
-    struct sigaction sa;
-
-    // Handle SIGINT (Ctrl+C) in the shell
-    sa.sa_handler = ctrl_c_press;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-
-    // Ignore SIGQUIT (Ctrl+\)
-    sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-}
-void handle_child_signals(void (*handler)(int))
-{
-    struct sigaction sa;
-
-    // Restore default behavior for SIGINT in child processes
-    sa.sa_handler = handler;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-
-    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-}
 int     main(int argc, char **argv, char **envp)
 {
         (void)argc;
@@ -94,8 +43,7 @@ int     main(int argc, char **argv, char **envp)
         if(envp == NULL || *envp == NULL)
                 return 0;
         my_env = init_env(envp);
-        set_signal_handler(ctrl_c_press);
-        // setup_signal_handlers();
+        restore_signals();
         while (1)
         {
                 line = readline("minishell>");
@@ -128,20 +76,15 @@ int     main(int argc, char **argv, char **envp)
                         continue ;
                 }
                 value = parse_tokens(&parser, token_list, *my_env);
-                // Check if parser is valid
                 if (!parser || !parser->command || value == -1)
                 {
-                        // fprintf(stderr, "Error: Invalid parser or command.\n");
                         free(line);
                         free_token_list(token_list);
                         free_parser(parser);
                         continue ;
                 }
-                // Print parser nodes (for debugging)
                 printf("\nParsed commands:\n");
                 print_parser(parser);
-                // free_token_list(token_list);
-                // Execute the parsed command
                 free_token_list(token_list);
                 cmds_exec(parser, my_env);
                 free(line);

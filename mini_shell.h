@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/27 16:45:02 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/29 17:57:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,20 @@ int manage_redirection_output(t_parser *parser, int *fd);
 void setup_signal_handlers(void);
 void handle_child_signals(void(*handler)(int));
 void ctrl_backslash(int sig);
+void configure_child_signals();
+void restore_signals();
+void ignore_signals();
+void setup_signals();
+void setup_signals_heredoc(void);
+void set_signal_handler_heredoc();
 //execution
 int	is_builtin(t_parser *parser);
+int manage_redirection_input(t_parser *parser, int *fd);
+int	handle_input_output(t_parser *parser,t_fd *f, int fd[2]);
+void restore_original_fds(int original_stdin, int original_stdout);
+int check_heredoc_existence(int *redirection);
+int save_original_fds(int *original_stdin, int *original_stdout);
+int check_permissions(const char *filepath, int flag);
 void manage_input_output( t_fd *f, int fd[2], t_parser *parser);
 void initialize_heredoc(int *heredoc_fd, t_parser *parser);
 void initialize_execution(t_parser *parser,t_env *env,char **cmd_path);
@@ -182,6 +194,7 @@ void handle_child_exit(t_fd *f);
 int	ft_handle_redirections(t_parser *parser);
 void buitlin(t_parser *parser, t_env *env);
 void write_in_heredoc(t_parser *node);
+void free_heredoc(t_parser *node);
 
 // void                        ctrl_c_press_here(int signal);
 void update_pwd_m(t_env *myenv, int use_manual_path);
