@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/26 10:12:07 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/30 16:33:52 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,23 +129,33 @@ int pv_env_variable(t_context *ctx, char *env_value)
     pv_resize_concat(&(ctx->new_str), ctx->total_size, env_value, (size_t)-1);  // Concatenate env_value to new_str
     return 1;  // Return 1 to indicate success
 }
+// void pv_fill_values(t_context *ctx)
+// {
+//     ctx->total_size += (ctx->dollar - ctx->start);
+//     ctx->var_name = ctx->dollar + 1;
+//     ctx->end_of_var = strpbrk(ctx->var_name, " '\\/.#$()?1234567890+\"");
+//  if (ctx->end_of_var && isdigit(*(ctx->end_of_var))) {
+//     ctx->end_of_var = strpbrk(ctx->end_of_var, " '\\.#$()?+\"");
+// }
 
+//     ctx->temp_char = '\0';
+//     ctx->first_char = *(ctx->var_name);
+// }
 void pv_fill_values(t_context *ctx)
 {
     ctx->total_size += (ctx->dollar - ctx->start);
     ctx->var_name = ctx->dollar + 1;
-    ctx->end_of_var = strpbrk(ctx->var_name, " '\\.#$()?1234567890+\"");
+    ctx->end_of_var = strpbrk(ctx->var_name, " '\\/.#$()?1234567890+\"");
  if (ctx->end_of_var && isdigit(*(ctx->end_of_var))) {
     ctx->end_of_var = strpbrk(ctx->end_of_var, " '\\.#$()?+\"");
 }
+// if (ctx->end_of_var != NULL && *(ctx->end_of_var) == '$' &&
+//     *(ctx->end_of_var + 1) != '\0' && *(ctx->end_of_var + 1) == '$')
+// {
+//     ctx->end_of_var++;
+//     printf("\nx\n");
+// }
 
-    // size_t i = 0;
-    // while (ctx->var_name[i] != '\0' && (isalnum(ctx->var_name[i]) || ctx->var_name[i] == '_')) {
-    //     i++;
-    // }
-    // ctx->end_of_var = &ctx->var_name[i];
-
-    ctx->temp_char = '\0';
     ctx->first_char = *(ctx->var_name);
         //printf("Last character reached: '%c'\n", *(ctx->end_of_var - 1));
 }
@@ -264,7 +274,7 @@ char *process_variable(char *input, t_env *env)
 
     if (!initialize_context(&ctx, input))
         return (NULL);
-    if (!strchr(ctx.input, '$'))
+    if (ft_strchr(ctx.input, '$') == NULL)
         return (remove_paired_quotes(ft_escape_char(strdup(input))));
     ctx.total_size = pv_initialise_vars(&ctx);
     process_dollar_signs(&ctx, env);

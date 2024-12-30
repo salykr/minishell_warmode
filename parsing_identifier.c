@@ -137,16 +137,19 @@ int handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
         {
             char **split_value = ft_split(value, ' ');
             curr->command = ft_strdup(split_value[0]);
-            curr->args = add_string_to_2d_array(curr->args, ft_strdup(split_value[0]));
+            curr->args = add_string_to_2d_array(curr->args, split_value[0]);
             for (int i = 1; split_value[i]; i++)
+            {
                 curr->input = add_string_to_2d_array(curr->input, split_value[i]);
-            free_input(split_value);
+                curr->args = add_string_to_2d_array(curr->args, split_value[i]);
+            }
+            free_2d_array(split_value);
             free(value);
             return 0;
         }
-        else if ((is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || 
-              ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || 
-                    ft_strncmp(value, "unset", 5) == 0) && (curr->command == NULL && !is_all_spaces(value)))
+        else if ((is_executable(value) || ft_strcmp(value, "cd") == 0 || 
+              ft_strcmp(value, "exit") == 0 || ft_strcmp(value, "export") == 0 || 
+                    ft_strcmp(value, "unset") == 0) && (curr->command == NULL && !is_all_spaces(value)))
                     {   
                         curr->command = value;
                         curr->args = add_string_to_2d_array(curr->args, value);

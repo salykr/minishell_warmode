@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/29 17:57:11 by marvin           ###   ########.fr       */
+/*   Updated: 2024/12/30 17:12:07 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,16 +163,14 @@ typedef struct s_context{
     t_env env;
     char *env_value;
 }t_context;
-
+void process_dollar_strings(char **strs, t_env *env);
 void set_signal_handler(void (*handler)(int));
 void ctrl_c_press_heredoc(int sig);
 void manage_pipe(t_parser *parser,t_fd *f, int fd[2]);
 int get_last_input_redirection(int *redirection);
-int manage_redirection_input(t_parser *parser, int *fd);
 int manage_redirection_output(t_parser *parser, int *fd);
 void setup_signal_handlers(void);
 void handle_child_signals(void(*handler)(int));
-void ctrl_backslash(int sig);
 void configure_child_signals();
 void restore_signals();
 void ignore_signals();
@@ -180,9 +178,10 @@ void setup_signals();
 void setup_signals_heredoc(void);
 void set_signal_handler_heredoc();
 //execution
+t_parser* check_exit(t_parser *parser);
 int	is_builtin(t_parser *parser);
-int manage_redirection_input(t_parser *parser, int *fd);
-int	handle_input_output(t_parser *parser,t_fd *f, int fd[2]);
+int	manage_redirection_input(t_parser *parser, int *fd, t_env *env);
+int	handle_input_output(t_parser *parser, t_fd *f, int fd[2], t_env *env);
 void restore_original_fds(int original_stdin, int original_stdout);
 int check_heredoc_existence(int *redirection);
 int save_original_fds(int *original_stdin, int *original_stdout);
@@ -230,10 +229,11 @@ void	cmds_exec(t_parser *parser, t_env *env);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 char						*remove_quotes_new(const char *str);
-int							handle_heredoc(char **heredoc_content);
-char						*get_path_PWD(t_env env, char *cmd);
+int	handle_heredoc(char **heredoc_content, t_env *env);
+char						*get_path_pwd(t_env env, char *cmd);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
+void	free_heredoc(t_parser *node);
 int check_args_nb(t_parser *list);
 void replace_with_str(char ***array, char *new_str);
 void print_env_sorted(t_env *env);
@@ -246,7 +246,7 @@ void free_2d_array(char **array);
 char *process_variable(char *input, t_env *env);
 char *ft_trim_string(char *str);
 int ft_doublecharlen(t_env *env);
-void free_input(char **input_array);
+void free_2d_array(char **input_array);
 void handle_memory_errors(char *new_name, char *new_value);
 void free_env(t_env *env);
 char *concatenate_value(char *current_value, char *new_value);
@@ -362,7 +362,7 @@ char						*check_env_input(t_parser *list);
 int							check_ls_pwd_in_env(t_parser *list, t_env *myenv);
 void						print_env_vars(t_env *myenv, char **input_list);
 void						print_all_env_vars(t_env *myenv);
-void						update_SHLVL(t_env *myenv);
+void						update_shlvl(t_env *myenv);
 
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);

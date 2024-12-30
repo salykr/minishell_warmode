@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/21 16:07:26 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/30 11:01:16 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	builtin_pwd(t_parser *parser, t_env *env)
 
 	size = INITIAL_SIZE;
 	if (parser->operations != NULL || (parser->input != NULL
-			&& parser->input[0][0] == '-'))
+			&& ft_strlen(parser->input[0]) > 2 && parser->input[0][2] == '-'))
 		return (printf("bash: pwd: invalid option\n"), 2);
 	buffer = (char *)malloc(size);
 	if (buffer == NULL)

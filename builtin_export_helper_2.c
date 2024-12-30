@@ -64,6 +64,8 @@ char *ft_escape_char(char *str)
     size_t backslash_count;
     char next_char;
     
+    // if(ft_strrchr(str,'\\')==NULL)
+    //     return NULL;
     if (initialise_escape_char(&i, &j, str, &total) == 1)
         return NULL;
     while (str[i] != '\0')

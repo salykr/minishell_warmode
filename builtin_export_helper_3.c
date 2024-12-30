@@ -67,13 +67,12 @@ void parse_export_input(char *input, char **name, char **value)
     if (equal_sign)
     {
         *name = ft_strndup(input, equal_sign - input);
-        // printf("the len is: %ld and name len is %ld\n",equal_sign - input,strlen(*name));
         *value = ft_strdup(equal_sign + 1);
     }
     else
     {
         *name = ft_strdup(input);
-        *value = NULL;  // Set value to NULL if '=' is not present
+        *value = NULL;
     }
 }
 //the above add_or_update to_env will be split into two fts:

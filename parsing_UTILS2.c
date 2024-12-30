@@ -2,22 +2,24 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parsing_UTILS2.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+        
+	+:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
+	+#+        */
+/*                                                +#+#+#+#+#+  
+	+#+           */
 /*   Created: 2024/10/21 16:46:08 by marvin            #+#    #+#             */
 /*   Updated: 2024/10/21 16:46:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"mini_shell.h"
-
+#include "mini_shell.h"
 
 
 static bool	add_detail_quotes(char *command)
 {
-	if (ft_strncmp(command, "export", 7) == 0
-		|| ft_strncmp(command, "unset", 6) == 0)
+	if (ft_strncmp(command, "export", 7) == 0 || ft_strncmp(command, "unset",
+			6) == 0)
 		return (true);
 	return (false);
 }
@@ -31,7 +33,7 @@ void	free_ptr(void *ptr)
 }
 char	*join_strs(char *str, char *add)
 {
-	char	*tmp;
+	char *tmp;
 
 	if (!add)
 		return (str);
@@ -44,8 +46,8 @@ char	*join_strs(char *str, char *add)
 }
 void	errmsg_cmd(char *command, char *detail, char *error_message)
 {
-	char	*msg;
-	bool	detail_quotes;
+	char *msg;
+	bool detail_quotes;
 
 	detail_quotes = add_detail_quotes(command);
 	msg = ft_strdup("minishell: ");
@@ -70,9 +72,8 @@ void	errmsg_cmd(char *command, char *detail, char *error_message)
 
 bool	cmd_is_dir(char *cmd)
 {
-	struct stat	cmd_stat;
+	struct stat cmd_stat;
 	ft_memset(&cmd_stat, 0, sizeof(cmd_stat));
 	stat(cmd, &cmd_stat);
 	return (S_ISDIR(cmd_stat.st_mode));
 }
-

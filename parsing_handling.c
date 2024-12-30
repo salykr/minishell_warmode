@@ -74,17 +74,18 @@ int handle_parsing_quotes(t_input *tokens, t_parser *curr,t_env env)
     if (temp_value == NULL)
         return -1;
     if(curr->command == NULL)
-        value = expand_variable(temp_value, env);
+        value = process_variable(temp_value, &env);
     else
         value = ft_strdup(temp_value);
     free(temp_value);  
-    // if (value == NULL || value[0] == '\0')
-    //     return 1;
+    if (value == NULL || value[0] == '\0')
+        return 1;
     if ((tokens->value[0] == '\'' && tokens->value[1] == '\'' &&!tokens->value[2]) || (tokens->value[0] == '\"' && tokens->value[1] == '\"' && !tokens->value[2]))
             curr->input = add_string_to_2d_array(curr->input, tokens->value);
     else  if (curr->command == NULL &&(is_executable(value) || ft_strncmp(value, "cd", 2) == 0 || ft_strncmp(value, "exit", 4) == 0 || ft_strncmp(value, "export", 6) == 0 || ft_strncmp(value, "unset", 5) == 0))
     {
         curr->command = value;
+        curr->args = add_string_to_2d_array(curr->args, value);
         return 0;
     }
     // else if (!strncmp(tokens->value,"\"-",2) || !strncmp(tokens->value,"\'-",2))
@@ -99,16 +100,15 @@ int handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 {
     if (tokens->type == T_HEREDOC && (tokens->next->type == T_ENV || tokens->next->type == T_IDENTIFIER || tokens->next->type == T_QUOTE))
     {
-        printf("hi");
         curr->delimeter = add_string_to_2d_array(curr->delimeter,tokens->next->value);
         add_to_array(curr, T_HEREDOC);
     }
-    else if (tokens->type == T_INPUT && tokens->next->type == T_IDENTIFIER)
+    else if (tokens->type == T_INPUT && (tokens->next->type == T_IDENTIFIER || tokens->next->type == T_PATH ))
     {
         curr->infile = add_string_to_2d_array(curr->infile, tokens->next->value);
         add_to_array(curr, T_INPUT);
     }
-    else if (tokens->type == T_OUTPUT && tokens->next->type == T_IDENTIFIER)
+    else if (tokens->type == T_OUTPUT &&(tokens->next->type == T_IDENTIFIER || tokens->next->type == T_PATH ))
     {
         curr->outfile = add_string_to_2d_array(curr->outfile, tokens->next->value);
         add_to_array(curr, T_OUTPUT);
@@ -128,7 +128,7 @@ int handle_parsing_redirection(t_input *tokens, t_parser *curr)
                 global_var=2;
                 return (-1);
             }
-            else if (tokens->type == T_APPEND && tokens->next->type == T_IDENTIFIER)
+            else if (tokens->type == T_APPEND && (tokens->next->type == T_IDENTIFIER || tokens->next->type == T_PATH ))
             {
                 curr->outfile = add_string_to_2d_array(curr->outfile, tokens->next->value);
                 add_to_array(curr, T_APPEND);

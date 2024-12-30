@@ -10,78 +10,44 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"mini_shell.h"
+#include "mini_shell.h"
 
-
-void free_input(char **input_array)
-{
-	char **ptr;
-
-	ptr = input_array;
-	if (!input_array)
-		return;
-	while (*ptr)
-	{
-		// printf("========freeing %s of size: %ld\n",*ptr,strlen(*ptr));
-		free(*ptr);
-		ptr++;
-	}
-	free(input_array);
-}
-
-
-void free_operations(char **ops_array)
+void	free_2d_array(char **array)
 {
 	char	**ptr;
 
-	ptr = ops_array;
-	if (!ops_array)
-        return;
+	ptr = array;
+	if (!array)
+		return ;
 	while (*ptr)
 	{
 		free(*ptr);
 		ptr++;
 	}
-	free(ops_array);
+	free(array);
 }
 
-void free_output(char **outfile_array)
+void	free_parser(t_parser *parser)
 {
-	char	**ptr;
-
-	ptr = outfile_array;
-	if (!outfile_array)
-        return;
-	while (*ptr)
-	{
-		free(*ptr);
-		ptr++;
-	}
-	free(outfile_array);
-}
-
-
-void free_parser(t_parser *parser)
-{
-	t_parser *next;
+	t_parser	*next;
 
 	while (parser)
 	{
 		next = parser->next;
 		if (parser->input)
-			free_input(parser->input);
+			free_2d_array(parser->input);
 		if (parser->heredoc)
-			free_input(parser->heredoc);
+			free_2d_array(parser->heredoc);
 		if (parser->delimeter)
-			free_input(parser->delimeter);
+			free_2d_array(parser->delimeter);
 		if (parser->operations)
-			free_operations(parser->operations);
+			free_2d_array(parser->operations);
 		if (parser->outfile)
-			free_input(parser->outfile);
+			free_2d_array(parser->outfile);
 		if (parser->infile)
-			free_input(parser->infile);
+			free_2d_array(parser->infile);
 		if (parser->args)
-			free_input(parser->args);
+			free_2d_array(parser->args);
 		if (parser->redirection)
 			free(parser->redirection);
 		if (parser->command)
@@ -90,4 +56,3 @@ void free_parser(t_parser *parser)
 		parser = next;
 	}
 }
-
