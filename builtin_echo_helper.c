@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/21 12:39:02 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/31 16:18:55 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ void	process_expanded_variable(char **input, t_env env)
 		var_name[var_name_length] = '\0';
 		value = ft_getenv(&env, var_name);
 		if (value)
+		{
+			value= ft_strtrim(value, " ");
 			printf("%s", value);
+		}
 		free(var_name);
 	}
 }
