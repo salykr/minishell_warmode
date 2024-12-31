@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: saly <saly@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/30 10:36:25 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/31 14:22:28 by saly             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int     main(int argc, char **argv, char **envp)
                 token_list = tokenize_input(line);
                 if (!token_list)
                 {
-                        fprintf(stderr,"Error: Failed to tokenize input.\n");
+                        printf("Error: Failed to tokenize input.\n");
                         free(line);
                         continue ;
                 }
@@ -70,7 +70,7 @@ int     main(int argc, char **argv, char **envp)
                 parser = create_parser(); // Initialize parser
                 if (!parser)
                 {
-                        fprintf(stderr, "Error: Failed to create parser.\n");
+                        printf("Error: Failed to create parser.\n");
                         free(line);
                         free_token_list(token_list); // Free token list
                         continue ;

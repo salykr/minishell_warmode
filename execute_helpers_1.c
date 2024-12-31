@@ -46,11 +46,11 @@ void	manage_input_output(t_fd *f, int fd[2], t_parser *parser)
 		close(fd[0]);
 }
 
-void	initialize_heredoc(int *heredoc_fd, t_parser *parser)
+void	initialize_heredoc(int *heredoc_fd, t_parser *parser, t_env *env)
 {
 	*heredoc_fd = -1;
 	if (parser->delimeter != NULL && parser->redirection != NULL)
-		*heredoc_fd = handle_heredoc(parser->heredoc);
+		*heredoc_fd = handle_heredoc(parser->heredoc, env);
 }
 
 void	initialize_execution(t_parser *parser, t_env *env, char **cmd_path)

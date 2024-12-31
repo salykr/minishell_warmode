@@ -152,6 +152,10 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	int		fd[2];
 
 	f.fd_1 = STDIN_FILENO;
+	if(parser->next== NULL && parser->prev == NULL && strcmp(parser->command,"exit")==0)
+		parser = parser;
+	else
+		parser = find_last_exit(parser);
 	while (parser)
 	{
 		if (parser->next)

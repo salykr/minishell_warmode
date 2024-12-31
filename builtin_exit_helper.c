@@ -33,13 +33,12 @@ int	handle_exit_arguments(char *input)
 {
 	if (!is_numeric(input))
 	{
-		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
-			input);
+		printf("minishell : exit: %s: numeric argument required\n", input);
 		global_var = 2;
 	}
 	else
 	{
-		fprintf(stderr, "minishell: exit: too many arguments\n");
+		printf("minishell: exit: too many arguments\n");
 		global_var = 1;
 		return (1);
 	}

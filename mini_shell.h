@@ -37,7 +37,7 @@
 # include <sys/stat.h>
 # include "get_next_line.h"
 #include <signal.h>
-
+#include <limits.h>
 # define CMD_NOT_EXECUTABLE 126
 # ifndef GLOBALS_H
 #  define GLOBALS_H
@@ -187,7 +187,8 @@ int check_heredoc_existence(int *redirection);
 int save_original_fds(int *original_stdin, int *original_stdout);
 int check_permissions(const char *filepath, int flag);
 void manage_input_output( t_fd *f, int fd[2], t_parser *parser);
-void initialize_heredoc(int *heredoc_fd, t_parser *parser);
+void initialize_heredoc(int *heredoc_fd, t_parser *parser, t_env *env);
+t_parser *find_last_exit(t_parser *parser);
 void initialize_execution(t_parser *parser,t_env *env,char **cmd_path);
 void handle_child_exit(t_fd *f);
 int	ft_handle_redirections(t_parser *parser);

@@ -27,32 +27,32 @@ int	adjust_number(int num)
 	return (num);
 }
 
-void	validate_numeric_input(char *input)
-{
-	char		*endptr;
-	long long	num;
 
-	num = strtoll(input, &endptr, 10);
-	if (is_numeric(input))
-	{
-		if (*endptr != '\0')
-		{
-			fprintf(stderr, "minishell: exit: %s:numeric argument required\n",
-				input);
-			global_var = 2;
-		}
-		else
-		{
-			num = adjust_number(num);
-			global_var = (int)num;
-		}
-	}
-	else
-	{
-		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
-			input);
-		global_var = 2;
-	}
+void validate_numeric_input(char *input)
+{
+    char *endptr;
+    long long num;
+
+    errno = 0; // Clear errno before calling strtoll
+    num = ft_strtoll(input, &endptr, 10);
+    if (is_numeric(input))
+    {
+        if (*endptr != '\0' || errno == ERANGE)
+        {
+			printf("minishell : exit: %s: numeric argument required\n", input);
+            global_var = 2;
+        }
+        else
+        {
+            num = adjust_number(num);
+            global_var = (int)num;
+        }
+    }
+    else
+    {
+       printf("minishell : exit: %s: numeric argument required\n", input);
+        global_var = 2;
+    }
 }
 
 void	cleanup_and_exit(t_env *myenv, t_parser *parser)

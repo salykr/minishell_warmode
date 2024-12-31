@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export_helper_5.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: saly <saly@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2024/12/30 16:33:52 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/31 14:12:25 by saly             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,7 @@ void process_dollar_signs(t_context *ctx, t_env *env)
 char *process_variable(char *input, t_env *env)
 {
     t_context ctx;
+    char *result;
 
     if (!initialize_context(&ctx, input))
         return (NULL);
@@ -279,7 +280,158 @@ char *process_variable(char *input, t_env *env)
     ctx.total_size = pv_initialise_vars(&ctx);
     process_dollar_signs(&ctx, env);
     pv_resize_concat(&ctx.new_str, strlen(ctx.new_str) + strlen(ctx.start) + 1, ctx.start, (size_t)-1);
-    //  printf("new str:%s\n",remove_paired_quotes(ft_escape_char(ctx.new_str)));
-    return (remove_paired_quotes(ft_escape_char(ctx.new_str)));
+    result = remove_paired_quotes(ft_escape_char(ctx.new_str));
+    if(result != NULL && strlen(result)==0)
+    {
+        free(result);
+        return(NULL);   
+    }
+    return (result);
 }
 
+char *process_variablse(char *input, t_env *env)
+{
+    if (input == NULL)
+        return (NULL);
+
+    if (strchr(input, '$'))
+    {
+        size_t total_size = 1;  // Start with 1 for null terminator
+        char *start = input;
+        char *dollar = strchr(input, '$');
+        char *new_str = malloc(total_size);
+        if (!new_str)
+            return (NULL);
+        new_str[0] = '\0';  // Start with an empty string
+        while (dollar)
+        {
+            size_t backslash_count = 0;
+            
+           if (dollar != input)  // Ensure dollar is not the first character
+            {
+                // printf("\n\n\nentered\n\n\n\n\n\n");
+                for (char *p = dollar - 1; p >= input && *p == '\\'; p--)
+                    backslash_count++;
+            }
+            // If odd number of backslashes, append dollar and skip expansion
+            if (backslash_count % 2 != 0)
+            {
+                new_str=resize_string(new_str,strlen(new_str) + dollar - start + 2);
+                strncat(new_str, start, dollar - start + 1);
+                total_size += (dollar - start + 1);
+                new_str = realloc(new_str, total_size);
+                if (!new_str)
+                    return (NULL);
+                start = dollar + 1;
+                dollar = strchr(start, '$');
+                continue;
+            }
+            if(dollar != input)
+            {
+
+                if (start[dollar - start - 1] == '\'') 
+                {
+                    new_str=resize_string(new_str,strlen(new_str) + dollar - start );                
+                    strncat(new_str, start, dollar - start - 1);
+                }
+                else
+                {
+                    new_str=resize_string(new_str,strlen(new_str) + dollar - start + 1);
+                    // printf("!!!!!!!!!!!!!!!!!!!!\n\n!!!!!!!!!!!!!!!!!!!!!!!\n\n");
+                    strncat(new_str, start, dollar - start);
+                }
+            }
+            total_size += (dollar - start);
+            char *var_name = dollar + 1;
+            char *end_of_var = strpbrk(var_name, " '\\/.#$()?1234567890+\"");
+            if (end_of_var && isdigit(*(end_of_var))) {
+                end_of_var = strpbrk(end_of_var, " '\\.#$()?+\"");
+            }
+            char temp_char = '\0';
+            char first_char = *var_name;
+
+            if (end_of_var)
+            {
+                temp_char = *end_of_var;
+                *end_of_var = '\0';
+            }
+            if (first_char == '?')
+            {
+                char exit_status[4];
+                snprintf(exit_status, sizeof(exit_status), "%d", global_var);
+                total_size += strlen(exit_status);
+                new_str = realloc(new_str, total_size);
+                if (!new_str)
+                    return (NULL);
+                strcat(new_str, exit_status);
+                if (end_of_var)
+                    start = end_of_var + 1;
+                else
+                    break;
+            }
+            if(first_char=='$' && (first_char  + 1) && (first_char  + 1)=='\0')
+                pv_resize_concat(&new_str, strlen(new_str)+ 2, "$", 1);
+            else if (dollar > input && *(dollar - 1) == '\'' && temp_char == '\'')
+            {
+                if (dollar)
+                {
+                    total_size += strlen(dollar);
+                    new_str = realloc(new_str, total_size);
+                    if (!new_str)
+                        return (NULL);
+                    strncat(new_str, dollar, strlen(dollar));
+                    start = end_of_var + 1;
+                    if (*start == '\0')
+                        break;
+                }
+                // else if(dollar && (*(dollar + 1) =='\0' || *(dollar + 1) == $ ))
+                // {
+                    
+                //     //add the code here
+                //     pv_resize_concat(&new_str,strlen(new_size) + 3)
+                // }
+                else
+                {
+                     new_str=resize_string(new_str,strlen(new_str) + strlen(dollar) + 1);
+                    strcat(new_str, dollar);
+                    break;
+                }
+            }
+            else if (isdigit(first_char))
+                start = var_name + 1;
+            else
+            {
+                char *env_value = get_env_value(env, var_name);
+                if (env_value == NULL)
+                    env_value = "";
+                total_size += strlen(env_value);
+                printf("len is %ld\n",strlen(env_value));
+                new_str = realloc(new_str, total_size);
+                if (!new_str)
+                    return (NULL);
+                 new_str=resize_string(new_str,strlen(new_str) + strlen(env_value) + 1);
+                strcat(new_str, env_value);
+                if (end_of_var)
+                {
+                    *end_of_var = temp_char;
+                    start = end_of_var;
+                }
+                else
+                    start = var_name + strlen(var_name);
+                printf("the env is: %s\n",env_value);
+                if(env_value!=NULL && *env_value!='\0')
+                    free(env_value);
+            }
+
+            dollar = strchr(start, '$');
+            if (dollar != NULL && *(dollar + 1) == '\0')
+                break;
+        }
+         new_str=resize_string(new_str,strlen(new_str) + strlen(start) + 1);
+        strcat(new_str, start);
+        printf("the new_str: %s!\n\n",new_str);
+        return (remove_paired_quotes(new_str));
+    }
+    printf("the new_str: %s!\n\n",input);
+    return (remove_paired_quotes(strdup(input)));
+}

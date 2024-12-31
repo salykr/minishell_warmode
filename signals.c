@@ -109,6 +109,7 @@ void	ctrl_c_press(int sig)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		global_var = 130;
+		printf("global var is %d\n",global_var);
 		rl_redisplay();
 	}
 }
@@ -121,6 +122,7 @@ void	ctrl_c_press_heredoc(int sig)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		global_var = 130;
+		printf("global var is %d\n",global_var);
 	}
 	// if (sig == SIGQUIT)
 	// 	return ;

@@ -41,6 +41,7 @@ int	save_original_fds(int *original_stdin, int *original_stdout)
 	}
 	return (0);
 }
+
 void	restore_original_fds(int original_stdin, int original_stdout)
 {
 	if (dup2(original_stdin, STDIN_FILENO) == -1)
@@ -58,4 +59,25 @@ void	free_heredoc(t_parser *node)
 		free_2d_array(node->heredoc);
 		node->heredoc = NULL;
 	}
+}
+
+t_parser *find_last_exit(t_parser *parser)
+{
+    t_parser *head;     // Store the head of the list
+    t_parser *last_node; // To store the last node where "exit" is found
+
+    head = parser;  
+    last_node = NULL;
+    while (parser)
+    {
+        if (parser->command)
+        {
+            if (strcmp(parser->command, "exit") == 0) // Check for exact match with "exit"
+                last_node = parser;
+        }
+        parser = parser->next;
+    }
+    if (last_node != NULL)
+        return last_node->next;
+    return head;
 }

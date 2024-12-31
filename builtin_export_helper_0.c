@@ -26,14 +26,14 @@ char *get_env_value(t_env *env, const char *var)
     // Iterate through the environment list
     while ((entry = env->env[i]) != NULL) 
     {
-        equals = strchr(entry, '=');
+        equals = ft_strchr(entry, '=');
         if (equals)
         {
             // Calculate the length of the variable name
             size_t var_len = equals - entry;
             // Check if the variable name matches
-            if (strncmp(entry, var, var_len) == 0 && strlen(var) == var_len)
-                return strdup(equals + 1); // Return the value after '='
+            if (ft_strncmp(entry, var, var_len) == 0 && ft_strlen(var) == var_len)
+                return ft_strdup(equals + 1); // Return the value after '='
         }
         i++;
     }
@@ -110,62 +110,3 @@ void print_env_sorted(t_env *env)
     }
     free(printed);
 }
-//sorting fts ended
-
-/*
-void print_env_sorted(t_env *env)
-{
-    if (env == NULL || env->env == NULL)
-    {
-        fprintf(stderr, "Error: Environment is NULL\n");
-        return;
-    }
-    // Get the number of environment variables
-    int count = 0;
-    while (env->env[count] != NULL)
-        count++;
-    // Create an array to track which variables have been printed
-    int printed[count];
-    int i = 0;
-    while (i < count)
-    {
-        printed[i] = 0; // Initialize all to not printed
-        i++;
-    }
-    int printed_count = 0;
-    while (printed_count < count)
-    {
-        int min_idx = -1;
-        int j = 0;
-
-        while (j < count)
-        {
-            if (!printed[j] && (min_idx == -1 || strcmp(env->env[j], env->env[min_idx]) < 0))
-            {
-                min_idx = j; // Find the smallest unprinted variable
-            }
-            j++;
-        }
-        if (min_idx != -1)
-        {
-            // Find the position of the '='
-            char *equal_sign = strchr(env->env[min_idx], '=');
-            if (equal_sign)
-            {
-                // Print variable with value enclosed in quotes
-                printf("declare -x %.*s=\"%s\"\n",
-                       (int)(equal_sign - env->env[min_idx]),
-                       env->env[min_idx],
-                       equal_sign + 1);
-            }
-            else
-            {
-                // Print variable without '=' and quotes if no value is present
-                printf("declare -x %s\n", env->env[min_idx]);
-            }
-            printed[min_idx] = 1; // Mark this variable as printed
-            printed_count++; // Increment the count of printed variables
-        }
-    }
-}
-*/
