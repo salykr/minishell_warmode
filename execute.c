@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/30 17:39:26 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/02 15:59:17 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,26 @@
 
 */
 
-
-void process_dollar_strings(char **strs, t_env *env)
+void	process_dollar_strings(char **strs, t_env *env)
 {
-    char *processed_str;
-    int i;
-	
+	char	*processed_str;
+	int		i;
+
 	i = 0;
-    if (strs == NULL)
-        return;
-    while (strs[i] != NULL)
-    {
-        if (strchr(strs[i], '$') != NULL)
-        {
-            processed_str = process_variable(strs[i], env);
-            free(strs[i]);
-            strs[i] = processed_str;
-        }
-        i++;
-    }
+	if (strs == NULL)
+		return ;
+	while (strs[i] != NULL)
+	{
+		if (strchr(strs[i], '$') != NULL)
+		{
+			processed_str = process_variable(strs[i], env);
+			free(strs[i]);
+			strs[i] = processed_str;
+		}
+		i++;
+	}
 }
+
 void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 {
 	char	*cmd_path;
@@ -63,10 +63,10 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	{
 		configure_child_signals();
 		manage_input_output(&f, fd, parser);
-		if (ft_getenv(env, "PATH") != NULL)
+		if ((cmd_path != NULL))
 		{
 			process_dollar_strings(parser->args, env);
-			if (execve(cmd_path,parser->args, env->env) == -1)
+			if (execve(cmd_path, parser->args, env->env) == -1)
 				perror("execve");
 		}
 		else
@@ -152,7 +152,8 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	int		fd[2];
 
 	f.fd_1 = STDIN_FILENO;
-	if(parser->next== NULL && parser->prev == NULL && strcmp(parser->command,"exit")==0)
+	if (parser->next == NULL && parser->prev == NULL && strcmp(parser->command,
+			"exit") == 0)
 		parser = parser;
 	else
 		parser = find_last_exit(parser);

@@ -12,7 +12,6 @@
 
 #include "./mini_shell.h"
 
-
 void	ft_find_str_helper(const char ***str, const char **last_c, char c)
 {
 	while (***str)

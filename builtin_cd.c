@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/30 13:16:14 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/02 17:25:59 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 
 	val = NULL;
 	if (is_home_input(list->input) || is_oldpwd_input(list->input[0]))
-		return (handle_input(list, myenv));	
+		return (handle_input(list, myenv));
 	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0
 		|| ft_strchr(list->input[0], '$') != NULL
 		|| ft_strrchr(list->input[0], '~') != NULL
@@ -69,7 +69,7 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 			list->input[0] = ft_strjoin("$HOME", list->input[0] + 1);
 			free(val);
 		}
-		printf("list input is :%s\n",list->input[0]);
+		printf("list input is :%s\n", list->input[0]);
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
 	}
@@ -95,9 +95,6 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 	if (list->input != NULL && (strchr(list->input[0], '\'')
 			|| strchr(list->input[0], '"')))
 		list->input[0] = remove_quotes_with_free(list->input[0]);
-	// if (list->input != NULL && list->input[0] != NULL
-	// 	&& strchr(list->input[0], '$') != NULL)
-	// 	replace_with_str(&list->input, process_variable(list->input[0], myenv));
 	if (list->input != NULL && (list->input[1] != NULL))
 		return (1);
 	if (handle_directory_input(list, myenv) != 0)

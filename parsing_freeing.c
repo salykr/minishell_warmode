@@ -27,6 +27,20 @@ void	free_2d_array(char **array)
 	free(array);
 }
 
+void	free_parser_helper(t_parser *parser)
+{
+	if (parser->outfile)
+		free_2d_array(parser->outfile);
+	if (parser->infile)
+		free_2d_array(parser->infile);
+	if (parser->args)
+		free_2d_array(parser->args);
+	if (parser->redirection)
+		free(parser->redirection);
+	if (parser->command)
+		free(parser->command);
+}
+
 void	free_parser(t_parser *parser)
 {
 	t_parser	*next;
@@ -42,16 +56,7 @@ void	free_parser(t_parser *parser)
 			free_2d_array(parser->delimeter);
 		if (parser->operations)
 			free_2d_array(parser->operations);
-		if (parser->outfile)
-			free_2d_array(parser->outfile);
-		if (parser->infile)
-			free_2d_array(parser->infile);
-		if (parser->args)
-			free_2d_array(parser->args);
-		if (parser->redirection)
-			free(parser->redirection);
-		if (parser->command)
-			free(parser->command);
+		free_parser_helper(parser);
 		free(parser);
 		parser = next;
 	}

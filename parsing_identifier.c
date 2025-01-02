@@ -147,7 +147,7 @@ int handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
             free(value);
             return 0;
         }
-        else if ((is_executable(value) || ft_strcmp(value, "cd") == 0 || 
+        else if ((is_executable(value, env) || ft_strcmp(value, "cd") == 0 || 
               ft_strcmp(value, "exit") == 0 || ft_strcmp(value, "export") == 0 || 
                     ft_strcmp(value, "unset") == 0) && (curr->command == NULL && !is_all_spaces(value)))
                     {   

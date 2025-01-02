@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 16:12:39 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/30 16:59:18 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/02 15:12:46 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	handle_argument(const char **p, t_tokenlist *token_list)
 	t_input		*token;
 
 	(*p)++;
-	while (!ft_isspace(**p)&& **p !='|' && **p != '\0')
+	while (!ft_isspace(**p) && **p != '|' && **p != '\0')
 		(*p)++;
 	argument_str = ft_strndup(start, *p - start);
 	token = create_token(T_ARGUMENT, argument_str);

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/30 17:12:07 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/02 15:43:05 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,7 @@ int			handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr);
 int			handle_parsing_identifier_helper_errors_helper(t_input *tokens, t_parser *curr);
 int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
-int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
+int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr, t_env env);
 char		*remove_quotes(const char *str);
 bool		count_dash(char *str);
 int			handle_parsing_argument(t_input *tokens, t_parser *curr);
@@ -317,12 +317,12 @@ int			is_all_spaces(const char *str);
 int			isempty(const char *str);
 char		*expand_variable(const char *input ,t_env env);
 int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
-int			is_executable(char *cmd);
+int			is_executable(char *cmd, t_env env);
 int			is_executable_PWD(t_env env, char *cmd);
 char	*get_path(t_env env, char *cmd);
 char	**ft_create_args(t_parser *parser, t_tokenlist *token);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
-int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
+int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr, t_env env);
 int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);
 bool		ft_check_n_operation(char *str);
 int			count_rows(char **array);

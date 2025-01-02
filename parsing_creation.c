@@ -56,14 +56,14 @@ char	*remove_quotes(const char *str)
 	char	*result;
 	int		j;
 	int		i;
-	bool	in_single = false;
-	bool	in_double = false;
+	bool	in_single;
+	bool	in_double;
 
+	in_single = false;
+	in_double = false;
 	if (!str)
 		return (NULL);
 	result = malloc(ft_strlen(str) + 1);
-	if (!result)
-		return (NULL);
 	j = 0;
 	i = 0;
 	while (str[i])

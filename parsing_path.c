@@ -12,14 +12,16 @@
 
 #include "mini_shell.h"
 
-int	is_executable(char *cmd)
+int	is_executable(char *cmd, t_env env)
 {
 	char	*path;
 	char	*path_copy;
 	char	*dir;
 	char	full_path[1024];
-
-	path = getenv("PATH");
+	if(ft_strcmp(ft_getenv(&env,"SHLVL"),"1") == 0)
+		path =  ft_strdup("/home/skreik/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"); 
+	else
+		path = getenv("PATH");
 	if (path == NULL)
 		return (0);
 	path_copy = ft_strdup(path);
@@ -58,7 +60,7 @@ int	handle_parsing_path_helper_1(t_input *tokens, t_parser *curr, t_env env)
 {
 	struct stat	path_stat;
 
-	if (curr->command == NULL && (is_executable(tokens->value)
+	if (curr->command == NULL && (is_executable(tokens->value, env)
 			|| is_executable_pwd(env, tokens->value)))
 	{
 		curr->command = ft_strdup(tokens->value);
@@ -83,7 +85,7 @@ int	handle_parsing_path_helper_1(t_input *tokens, t_parser *curr, t_env env)
 	return (0);
 }
 
-int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr)
+int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr, t_env env)
 {
 	char	*p;
 
@@ -92,7 +94,7 @@ int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr)
 		p++;
 	if (*p != '\0')
 	{
-		if (is_executable(p) || ft_strcmp(p, "cd") == 0 || ft_strcmp(p,
+		if (is_executable(p, env) || ft_strcmp(p, "cd") == 0 || ft_strcmp(p,
 				"exit") == 0 || ft_strcmp(p, "export") == 0
 			|| ft_strcmp(p, "unset") == 0)
 		{
@@ -108,12 +110,10 @@ int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr)
 		{
 			curr->input = add_string_to_2d_array(curr->input, tokens->value);
 			curr->args = add_string_to_2d_array(curr->args, tokens->value);
-
 		}
 	}
 	else
     {
-        printf("hiiiiiii");
 		curr->input = add_string_to_2d_array(curr->input, tokens->value);
 		curr->args = add_string_to_2d_array(curr->args, tokens->value);
     }
@@ -127,19 +127,19 @@ int	handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 		if (curr->command != NULL && !strcmp(curr->command, "pwd"))
 			return (1);
 		if (curr->command == NULL && cmd_is_dir(tokens->value))
-		{
-			errmsg_cmd(tokens->value, NULL, "Is a directory");
+		{	
 			global_var = 0;
-			return (1);
+			return (errmsg_cmd(tokens->value, NULL, "Is a directory"), 1);
 		}
 		else if (!ft_strncmp(tokens->value, "./", 2))
 		{
 			if (handle_parsing_path_helper_1(tokens, curr, env) < 0)
 				return (-1);
 		}
-		else if (!ft_strncmp(tokens->value, "/", 1)|| !ft_strncmp(tokens->value, "~/", 2))
+		else if (!ft_strncmp(tokens->value, "/", 1)
+			|| !ft_strncmp(tokens->value, "~/", 2))
 		{
-			if (handle_parsing_path_helper_2(tokens, curr) < 0)
+			if (handle_parsing_path_helper_2(tokens, curr, env) < 0)
 				return (-1);
 		}
 		else if (!cmd_is_dir(tokens->value))

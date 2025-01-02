@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 16:16:23 by isalayan          #+#    #+#             */
-/*   Updated: 2024/12/30 16:58:56 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/02 15:11:17 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,6 @@ void	handle_quote_identifier(const char **p)
 		(*p)++;
 	}
 	end = ft_find_str(p, quote_char);
-	// end = *p;
-	// while (*end != quote_char && *end != '\0')
-	// {
-	//     end++;
-	// }
 	*p = end;
 }
 
@@ -56,10 +51,10 @@ void	handle_identifier(const char **p, t_tokenlist *token_list)
 	t_input		*token;
 
 	while (!ft_isspace(**p) && **p != '\0' && **p != '>' && **p != '<'
-			&& ft_strncmp(*p, ">>", 2) && ft_strncmp(*p, "<<", 2) && **p!='|')
+		&& ft_strncmp(*p, ">>", 2) && ft_strncmp(*p, "<<", 2) && **p != '|')
 	{
 		if (**p == '"' || **p == '\'' || (**p == '\\' && (**(p + 1) == '"'
-			|| **(p + 1) == '\'')))
+					|| **(p + 1) == '\'')))
 			handle_quote_identifier(p);
 		(*p)++;
 	}
@@ -71,8 +66,8 @@ void	handle_identifier(const char **p, t_tokenlist *token_list)
 
 void	tokenize_special_input(const char **p, t_tokenlist *token_list)
 {
-	if ((**p == '-' && ft_isalpha(*(*p + 1))) || ((**p == '-') && (*(*p + 1) == '-')
-			&& (ft_isalpha(*(*p + 2)))))
+	if ((**p == '-' && ft_isalpha(*(*p + 1))) || ((**p == '-')
+			&& (*(*p + 1) == '-') && (ft_isalpha(*(*p + 2)))))
 		handle_argument(p, token_list);
 	else if ((**p == '/' && ft_isalpha(*(*p + 1))) || (**p == '.' && *(*p
 				+ 1) == '/'))
@@ -86,7 +81,7 @@ void	tokenize_special_input(const char **p, t_tokenlist *token_list)
 	else if (**p == '(' || **p == ')')
 		handle_parenthesis(p, token_list);
 	else if (**p == '"' || **p == '\'' || (**p == '\\' && (*(*p + 1) == '"'
-		|| *(*p + 1) == '\'')))
+				|| *(*p + 1) == '\'')))
 		handle_quote(p, token_list);
 	else if (**p == '{' || **p == '}')
 		handle_braces(p, token_list);
@@ -119,6 +114,5 @@ t_tokenlist	*tokenize_input(const char *input)
 		else
 			tokenize_special_input(&p, token_list);
 	}
-	// print_tokens(token_list);
 	return (token_list);
 }

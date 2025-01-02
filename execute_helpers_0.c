@@ -22,8 +22,11 @@ char	*get_path(t_env env, char *cmd)
 	char		*back_slash;
 	char		**path;
 	char		*env_path;
-
-	env_path = ft_getenv(&env, "PATH");
+	
+	if(ft_strcmp(ft_getenv(&env,"SHLVL"),"1") == 0)
+		env_path =  ft_strdup("/home/skreik/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"); 
+	else
+		env_path = ft_getenv(&env, "PATH");
 	if (!env_path)
 		return (NULL);
 	path = ft_split(env_path, ':');
@@ -36,7 +39,9 @@ char	*get_path(t_env env, char *cmd)
 		p = ft_strjoin(path[i], back_slash);
 		free(back_slash);
 		if (access(p, X_OK) == 0)
+		{
 			return (free_2d_array(path), p);
+		}
 		else
 			free(p);
 		i++;

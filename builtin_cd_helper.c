@@ -14,7 +14,7 @@
 
 int	is_oldpwd_input(const char *input)
 {
-	return (ft_strcmp(input, "-") == 0|| ft_strcmp(input, "-") == 0);
+	return (ft_strcmp(input, "-") == 0 || ft_strcmp(input, "-") == 0);
 }
 
 void	update_pwd(t_parser *list, t_env *myenv)
