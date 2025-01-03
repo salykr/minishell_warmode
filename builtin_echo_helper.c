@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/12/31 16:18:55 by root             ###   ########.fr       */
+/*   Updated: 2025/01/03 13:14:34 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	process_special_variable(char **input)
 	if (**input >= '0' && **input <= '9')
 	{
 		(*input)++;
-		while (**input && (isalnum(**input) || is_special_char(**input)))
+		while (**input && (ft_isalnum(**input) || is_special_char(**input)))
 		{
 			printf("%c", **input);
 			(*input)++;
@@ -27,7 +27,7 @@ void	process_special_variable(char **input)
 	else if (is_special_char(**input))
 	{
 		printf("$");
-		while (**input && (isalnum(**input) || is_special_char(**input)))
+		while (**input && (ft_isalnum(**input) || is_special_char(**input)))
 		{
 			printf("%c", **input);
 			(*input)++;
@@ -44,7 +44,7 @@ void	process_expanded_variable(char **input, t_env env)
 	char	*value;
 
 	var_name_start = *input;
-	while (**input && (isalnum(**input) || **input == '_'))
+	while (**input && (ft_isalnum(**input) || **input == '_'))
 		(*input)++;
 	var_name_length = *input - var_name_start;
 	if (var_name_length > 0)

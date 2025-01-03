@@ -27,9 +27,9 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd");
-		if (strcmp(list->input[0], "..") == 0 && oldpwd)
+		if (ft_strcmp(list->input[0], "..") == 0 && oldpwd)
 		{
-			add_or_update_to_env(strdup("OLDPWD"), ft_strdup(oldpwd), myenv);
+			add_or_update_to_env(ft_strdup("OLDPWD"), ft_strdup(oldpwd), myenv);
 			oldpwd = ft_strjoin(oldpwd, "/..");
 			add_or_update_to_env(ft_strdup("PWD"), oldpwd, myenv);
 		}
@@ -38,7 +38,7 @@ void	update_pwd(t_parser *list, t_env *myenv)
 	if (oldpwd)
 	{
 		value = ft_strdup(oldpwd);
-		add_or_update_to_env(strdup("OLDPWD"), value, myenv);
+		add_or_update_to_env(ft_strdup("OLDPWD"), value, myenv);
 	}
 	value = ft_strdup(cwd);
 	add_or_update_to_env(ft_strdup("PWD"), value, myenv);

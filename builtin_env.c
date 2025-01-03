@@ -21,7 +21,7 @@ char	*compare_input_with_str(t_parser *list, const char *str)
 	i = 0;
 	while (list->input[i] != NULL)
 	{
-		if (strcmp(list->input[i], str) != 0)
+		if (ft_strcmp(list->input[i], str) != 0)
 			return (list->input[i]);
 		i++;
 	}

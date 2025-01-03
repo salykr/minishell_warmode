@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/26 10:44:14 by rdennaou         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:13:46 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ int	is_valid_var_name(const char *var)
 	size_t	i;
 
 	i = 0;
-	if (!var || !*var || isdigit(var[0]) || var[0] == '=')
+	if (!var || !*var || ft_isdigit(var[0]) || var[0] == '=')
 		return (0);
 	if (var[0] == '\"' && var[1] == '\"')
 		return (1);
-	if (!isalpha(var[0]) && var[0] != '_' && var[0] != '$')
+	if (!ft_isalpha(var[0]) && var[0] != '_' && var[0] != '$')
 		return (0);
 	while (var[i])
 	{
-		if (!isalnum(var[i]) && var[i] != '_' && var[i] != '$' && var[i] != '!')
+		if (!ft_isalnum(var[i]) && var[i] != '_' && var[i] != '$' && var[i] != '!')
 			return (0);
 		i++;
 	}
@@ -87,12 +87,12 @@ int	find_env_var(t_env *myenv, const char *name)
 		return (-1);
 	full_name = process_variable((char*)name, myenv);
 	printf("full_name:%s\n", full_name);
-	name_len = strlen(full_name);
+	name_len = ft_strlen(full_name);
 	i = 0;
 	while (myenv->env[i])
 	{
 		// Check if the current environment variable matches "name" exactly
-		if (strncmp(myenv->env[i], full_name, name_len) == 0 &&
+		if (ft_strncmp(myenv->env[i], full_name, name_len) == 0 &&
 			(myenv->env[i][name_len] == '=' || myenv->env[i][name_len] == '\0'))
 		{
 			free(full_name);

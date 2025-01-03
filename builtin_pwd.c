@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/26 12:36:13 by rdennaou         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:06:42 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	handle_pwd_env(t_env *env)
 	pwd_env = ft_getenv(env, "PWD");
 	if (pwd_env != NULL)
 	{
-		path = strstr(pwd_env, "PATH=");
+		path = ft_strnstr(pwd_env, "PATH=", ft_strlen("PATH="));
 		if (path != NULL)
 			printf("%s\n", path + 5);
 		else

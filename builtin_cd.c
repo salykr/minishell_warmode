@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 12:28:32 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/31 19:28:50 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 	else if (ft_strncmp(list->input[0], "$PWD", 4) == 0
 		|| ft_strncmp(list->input[0], "$HOME", 5) == 0
 		|| ft_strchr(list->input[0], '$') != NULL
-		|| strrchr(list->input[0], '~') != NULL)
+		|| ft_strrchr(list->input[0], '~') != NULL)
 	{
-		if (strrchr(list->input[0], '~') != NULL)
-			list->input[0] = ft_strjoin(strdup("$HOME"), list->input[0] + 1);
+		if (ft_strrchr(list->input[0], '~') != NULL)
+			list->input[0] = ft_strjoin(ft_strdup("$HOME"), list->input[0] + 1);
 		val = process_variable(list->input[0], myenv);
 		replace_with_str(&list->input, val);
 	}
@@ -87,16 +87,16 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 		return (2);
 	}
 	if (list->input != NULL && (list->input[1] != NULL
-			|| strcmp(list->input[0], "*") == 0))
+			|| ft_strcmp(list->input[0], "*") == 0))
 	{
 		printf("bash: cd: too many arguments.\n");
 		return (1);
 	}
-	if (list->input != NULL && (strchr(list->input[0], '\'')
-			|| strchr(list->input[0], '"')))
+	if (list->input != NULL && (ft_strchr(list->input[0], '\'')
+			|| ft_strchr(list->input[0], '"')))
 		list->input[0] = remove_quotes_with_free(list->input[0]);
 	if (list->input != NULL && list->input[0] != NULL
-		&& strchr(list->input[0], '$') != NULL)
+		&& ft_strchr(list->input[0], '$') != NULL)
 		replace_with_str(&list->input, process_variable(list->input[0], myenv));
 	if (list->input != NULL && (list->input[1] != NULL))
 		return (1);
