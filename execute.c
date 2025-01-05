@@ -73,12 +73,13 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 		exit(EXIT_FAILURE);
 	if (pid == 0)
 	{
-		printf("cmd: %s\n",parser->command);
-		manage_input_output(&f, fd, parser);
-		if(f.fd_1 == -1 ||  f.fd_2 == -1)
-			return;
-		if(ft_getenv(env, "PATH")!=NULL)
-			execve(cmd_path, parser->args, env->env);
+		manage_input_output(heredoc_fd, &f);
+		if (f.fd_1 == -1 ||  f.fd_2 == -1)
+			exit(EXIT_FAILURE);
+		if (ft_getenv(env, "PATH") != NULL)
+		{
+			execve(cmd_path, args, env->env);
+		}
 		perror("Error");
 		exit(EXIT_FAILURE);
 	}

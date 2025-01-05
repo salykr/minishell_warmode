@@ -12,7 +12,6 @@
 
 #include "mini_shell.h"
 
-
 char	*ft_getenv(t_env *myenv, char *str)
 {
 	int		i;
@@ -29,8 +28,7 @@ char	*ft_getenv(t_env *myenv, char *str)
 	return (NULL);
 }
 
-
-t_env *init_env(char **env)
+t_env	*init_env(char **env)
 {
     t_env *myenv;
     int i;

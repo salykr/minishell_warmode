@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
 /*   Updated: 2024/12/27 11:14:25 by skreik           ###   ########.fr       */
@@ -208,7 +208,6 @@ void						ft_redirection_delimiter(t_parser *node);
 void	cmds_exec(t_parser *parser, t_env *env);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
-char						*remove_quotes_new(const char *str);
 int							handle_heredoc(char **heredoc_content);
 char						*get_path_PWD(t_env env, char *cmd);
 void						print_expanded_input(char **input,
@@ -235,7 +234,6 @@ void parse_export_input(char *input, char **name, char **value);
 char *itoa(int num);
 char *get_env_value(t_env *env, const char *var);
 int check_input_end(char *str);
-char *remove_quotes_new_new(const char *str);
 char *remove_paired_quotes(char *str);
 void memory_free(char *str1, char *str2);
 char *remove_closing_quote_after_equals(char *str);
@@ -296,7 +294,7 @@ int			isempty(const char *str);
 char		*expand_variable(const char *input ,t_env env);
 int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
 int			is_executable(char *cmd);
-int			is_executable_PWD(t_env env, char *cmd);
+int			is_executable_pwd(t_env env, char *cmd);
 char	*get_path(t_env env, char *cmd);
 char	**ft_create_args(t_parser *parser, t_tokenlist *token);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
@@ -341,7 +339,7 @@ char						*check_env_input(t_parser *list);
 int							check_ls_pwd_in_env(t_parser *list, t_env *myenv);
 void						print_env_vars(t_env *myenv, char **input_list);
 void						print_all_env_vars(t_env *myenv);
-void						update_SHLVL(t_env *myenv);
+void						update_shlvl(t_env *myenv);
 
 //______cd
 int							builtin_cd(t_parser *parser, t_env *myenv);
