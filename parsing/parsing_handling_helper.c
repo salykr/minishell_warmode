@@ -6,7 +6,7 @@
 /*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 13:04:01 by isalayan          #+#    #+#             */
-/*   Updated: 2025/01/05 13:09:58 by isalayan         ###   ########.fr       */
+/*   Updated: 2025/01/05 17:05:14 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ int	handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 
 int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 {
-	if (curr->input == NULL && curr->command == NULL)
+	if ((curr->input == NULL && curr->command == NULL ) ||  (tokens->next!=NULL && (tokens->next->type == tokens->type || tokens->next->type == T_INPUT || tokens->next->type == T_OUTPUT || tokens->next->type == T_HEREDOC)))
 	{
 		printf("bash: syntax error near unexpected token `%s'\n",
 			tokens->value);
+		g_v = 2;
 		return (-1);
 	}
 	if (tokens->next == NULL)
