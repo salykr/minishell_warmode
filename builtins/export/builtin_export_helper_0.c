@@ -48,7 +48,7 @@ static int	find_smallest_unprinted(char **env, int *printed, int count)
 	j = 0;
 	while (j < count)
 	{
-		if (!printed[j] && (min_idx == -1 || strcmp(env[j], env[min_idx]) < 0))
+		if (!printed[j] && (min_idx == -1 || ft_strcmp(env[j], env[min_idx]) < 0))
 			min_idx = j;
 		j++;
 	}
@@ -59,7 +59,7 @@ static void	print_env_var(char *env_var)
 {
 	char	*equal_sign;
 
-	equal_sign = strchr(env_var, '=');
+	equal_sign = ft_strchr(env_var, '=');
 	if (equal_sign)
 		printf("declare -x %.*s=\"%s\"\n", (int)(equal_sign - env_var),
 			env_var, equal_sign + 1);

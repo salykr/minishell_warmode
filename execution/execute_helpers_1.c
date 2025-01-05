@@ -19,14 +19,24 @@ int	is_builtin(t_parser *parser)
 {
 	if (parser->command == NULL)
 		return (0);
-	if (strcmp(parser->command, "cd") == 0 || strcmp(parser->command,
-			"pwd") == 0 || strcmp(parser->command, "export") == 0
-		|| strcmp(parser->command, "unset") == 0 || strcmp(parser->command,
-			"env") == 0 || strcmp(parser->command, "exit") == 0
-		|| strcmp(parser->command, "echo") == 0)
+	if (ft_strcmp(parser->command, "cd") == 0 || ft_strcmp(parser->command,
+			"pwd") == 0 || ft_strcmp(parser->command, "export") == 0
+		|| ft_strcmp(parser->command, "unset") == 0
+		|| ft_strcmp(parser->command, "env") == 0
+		|| ft_strcmp(parser->command, "exit") == 0
+		|| ft_strcmp(parser->command, "echo") == 0)
 	{
 		return (1);
 	}
+	else if (!access(parser->command, X_OK)
+		&& (ft_strstr(parser->command, "cd") != NULL
+			|| ft_strstr(parser->command, "pwd") != NULL
+			|| ft_strstr(parser->command, "export") != NULL
+			|| ft_strstr(parser->command, "unset") != NULL
+			|| ft_strstr(parser->command, "env") != NULL
+			|| ft_strstr(parser->command, "exit") != NULL
+			|| ft_strstr(parser->command, "echo") != NULL))
+		return (1);
 	return (0);
 }
 
@@ -57,6 +67,8 @@ void	initialize_execution(t_parser *parser, t_env *env, char **cmd_path)
 {
 	if (!strncmp(parser->command, "./", 2))
 		*cmd_path = get_path_pwd(*env, parser->command);
+	else if (ft_strchr(parser->command, '/') && !access(parser->command, X_OK))
+		*cmd_path = ft_strdup(parser->command);
 	else
 		*cmd_path = get_path(*env, parser->command);
 }

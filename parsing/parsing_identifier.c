@@ -105,10 +105,11 @@ int	handle_parsing_identifier_main(t_input *tokens, t_parser *curr, t_env env,
 			add_to_input_args(split_value[i], curr);
 		return (free_2d_array(split_value), free(value), 0);
 	}
-	else if ((is_executable(value, env) || ft_strcmp(value, "cd") == 0
+	if ((is_executable(value, env) || ft_strcmp(value, "cd") == 0
 			|| ft_strcmp(value, "exit") == 0 || ft_strcmp(value, "export") == 0
-			|| ft_strcmp(value, "unset") == 0) && (curr->command == NULL
-			&& !is_all_spaces(value)))
+			|| ft_strcmp(value, "unset") == 0 || ft_strcmp(value, "echo") == 0
+			||ft_strcmp(value, "env") == 0 || ft_strcmp(value, "pwd") == 0)
+		&& (curr->command == NULL && !is_all_spaces(value)))
 	{
 		curr->command = value;
 		curr->args = add_string_to_2d_array(curr->args, value);

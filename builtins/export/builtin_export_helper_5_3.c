@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_export_helper_5.c                          :+:      :+:    :+:   */
+/*   builtin_export_helper_5_3.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/02 11:57:16 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/05 14:12:38 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	handle_variable_cases(t_context *ctx, t_env *env)
 		ctx->start = ctx->var_name + 1;
 	else
 		ctx->start = handle_env_value(ctx, env);
-	ctx->dollar = strchr(ctx->start, '$');
+	ctx->dollar = ft_strchr(ctx->start, '$');
 	if (ctx->dollar != NULL && *(ctx->dollar + 1) == '\0')
 		ctx->dollar = NULL;
 }
@@ -60,13 +60,13 @@ char	*process_variable(char *input, t_env *env)
 	if (!initialize_context(&ctx, input))
 		return (NULL);
 	if (ft_strchr(ctx.input, '$') == NULL)
-		return (remove_paired_quotes(ft_escape_char(strdup(input))));
+		return (remove_paired_quotes(ft_escape_char(ft_strdup(input))));
 	ctx.total_size = pv_initialise_vars(&ctx);
 	process_dollar_signs(&ctx, env);
-	pv_resize_concat(&ctx.new_str, strlen(ctx.new_str) + strlen(ctx.start) + 1,
+	pv_resize_concat(&ctx.new_str, ft_strlen(ctx.new_str) + ft_strlen(ctx.start) + 1,
 		ctx.start, (size_t)-1);
 	result = remove_paired_quotes(ft_escape_char(ctx.new_str));
-	if (result != NULL && strlen(result) == 0)
+	if (result != NULL && ft_strlen(result) == 0)
 	{
 		free(result);
 		return (NULL);
