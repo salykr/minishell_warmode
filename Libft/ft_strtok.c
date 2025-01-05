@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtok.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 13:35:45 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/21 13:33:02 by rdennaou         ###   ########.fr       */
+/*   Updated: 2025/01/05 12:10:11 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,7 @@ char	*ft_strtok(char *str, const char *delim)
 	while (*start && ft_strchr(delim, *start))
 		start++;
 	if (*start == '\0')
-	{
-		next_token = NULL;
-		return (NULL);
-	}
+		return (next_token = NULL, NULL);
 	end = start;
 	while (*end && !ft_strchr(delim, *end))
 		end++;

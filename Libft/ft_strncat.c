@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtoll.c                                       :+:      :+:    :+:   */
+/*   ft_strncat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/31 10:55:39 by saly              #+#    #+#             */
-/*   Updated: 2025/01/05 12:15:37 by skreik           ###   ########.fr       */
+/*   Created: 2025/01/03 11:35:17 by saly              #+#    #+#             */
+/*   Updated: 2025/01/05 13:31:36 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long long	ft_strtoll(const char *nptr, char **endptr, int base)
+char	*ft_strncat(char *dest, const char *src, size_t n)
 {
-	return (strtoll(nptr, endptr, base));
+	return (strncat(dest, src, n));
 }

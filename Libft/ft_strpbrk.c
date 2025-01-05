@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtoll.c                                       :+:      :+:    :+:   */
+/*   ft_strpbrk.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/31 10:55:39 by saly              #+#    #+#             */
-/*   Updated: 2025/01/05 12:15:37 by skreik           ###   ########.fr       */
+/*   Created: 2024/12/31 14:27:26 by saly              #+#    #+#             */
+/*   Updated: 2025/01/05 12:10:54 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long long	ft_strtoll(const char *nptr, char **endptr, int base)
+char	*ft_strpbrk(const char *s, const char *accept)
 {
-	return (strtoll(nptr, endptr, base));
+	return (strpbrk(s, accept));
 }
