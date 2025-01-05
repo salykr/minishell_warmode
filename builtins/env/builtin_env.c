@@ -21,7 +21,7 @@ char	*compare_input_with_str(t_parser *list, const char *str)
 	i = 0;
 	while (list->input[i] != NULL)
 	{
-		if (strcmp(list->input[i], str) != 0)
+		if (ft_strcmp(list->input[i], str) != 0)
 			return (list->input[i]);
 		i++;
 	}
@@ -93,7 +93,7 @@ int	builtin_env(t_parser *list, t_env *myenv)
 	if (mismatch_str != NULL)
 	{
 		printf("env: '%s':  No such file or directory\n", mismatch_str);
-		return (1);
+		return (127);
 	}
 	if (list->input == NULL)
 	{

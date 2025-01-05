@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/30 11:01:16 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/05 14:14:37 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	handle_pwd_env(t_env *env)
 	pwd_env = ft_getenv(env, "PWD");
 	if (pwd_env != NULL)
 	{
-		path = strstr(pwd_env, "PATH=");
+		path = ft_strstr(pwd_env, "PATH=");
 		if (path != NULL)
 			printf("%s\n", path + 5);
 		else

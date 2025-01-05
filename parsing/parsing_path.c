@@ -91,11 +91,12 @@ int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr, t_env env)
 	if (*p != '\0')
 	{
 		if (is_executable(p, env) || ft_strcmp(p, "cd") == 0 || ft_strcmp(p,
-				"exit") == 0 || ft_strcmp(p, "export") == 0
-			|| ft_strcmp(p, "unset") == 0)
+				"exit") == 0 || ft_strcmp(p, "export") == 0 || ft_strcmp(p, "echo") == 0 || ft_strcmp(p, "pwd") == 0
+				|| ft_strcmp(p, "env") == 0
+			|| ft_strcmp(p, "unset") == 0 || access(tokens->value, X_OK) == 0)
 		{
-			curr->command = ft_strdup(p);
-			curr->args = add_string_to_2d_array(curr->args, p);
+			curr->command = ft_strdup(tokens->value);
+			curr->args = add_string_to_2d_array(curr->args, tokens->value);
 			if (curr->command == NULL)
 				return (perror("Failed to allocate memory"), -1);
 		}

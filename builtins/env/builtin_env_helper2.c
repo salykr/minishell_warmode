@@ -21,7 +21,7 @@ char	*ft_getenv(t_env *myenv, char *str)
 	len = ft_strlen(str);
 	while (myenv->env[i])
 	{
-		if (!strncmp(myenv->env[i], str, len) && myenv->env[i][len] == '=')
+		if (!ft_strncmp(myenv->env[i], str, len) && myenv->env[i][len] == '=')
 			return (myenv->env[i] + len + 1);
 		i++;
 	}
@@ -52,7 +52,7 @@ t_env	*init_env(char **env)
 		i++;
 	}
 	myenv->env[i] = NULL;
-	printf("(((((i is %d))))))\n", i);
+	// printf("(((((i is %d))))))\n", i);
 	update_shlvl(myenv);
 	return (myenv);
 }

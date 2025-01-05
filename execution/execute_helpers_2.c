@@ -22,7 +22,7 @@ t_parser	*check_exit(t_parser *node)
 	parser = node;
 	while (parser)
 	{
-		if (strcmp(parser->command, "exit") == 0 && parser->next != NULL)
+		if (ft_strcmp(parser->command, "exit") == 0 && parser->next != NULL)
 			return (parser -> next);
 		parser = parser->next;
 	}
@@ -31,19 +31,30 @@ t_parser	*check_exit(t_parser *node)
 
 void	buitlin(t_parser *parser, t_env *env)
 {
-	if (strcmp(parser->command, "echo") == 0)
+	int		val;
+	char	*variable;
+
+	val = 0;
+	variable = get_env_value(env, "PATH");
+	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
+	{
+		printf("bash: env: No such file or directory\n");
+		val = 1;
+	}
+	free(variable);
+	if (ft_strcmp(parser->command, "echo") == 0)
 		g_v = builtin_echo(parser, env);
-	else if (strcmp(parser->command, "env") == 0)
+	else if (ft_strcmp(parser->command, "env") == 0 && val == 0)
 		g_v = builtin_env(parser, env);
-	else if (strcmp(parser->command, "pwd") == 0)
+	else if (ft_strcmp(parser->command, "pwd") == 0)
 		g_v = builtin_pwd(parser, env);
-	else if (strcmp(parser->command, "export") == 0)
+	else if (ft_strcmp(parser->command, "export") == 0)
 		g_v = builtin_export(parser, env);
-	else if (strcmp(parser->command, "unset") == 0)
+	else if (ft_strcmp(parser->command, "unset") == 0)
 		builtin_unset(parser, env);
-	else if (strcmp(parser->command, "cd") == 0)
+	else if (ft_strcmp(parser->command, "cd") == 0)
 		g_v = builtin_cd(parser, env);
-	else if (strcmp(parser->command, "exit") == 0)
+	else if (ft_strcmp(parser->command, "exit") == 0)
 		builtin_exit(parser, env);
 }
 

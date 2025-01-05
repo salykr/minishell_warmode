@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2025/01/05 12:51:17 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/05 15:01:18 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	validate_variable_name(char *name, bool save_val)
 		}
 		if (!save_val && *name != '\0')
 		{
-			printf("unset: `%s': not a valid identifier\n", name);
+			// printf("unset: `%s': not a valid identifier\n", name);
 			g_v = 1;
 		}
 		free(name);
