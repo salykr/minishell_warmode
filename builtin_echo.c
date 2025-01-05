@@ -3,229 +3,108 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2024/09/20 13:37:51 by skreik           ###   ########.fr       */
+/*   Updated: 2024/12/21 12:38:31 by rdennaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdbool.h>
 #include "mini_shell.h"
 
-
-
-bool check_balanced_quotes(const char *input)
-
+int	is_special_char(char c)
 {
-
-    char quote = '\0';  // No quote initially
-
-    int i = 0;
-
-
-
-    while (input[i])
-
-    {
-
-        if (input[i] == '\\')
-
-        {
-
-            if (input[i+1] != '\'')
-
-                i++;
-
-        }
-
-        else if (input[i] == '\'' || input[i] == '\"')
-
-        {
-
-            if (quote == '\0')
-                quote = input[i];
-            else if (quote == input[i])
-                quote = '\0';
-        }
-
-        i++;
-
-    }
-
-    return (quote == '\0');
-
+	return (c == '$' || c == ':' || c == '=' || c == '+' || c == '/'
+		|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
 }
 
-int is_special_char(char c)
+bool	check_balanced_quotes(const char *input)
 {
-    return (c == '$' || c == ':' || c == '=' || c == '+');
-}
+	char	quote;
+	int		i;
 
-void print_expanded_input(char **input, bool inside_single_quotes, t_env env)
-{
-    if (**input == '$' && !inside_single_quotes)
-    {
-        (*input)++;
-        if (**input == '?')
+	i = 0;
+	quote = '\0';
+	while (input[i])
+	{
+		if (input[i] == '\\')
 		{
-			printf("%d", global_var);
-			(*input)++;
-			return ;
+			if (input[i + 1] != '\'')
+				i++;
 		}
-        if (**input == '\0' || (**input == '\"')) //needs more handling
-        {
-            ft_putchar_fd('$', 1);
-            return;
-        }
-        else if (**input >= '0' && **input <= '9')
-        {
-            (*input)++;
-            while (**input && (isalnum(**input) || is_special_char(**input)))
-            {
-                ft_putchar_fd(**input, 1);
-                (*input)++;
-            }
-            return;
-        }
-        else if (is_special_char(**input))
-        {
-            ft_putchar_fd('$', 1);
-            while (**input && (isalnum(**input) || is_special_char(**input)))
-            {
-                ft_putchar_fd(**input, 1);
-                (*input)++;
-            }
-            return;
-        }
-
-        char *var_name_start = *input;
-        while (**input && (**input == '_' || isalnum(**input) || is_special_char(**input)))
-            (*input)++;
-
-        size_t var_name_length = *input - var_name_start;
-        char var_name[var_name_length + 1];
-        strncpy(var_name, var_name_start, var_name_length);
-        var_name[var_name_length] = '\0';
-
-        char *value = ft_getenv(&env, var_name);
-        if (value)
-            printf("%s", value);
-    }
-
+		else if (input[i] == '\'' || input[i] == '\"')
+		{
+			if (quote == '\0')
+				quote = input[i];
+			else if (quote == input[i])
+				quote = '\0';
+		}
+		i++;
+	}
+	return (quote == '\0');
 }
 
-
-void builtin_echo_helper(char **input, char quote, t_env env)
+void	handle_variable_expansion(char **arg, t_env *env)
 {
+	char	*temp;
 
-    bool inside_single_quotes = (quote == '\'');
-
-
-
-    while (**input && **input != quote)
-
-    {
-        if (**input == '\\' && !inside_single_quotes)
-        {
-            (*input)++;
-            if (**input == '\"' || **input == '\\')
-                printf("%c", **input); // Print escaped quote or backslash
-            else
-                printf("\\%c", **input); // Print unknown escape sequences
-            (*input)++;
-        }
-
-        else if (**input == '$' && !inside_single_quotes)
-
-        {
-            print_expanded_input(input, inside_single_quotes, env);
-            continue;
-        }
-
-        else
-
-        {
-
-            printf("%c", **input);
-
-            (*input)++;
-
-        }
-
-    }
-
-    // Skip the closing quote (if applicable)
-    if (**input == quote)
-        (*input)++;
+	if ((*arg)[1] == '\'' || (*arg)[1] == '\"')
+	{
+		temp = remove_quotes(*arg);
+		printf("%s", temp + 1);
+		free(temp);
+		*arg += ft_strlen(*arg);
+	}
+	else
+		print_expanded_input(arg, false, *env);
 }
 
-void builtin_echo(t_parser *list, t_env env)
+void	process_argument(char *arg, t_env *env)
 {
-    int i = 0;
+	char	quote;
 
-    while (list->input[i])
-    {
-        if (!check_balanced_quotes(list->input[i]))
-        {
-            printf("Error: Unbalanced quotes in argument %d.\n", i + 1);
-            // handle_heredoc(list->input, &env);
-            // printf("Error: Unbalanced quotes in argument %d.\n", i + 1);
-            // exit(EXIT_FAILURE);
-            return;
-        }
-        
-        char *arg = list->input[i];
+	while (*arg)
+	{
+		if (*arg == '\'' || *arg == '\"')
+		{
+			quote = *arg++;
+			builtin_echo_helper(&arg, quote, *env);
+		}
+		else if (*arg == '$')
+			handle_variable_expansion(&arg, env);
+		else
+		{
+			if (*arg == '\\')
+				arg++;
+			printf("%c", *arg++);
+		}
+	}
+}
 
-        while (*arg)
-        {
-            if (*arg == '\'' || *arg == '\"')
-            {
-                
-                char quote = *arg;
-                arg++;
-                builtin_echo_helper(&arg, quote, env);
-                // if (*arg == quote)
-                //     arg++;
-            }
-            else if (*arg == '$')
-            {
-                if (*(arg+1) == '\'' || *(arg +1) =='\"')
-                {
-                  arg= remove_quotes(arg);
-                    printf("%s",arg+1);
-                    break;
-                }
-                print_expanded_input(&arg, false, env);
-                // while (*arg && *arg != ' ' && *arg != '\'' && *arg != '\"')
-                //     arg++;
-            }
-            else
-            {
-                if (*arg == '\\')
-                    arg++;
-                printf("%c", *arg);
-                arg++;
-            }
-        }
+int	builtin_echo(t_parser *list, t_env *env)
+{
+	int	i;
 
-        if (list->input[i + 1])
-            printf(" ");
-        i++;
-    }
-
-    if (list->operations == NULL)
-        printf("\n");    
-    // global_var = 0;
-} 
-
-
-/*
-    Things to test again:
-    ---------------------
-    echo '''ho"''''l"a'''
-    echo hola"''''''''''"
-    echo hola'""""""""""'
-    echo "" hola (if there's no space between "" and hola then it works)
-    
-*/
+	if (!list->input)
+	{
+		if (!list->operations)
+			printf("\n");
+		return (0);
+	}
+	i = 0;
+	while (list->input[i])
+	{
+		if (!check_balanced_quotes(list->input[i]))
+		{
+			printf("Error: Unbalanced quotes in argument.\n");
+			return (1);
+		}
+		process_argument(list->input[i], env);
+		if (list->input[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (!list->operations)
+		printf("\n");
+	return (0);
+}
