@@ -17,12 +17,15 @@ bool	ft_check_n_operation(char *str)
 	int	i;
 
 	i = 1;
+	if (str[0] == '\'' || str[0] == '\"')
+		str = remove_quotes(str);
 	while (str[i])
 	{
 		if (str[i] != 'n')
-			return (1);
+			return (free(str), 1);
 		i++;
 	}
+	free(str);
 	return (0);
 }
 

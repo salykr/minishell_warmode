@@ -6,7 +6,7 @@
 /*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 13:04:01 by isalayan          #+#    #+#             */
-/*   Updated: 2025/01/05 13:09:58 by isalayan         ###   ########.fr       */
+/*   Updated: 2025/01/05 14:26:45 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 	{
 		printf("bash: syntax error near unexpected token `%s'\n",
 			tokens->value);
+		g_v = 2;
 		return (-1);
 	}
 	if (tokens->next == NULL)
