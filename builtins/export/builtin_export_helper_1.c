@@ -17,7 +17,7 @@ void	check_semicolon(char *name, char **value)
 	char	*semicolon_in_name;
 	char	*semicolon_in_value;
 
-	semicolon_in_name = strchr(name, ';');
+	semicolon_in_name = ft_strchr(name, ';');
 	if (semicolon_in_name != NULL)
 	{
 		if (semicolon_in_name != name && *(semicolon_in_name - 1) == '=')
@@ -32,7 +32,7 @@ void	check_semicolon(char *name, char **value)
 	}
 	else if (*value != NULL)
 	{
-		semicolon_in_value = strchr(*value, ';');
+		semicolon_in_value = ft_strchr(*value, ';');
 		if (semicolon_in_value != NULL)
 			*semicolon_in_value = '\0';
 	}

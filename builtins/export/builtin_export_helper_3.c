@@ -18,9 +18,9 @@ char	*concatenate_value(char *current_value, char *new_value)
 	size_t	new_len;
 	char	*updated_value;
 
-	current_len = strlen(current_value);
+	current_len = ft_strlen(current_value);
 	if (new_value)
-		new_len = current_len + strlen(new_value);
+		new_len = current_len + ft_strlen(new_value);
 	else
 		new_len = current_len;
 	updated_value = malloc(new_len + 1);
@@ -38,9 +38,9 @@ void	replace_or_append_value(char **env_entry,
 	size_t	name_len;
 	size_t	new_len;
 
-	name_len = strlen(new_name);
+	name_len = ft_strlen(new_name);
 	if (new_value)
-		new_len = name_len + strlen(new_value) + 1;
+		new_len = name_len + ft_strlen(new_value) + 1;
 	else
 		new_len = name_len + 1;
 	if (*env_entry != NULL)
@@ -95,8 +95,8 @@ int	process_name_and_value(char *name, char *value,
 	if (check_input_status == 0 || (value != NULL && new_nv->new_value != NULL
 			&& !check_value(new_nv->new_value)))
 		return (handle_memory_errors(new_nv->new_name, new_nv->new_value), 0);
-	if ((new_nv->new_name)[strlen(new_nv->new_name) - 1] == '+')
-		(new_nv->new_name)[strlen(new_nv->new_name) - 1] = '\0';
+	if ((new_nv->new_name)[ft_strlen(new_nv->new_name) - 1] == '+')
+		(new_nv->new_name)[ft_strlen(new_nv->new_name) - 1] = '\0';
 	return (check_input_status);
 }
 

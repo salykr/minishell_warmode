@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 13:35:35 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/05 16:03:36 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 			free(val);
 		}
 		val = process_variable(list->input[0], myenv);
+		printf("var is %s\n",val);
 		replace_with_str(&list->input, val);
+		printf("varrrrrrrrrr is %s\n",list->input[0]);
 	}
 	if (val != NULL)
 		free(val);
@@ -86,13 +88,13 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 		return (2);
 	}
 	if (list->input != NULL && (list->input[1] != NULL
-			|| strcmp(list->input[0], "*") == 0))
+			|| ft_strcmp(list->input[0], "*") == 0))
 	{
 		printf("bash: cd: too many arguments.\n");
 		return (1);
 	}
-	if (list->input != NULL && (strchr(list->input[0], '\'')
-			|| strchr(list->input[0], '"')))
+	if (list->input != NULL && (ft_strchr(list->input[0], '\'')
+			|| ft_strchr(list->input[0], '"')))
 		list->input[0] = remove_quotes_with_free(list->input[0]);
 	if (list->input != NULL && (list->input[1] != NULL))
 		return (1);

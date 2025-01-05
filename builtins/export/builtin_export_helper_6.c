@@ -44,7 +44,7 @@ char	*remove_paired_quotes(char *str)
 	indexes.j = 0;
 	if (!str || !has_quotes(str))
 		return (str);
-	len = strlen(str);
+	len = ft_strlen(str);
 	result = (char *)malloc(len + 1);
 	if (!result)
 		return (NULL);

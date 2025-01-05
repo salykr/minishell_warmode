@@ -24,7 +24,7 @@ char	*resize_string(char *str, size_t new_size)
 		free(str);
 		return (NULL);
 	}
-	strncpy(new_str, str, new_size - 1);
+	ft_strncpy(new_str, str, new_size - 1);
 	new_str[new_size - 1] = '\0';
 	free(str);
 	return (new_str);
@@ -53,9 +53,9 @@ void	pv_resize_concat(char **resized_str, size_t len_resize,
 {
 	*resized_str = resize_string(*resized_str, len_resize);
 	if (len_concat == (size_t)-1)
-		strcat(*resized_str, concat_str);
+		ft_strcat(*resized_str, concat_str);
 	else
-		strncat(*resized_str, concat_str, len_concat);
+		ft_strncat(*resized_str, concat_str, len_concat);
 }
 
 int	pv_initialise_vars(t_context *ctx)
@@ -79,7 +79,7 @@ int	pv_backslashes_cases(t_context *ctx)
 	if (backslash_count % 2 != 0)
 	{
 		pv_resize_concat(&(ctx->new_str),
-			strlen(ctx->new_str) + ctx->dollar - ctx->start + 2,
+			ft_strlen(ctx->new_str) + ctx->dollar - ctx->start + 2,
 			ctx->start, ctx->dollar - ctx->start + 1);
 		ctx->total_size += (ctx->dollar - ctx->start + 1);
 		ctx->new_str = realloc(ctx->new_str, ctx->total_size);

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 12:20:46 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 12:40:50 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/05 15:01:25 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int	handle_unset_options(char **operations, bool *save_val)
 		if (operations[0][1] && operations[0][1] == '-'
 			&& operations[0][2] != '\0')
 		{
-			printf("-bash: unset: --: invalid option\nunset:");
-			printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
+			// printf("-bash: unset: --: invalid option\nunset:");
+			// printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
 			return (2);
 		}
 		else if (operations[0][1] && operations[0][1] == '-'
@@ -121,8 +121,8 @@ int	handle_input_dash(t_parser *parser, bool *save_val)
 		else if (parser->input[0][1] && parser->input[0][1] == '-'
 					&& parser->input[0][2] != '\0')
 		{
-			printf("-bash: unset: --: invalid option\nunset:");
-			printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
+			// printf("-bash: unset: --: invalid option\nunset:");
+			// printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
 			g_v = 2;
 		}
 		else if (parser->input[0][1] && parser->input[0][1] == '-'

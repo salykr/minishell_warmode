@@ -3,32 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saly <saly@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/03 14:42:29 by saly             ###   ########.fr       */
+/*   Updated: 2025/01/05 16:22:32 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-
-/*
-   manage_input_output(&f, fd, parser);
-   if(ft_getenv(env, "PATH")!=NULL)
-   {
-   if (execve(cmd_path, parser->args, env->env) == -1)
-   {
-   perror("execve");
-   exit(EXIT_FAILURE);
-   }
-   }
-   else
-   {
-   printf("Error: PATH environment variable not set\n");
-   exit(EXIT_FAILURE);
-   }
-
-*/
 
 void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 {

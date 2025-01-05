@@ -71,7 +71,7 @@ t_parser	*find_last_exit(t_parser *parser)
 	{
 		if (parser->command)
 		{
-			if (strcmp(parser->command, "exit") == 0)
+			if (ft_strcmp(parser->command, "exit") == 0)
 				last_node = parser;
 		}
 		parser = parser->next;
