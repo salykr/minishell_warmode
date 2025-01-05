@@ -56,7 +56,10 @@ int handle_parsing_quotes_helper(t_input *tokens, t_parser *curr,char* value)
         return -1;
     }
     else
+    {
         curr->input = add_string_to_2d_array(curr->input, value);
+        curr->args = add_string_to_2d_array(curr->args, value);
+    }
     return 0;   
 }
 
@@ -97,18 +100,18 @@ int handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
     if (tokens->type == T_HEREDOC && (tokens->next->type == T_ENV || tokens->next->type == T_IDENTIFIER || tokens->next->type == T_QUOTE))
     {
         printf("hi");
-        curr->delimeter = ft_strdup(tokens->next->value);
-        add_to_array(curr, 1);
+        curr->delimeter = add_string_to_2d_array(curr->delimeter,tokens->next->value);
+        add_to_array(curr, T_HEREDOC);
     }
     else if (tokens->type == T_INPUT && tokens->next->type == T_IDENTIFIER)
     {
-        curr->infile = ft_strdup(tokens->next->value);
-        add_to_array(curr, 3);
+        curr->infile = add_string_to_2d_array(curr->infile, tokens->next->value);
+        add_to_array(curr, T_INPUT);
     }
     else if (tokens->type == T_OUTPUT && tokens->next->type == T_IDENTIFIER)
     {
         curr->outfile = add_string_to_2d_array(curr->outfile, tokens->next->value);
-        add_to_array(curr, 2);
+        add_to_array(curr, T_OUTPUT);
     }
     return 0;
 }
@@ -128,7 +131,7 @@ int handle_parsing_redirection(t_input *tokens, t_parser *curr)
             else if (tokens->type == T_APPEND && tokens->next->type == T_IDENTIFIER)
             {
                 curr->outfile = add_string_to_2d_array(curr->outfile, tokens->next->value);
-                add_to_array(curr, 0);
+                add_to_array(curr, T_APPEND);
             }
             else
                 handle_parsing_redirection_helper(tokens,curr);

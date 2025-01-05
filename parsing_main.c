@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2024/12/13 11:51:45 by isalayan         ###   ########.fr       */
+/*   Updated: 2024/12/24 12:28:09 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,15 @@ int handle_parsing_argument(t_input *tokens, t_parser *curr)
         else
         {
             curr->input = add_string_to_2d_array(curr->input, tokens->value);
+            curr->args = add_string_to_2d_array(curr->args, tokens->value);
             i++;             
         }
     }
     else
+    {
         curr->operations = add_string_to_2d_array(curr->operations, tokens->value);
+        curr->args = add_string_to_2d_array(curr->args, tokens->value);
+    }
     return 0;
 }
 

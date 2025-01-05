@@ -35,6 +35,7 @@ char	*check_env_input(t_parser *list)
 
 int	check_ls_pwd_in_env(t_parser *list, t_env *myenv)
 {
+
 	int			i;
 	t_parser	*parser;
 

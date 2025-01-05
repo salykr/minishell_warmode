@@ -48,7 +48,7 @@ int ft_doublecharlen(t_env *env)
 }
 
 // Function to convert integer to string
-char *itoa(int num) 
+char *itoa(int num)
 {
     char buffer[12]; // Buffer to hold the string representation of the integer
     snprintf(buffer, sizeof(buffer), "%d", num);

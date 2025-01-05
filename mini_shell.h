@@ -6,7 +6,7 @@
 /*   By: rdennaou <rdennaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2024/12/26 13:22:02 by rdennaou         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:14:25 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 #include <termios.h>
 # include <sys/stat.h>
 # include "get_next_line.h"
+#include <signal.h>
 
 # define CMD_NOT_EXECUTABLE 126
 # ifndef GLOBALS_H
@@ -48,6 +49,7 @@ extern volatile sig_atomic_t g_interrupt;
 
 typedef enum
 {
+	T_BRACES,
 	T_APPEND,
 	T_HEREDOC,
 	T_OUTPUT,
@@ -63,7 +65,6 @@ typedef enum
 	T_REDIRECTION,
 	T_ENV,
 	T_PATH,
-	T_BRACES,
 	T_TILDE,
 	T_QUOTED_STRING,
 	T_SEMICOLON,
@@ -125,9 +126,9 @@ typedef struct s_parser
 	char					**input;
 	char					**operations;
 	int						*redirection;
-	char					*delimeter;
+	char					**delimeter;
 	char					**args;
-	char					*infile;
+	char					**infile;
 	char					**outfile;
 	char					**heredoc;
 	struct s_parser			*prev;
@@ -166,12 +167,13 @@ typedef struct s_context{
 
 //execution
 int	is_builtin(t_parser *parser);
-void manage_input_output(int heredoc_fd, t_fd *f);
+void manage_input_output( t_fd *f, int fd[2], t_parser *parser);
 void initialize_heredoc(int *heredoc_fd, t_parser *parser);
-char ** initialize_execution(int *heredoc_fd, t_parser *parser,t_env *env,char **cmd_path);
-void handle_child_exit(pid_t pid, int *heredoc_fd, t_fd *f, t_parser *parser);
-int	ft_handle_redirections(t_parser *parser, int re);
+void initialize_execution(t_parser *parser,t_env *env,char **cmd_path);
+void handle_child_exit(pid_t pid,  t_fd *f, t_parser *parser);
+int	ft_handle_redirections(t_parser *parser);
 void buitlin(t_parser *parser, t_env *env);
+void write_in_heredoc(t_parser *node);
 
 // void                        ctrl_c_press_here(int signal);
 void update_pwd_m(t_env *myenv, int use_manual_path);
@@ -201,9 +203,9 @@ void pv_initialize_context(t_context *ctx, char *input, t_env *env);
 int pv_handle_backslashes(t_context *ctx);
 char						**add_string_to_2d_array(char **array,char *new_string);
 int							ft_checkft(t_parser *parser);
-int							ft_handle_redirections(t_parser *parser, int re);
+int							ft_handle_redirections(t_parser *parser);
 void						ft_redirection_delimiter(t_parser *node);
-void						cmds_exec(t_parser *parser, t_env *env);
+void	cmds_exec(t_parser *parser, t_env *env);
 void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
 int							handle_heredoc(char **heredoc_content);
@@ -236,7 +238,8 @@ char *remove_paired_quotes(char *str);
 void memory_free(char *str1, char *str2);
 char *remove_closing_quote_after_equals(char *str);
 int calculate_len_for_backslash(const char *str);
-
+void manage_input(t_parser *parser, int *fd, int re, int *place);
+void manage_output(t_parser *parser, int *fd, int re, int *place);
 
 
 //---------------------------tokens
@@ -293,7 +296,7 @@ int			parse_tokens(t_parser **parser, t_tokenlist *list, t_env env);
 int			is_executable(char *cmd);
 int			is_executable_pwd(t_env env, char *cmd);
 char	*get_path(t_env env, char *cmd);
-char	**ft_create_args(t_parser *parser);
+char	**ft_create_args(t_parser *parser, t_tokenlist *token);
 int			handle_parsing_path_helper_1(t_input *tokens, t_parser *curr,t_env env);
 int			handle_parsing_path_helper_2(t_input *tokens, t_parser *curr);
 int			handle_parsing_path(t_input *tokens, t_parser *curr, t_env env);

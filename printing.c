@@ -48,10 +48,14 @@ void	print_parser(t_parser *parser)
 				printf("%d\n", curr->redirection[i]);
 			}
 		}
-		printf("Delimiter: %s\n", curr->delimeter ? curr->delimeter : "None");
-		printf("Infile: %s\n", curr->infile ? curr->infile : "None");
+		printf("Delimiter: \n");
+		print_2d_array(curr->delimeter);
+		printf("Infile:\n");
+		print_2d_array(curr->infile);
 		printf("Outfile:\n");
 		print_2d_array(curr->outfile);
+		printf("args:\n");
+		print_2d_array(curr->args);
 		printf("-----\n");
 		curr = curr->next;
 	}

@@ -44,37 +44,43 @@ int	is_executable_pwd(t_env env, char *cmd)
 {
 	char	*cmd_1;
 
-	cmd_1 = get_path_PWD(env, cmd);
-	if (access(cmd_1, X_OK) == 0)
-	{
-		free(cmd_1);
-		return (1);
-	}
-	free(cmd_1);
-	return (0);
+    cmd_1 = get_path_PWD(env,cmd);    
+    if ( cmd_1!=NULL && access(cmd_1, X_OK)==0)
+    {
+        free(cmd_1);
+        return 1;
+    }
+	if (cmd_1!=NULL)
+    	free(cmd_1);
+    return 0;
 }
 
 int	handle_parsing_path_helper_1(t_input *tokens, t_parser *curr, t_env env)
 {
-	if (curr->command == NULL && (is_executable(tokens->value)
-			|| is_executable_pwd(env, tokens->value)))
-	{
-		curr->command = ft_strdup(tokens->value);
-		if (curr->command == NULL)
-		{
-			perror("Failed to allocate memory");
-			return (-1);
-		}
-	}
-	else if (curr->command != NULL && cmd_is_dir(tokens->value))
-		curr->input = add_string_to_2d_array(curr->input, tokens->value);
-	else
-	{
-		printf("bash: %s : No such file or directory\n", tokens->value);
-		global_var = 127;
-		return (-1);
-	}
-	return (0);
+    struct stat path_stat;
+
+    if (curr->command == NULL && 
+        (is_executable(tokens->value) || is_executable_PWD(env, tokens->value)))
+    {
+        curr->command = ft_strdup(tokens->value);
+        if (curr->command == NULL)
+        {
+            perror("Failed to allocate memory");
+            return -1;
+        }
+    }
+    else if ((curr->command != NULL && cmd_is_dir(tokens->value)) || stat(tokens->value, &path_stat)==0)
+    {
+        curr->input = add_string_to_2d_array(curr->input, tokens->value);
+        curr->args = add_string_to_2d_array(curr->args, tokens->value);
+    }
+    else
+    {
+        printf("bash: %s : No such file or directory\n", tokens->value);
+        global_var = 127;
+        return -1;
+    }
+    return 0;
 }
 
 int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr)
@@ -108,33 +114,31 @@ int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr)
 
 int	handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 {
-	if (tokens->type == T_PATH)
-	{
-		if (curr->command != NULL && !strcmp(curr->command, "pwd"))
-			return (1);
-		if (curr->command == NULL && cmd_is_dir(tokens->value))
-		{
-			errmsg_cmd(tokens->value, NULL, "Is a directory");
-			global_var = 0;
-			return (1);
-		}
-		else if (!ft_strncmp(tokens->value, "./", 2))
-		{
-			if (handle_parsing_path_helper_1(tokens, curr, env) < 0)
-				return (-1);
-		}
-		else if (!ft_strncmp(tokens->value, "/", 1)
-			|| !ft_strncmp(tokens->value, "~/", 2))
-		{
-			if (handle_parsing_path_helper_2(tokens, curr) < 0)
-				return (-1);
-		}
-		else if (!cmd_is_dir(tokens->value))
-		{
-			global_var = 127;
-			return (printf("bash: %s : No such file or directory\n",
-					tokens->value), -1);
-		}
-	}
-	return (0);
+    if (tokens->type == T_PATH)
+    {
+        if (curr->command!=NULL && !strcmp(curr->command,"pwd"))
+            return 1;
+        if (curr->command == NULL && cmd_is_dir(tokens->value))
+        {
+            errmsg_cmd(tokens->value, NULL, "Is a directory");
+            global_var = 0;
+            return 1;
+        }  
+        else if (!ft_strncmp(tokens->value, "./", 2))
+        {
+           if (handle_parsing_path_helper_1(tokens,curr,env) < 0)
+                return -1;
+        }
+        else if( !ft_strncmp(tokens->value, "/", 1))
+        {
+             if (handle_parsing_path_helper_2(tokens,curr) < 0)
+                return -1;
+        }
+        else if (!cmd_is_dir(tokens->value))
+        {
+            global_var = 127;
+            return (printf("bash: %s : No such file or directory\n", tokens->value),-1);
+        } 
+    }
+    return 0;
 }

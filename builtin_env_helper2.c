@@ -30,29 +30,29 @@ char	*ft_getenv(t_env *myenv, char *str)
 
 t_env	*init_env(char **env)
 {
-	t_env	*myenv;
-	int		i;
-
-	i = 0;
-	myenv = (t_env *)malloc(sizeof(t_env));
-	if (!myenv)
-		return (NULL);
-	while (env[i])
-		i++;
-	myenv->env = (char **)malloc(sizeof(char *) * (i + 1));
-	if (!myenv->env)
-	{
-		free(myenv);
-		return (NULL);
-	}
-	i = 0;
-	while (env[i])
-	{
-		myenv->env[i] = ft_strdup(env[i]);
-		i++;
-	}
-	myenv->env[i] = NULL;
-	printf("(((((i is %d))))))\n", i);
-	update_shlvl(myenv);
-	return (myenv);
+    t_env *myenv;
+    int i;
+    
+    i = 0;
+    myenv = (t_env *)malloc(sizeof(t_env));
+    if (!myenv)
+        return (NULL);
+    while (env[i])
+        i++;
+    myenv->env = (char **)malloc(sizeof(char *) * (i + 1));
+    if (!myenv->env)
+    {
+        free(myenv);
+        return (NULL);
+    }
+    i = 0;
+    while (env[i])
+    {
+        myenv->env[i] = ft_strdup(env[i]);
+        i++;
+    }
+    myenv->env[i] = NULL;
+    printf("(((((i is %d))))))\n",i);
+    update_SHLVL(myenv);
+    return (myenv);
 }
