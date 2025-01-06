@@ -43,7 +43,7 @@ int	check_input(char *str)
 	size_t	i;
 
 	i = 0;
-	if (str[0] == '\0' || (!isalpha(str[0]) && (str[0] != '_' && str[0] != '\''
+	if (str[0] == '\0' || (!ft_isalpha(str[0]) && (str[0] != '_' && str[0] != '\''
 				&& str[0] != '\"' && str[0] != '$')))
 	{
 		printf("Error.\n");
@@ -53,7 +53,7 @@ int	check_input(char *str)
 	{
 		if (str[i] == '=')
 			return (1);
-		if (!(ft_isalpha(str[i]) || isdigit(str[i]) || str[i] == '_'
+		if (!(ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_'
 				|| str[i] == '?' || str[i] == '\\' || str[i] == ';'
 				|| str[i] == '\'' || str[i] == '\"' || str[i] == '$')
 			|| (str[i] == '\\' && str[i + 1] == '\\'))
@@ -72,14 +72,14 @@ int	check_input_end(char *str)
 	size_t	i;
 
 	i = 0;
-	if (str[0] == '\0' || (!isalpha(str[0]) && str[0] != '_'))
+	if (str[0] == '\0' || (!ft_isalpha(str[0]) && str[0] != '_'))
 	{
 		printf("Error.\n");
 		return (0);
 	}
 	while (str[++i])
 	{
-		if (!(ft_isalpha(str[i]) || isdigit(str[i]) || str[i] == '_'
+		if (!(ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_'
 				|| str[i] == '\\' || str[i] == ';')
 			|| (str[i] == '\\' && str[i + 1] == '\\'))
 		{

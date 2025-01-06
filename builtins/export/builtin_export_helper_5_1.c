@@ -55,7 +55,7 @@ void	pv_fill_values(t_context *ctx)
 	ctx->total_size += (ctx->dollar - ctx->start);
 	ctx->var_name = ctx->dollar + 1;
 	ctx->end_of_var = ft_strpbrk(ctx->var_name, " '\\/.#$()?1234567890+\"");
-	if (ctx->end_of_var && isdigit(*(ctx->end_of_var)))
+	if (ctx->end_of_var && ft_isdigit(*(ctx->end_of_var)))
 		ctx->end_of_var = ft_strpbrk(ctx->end_of_var, " '\\.#$()?+\"");
 	ctx->first_char = *(ctx->var_name);
 }

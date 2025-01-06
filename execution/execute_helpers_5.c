@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_5.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 13:52:20 by saly              #+#    #+#             */
-/*   Updated: 2025/01/05 10:51:35 by isalayan         ###   ########.fr       */
+/*   Updated: 2025/01/06 19:59:54 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	process_dollar_strings(char **strs, t_env *env)
 		return ;
 	while (strs[i] != NULL)
 	{
-		if (strchr(strs[i], '$') != NULL)
+		if (ft_strchr(strs[i], '$') != NULL)
 		{
 			processed_str = process_variable(strs[i], env);
 			free(strs[i]);

@@ -63,7 +63,7 @@ int	pv_initialise_vars(t_context *ctx)
 	if (!ctx->input)
 		return (-1);
 	ctx->start = ctx->input;
-	ctx->dollar = strchr(ctx->input, '$');
+	ctx->dollar = ft_strchr(ctx->input, '$');
 	ctx->new_str = malloc(1);
 	if (!ctx->new_str)
 		return (-1);

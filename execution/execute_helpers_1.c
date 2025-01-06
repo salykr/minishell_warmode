@@ -65,7 +65,7 @@ void	initialize_heredoc(int *heredoc_fd, t_parser *parser, t_env *env)
 
 void	initialize_execution(t_parser *parser, t_env *env, char **cmd_path)
 {
-	if (!strncmp(parser->command, "./", 2))
+	if (!ft_strncmp(parser->command, "./", 2))
 		*cmd_path = get_path_pwd(*env, parser->command);
 	else if (ft_strchr(parser->command, '/') && !access(parser->command, X_OK))
 		*cmd_path = ft_strdup(parser->command);

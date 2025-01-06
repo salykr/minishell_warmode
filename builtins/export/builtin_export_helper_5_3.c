@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export_helper_5_3.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/06 13:09:44 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/06 19:49:43 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	handle_variable_cases(t_context *ctx, t_env *env)
 		if (pv_handling_0(ctx))
 			return ;
 	}
-	else if (isdigit(ctx->first_char))
+	else if (ft_isdigit(ctx->first_char))
 		ctx->start = ctx->var_name + 1;
 	else
 		ctx->start = handle_env_value(ctx, env);

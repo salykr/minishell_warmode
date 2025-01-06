@@ -75,11 +75,11 @@ void	handle_input_line(t_parser *node, int delimiter_index)
 		line = get_next_line(0);
 		if (!line)
 			break ;
-		line_len = strlen(line);
+		line_len = ft_strlen(line);
 		if (line[line_len - 1] == '\n')
 			line[line_len - 1] = '\0';
 		ptr = remove_quotes(node->delimeter[delimiter_index]);
-		if (strcmp(line, ptr) == 0)
+		if (ft_strcmp(line, ptr) == 0)
 		{
 			handle_memory_errors(line, ptr);
 			break ;
@@ -122,7 +122,7 @@ int	handle_heredoc(char **heredoc_content, t_env *env)
 	while (heredoc_content != NULL && heredoc_content[i] != NULL)
 	{
 		process_dollar_strings(heredoc_content, env);
-		write(pipefd[1], (heredoc_content[i]), strlen(heredoc_content[i]));
+		write(pipefd[1], (heredoc_content[i]), ft_strlen(heredoc_content[i]));
 		write(pipefd[1], "\n", 1);
 		i++;
 	}

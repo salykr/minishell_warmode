@@ -49,7 +49,7 @@ int	initialise_escape_char(size_t *i, size_t *j, char *str, char **total)
 {
 	*i = 0;
 	*j = 0;
-	*total = malloc(strlen(str) + 1);
+	*total = malloc(ft_strlen(str) + 1);
 	if (!total)
 		return (1);
 	return (0);
