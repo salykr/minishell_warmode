@@ -48,7 +48,8 @@ static int	find_smallest_unprinted(char **env, int *printed, int count)
 	j = 0;
 	while (j < count)
 	{
-		if (!printed[j] && (min_idx == -1 || ft_strcmp(env[j], env[min_idx]) < 0))
+		if (!printed[j] && (min_idx == -1
+				|| ft_strcmp(env[j], env[min_idx]) < 0))
 			min_idx = j;
 		j++;
 	}

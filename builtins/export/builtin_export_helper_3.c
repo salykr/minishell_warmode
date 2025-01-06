@@ -84,7 +84,11 @@ int	process_name_and_value(char *name, char *value,
 
 	new_nv->new_name = process_variable(name, env);
 	if (value != NULL)
+	{
 		new_nv->new_value = process_variable(value, env);
+		if (new_nv->new_value == NULL)
+			new_nv->new_value = ft_strdup("");
+	}	
 	else
 		new_nv->new_value = NULL;
 	handle_memory_errors(name, value);
