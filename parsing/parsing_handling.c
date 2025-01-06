@@ -79,7 +79,7 @@ int	handle_parsing_quotes_main_helper(t_input *tokens, t_parser *curr,
 		curr->args = add_string_to_2d_array(curr->args, value);
 		return (0);
 	}
-	else if (ft_check_n_operation(tokens->value) == 0)
+	else if ((ft_strncmp(tokens->value,"\'-n",3) == 0 || ft_strncmp(tokens->value,"\"-n",3) == 0) && ft_check_n_operation(tokens->value) == 0)
 		curr->operations = add_string_to_2d_array(curr->operations,
 				tokens->value);
 	else if (handle_parsing_quotes_helper(tokens, curr, value) == -1)
@@ -103,7 +103,7 @@ int	handle_parsing_quotes(t_input *tokens, t_parser *curr, t_env env)
 	else
 		value = ft_strdup(temp_value);
 	free(temp_value);
-	if (value == NULL || value[0] == '\0')
+	if (value == NULL)
 		return (1);
 	else if (handle_parsing_quotes_main_helper(tokens, curr, env, value) == -1)
 		return (-1);
