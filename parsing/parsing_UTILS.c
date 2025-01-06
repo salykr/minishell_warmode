@@ -15,17 +15,20 @@
 bool	ft_check_n_operation(char *str)
 {
 	int	i;
+	char * newstr;
 
+	newstr = NULL;
 	i = 1;
-	if (str[0] == '\'' || str[0] == '\"')
-		str = remove_quotes(str);
-	while (str[i])
+	newstr = ft_strdup(str);
+	if (newstr[0] == '\'' || newstr[0] == '\"')
+		newstr = remove_quotes_with_free(newstr);
+	while (newstr[i])
 	{
-		if (str[i] != 'n')
-			return (free(str), 1);
+		if (newstr[i] != 'n')
+			return (free(newstr), 1);
 		i++;
 	}
-	free(str);
+	free(newstr);
 	return (0);
 }
 
