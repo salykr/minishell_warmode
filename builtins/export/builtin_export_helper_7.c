@@ -87,10 +87,9 @@ char	*remove_closing_quote_after_equals(char *str)
 		if (str[i] == '"' || str[i] == '\'')
 			fix_quote(str, result, &i, &j);
 		else
-		{
-			copy_until_quote(str, result, &i, &j);
 			i++;
-		}
 	}
+	copy_until_quote(str, result, &i, &j);
 	return (free(str), result);
 }
+

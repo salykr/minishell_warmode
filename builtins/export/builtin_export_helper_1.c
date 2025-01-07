@@ -72,6 +72,8 @@ int	check_input_end(char *str)
 	size_t	i;
 
 	i = 0;
+	if (str == NULL || str[0] == '\0')
+		return (printf("Error.\n"), 0);
 	if (str[0] == '\0' || (!ft_isalpha(str[0]) && str[0] != '_'))
 	{
 		printf("Error.\n");

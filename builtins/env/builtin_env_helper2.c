@@ -83,7 +83,7 @@ t_env	*manage_env_i(void)
 	myenv = (t_env *)malloc(sizeof(t_env));
 	if (!myenv)
 		return (NULL);
-	myenv->env = (char **)malloc(sizeof(char *) * (4));
+	myenv->env = (char **)malloc(sizeof(char *) * (5));
 	if (!myenv->env)
 	{
 		free(myenv);
@@ -94,6 +94,7 @@ t_env	*manage_env_i(void)
 	myenv->env[1] = ft_str_join(wd, getcwd(cwd, sizeof(cwd)));
 	free(wd);
 	myenv->env[2] = ft_strdup("_=/usr/bin/env");
-	myenv->env[3] = NULL;
+	myenv->env[3] = ft_strdup("OLDPWD");
+	myenv->env[4] = NULL;
 	return (myenv);
 }

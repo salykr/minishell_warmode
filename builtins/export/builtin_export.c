@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:37:52 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/06 13:10:02 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 14:50:40 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,11 @@ void	deal_with_quotes(t_parser *list, int i)
 	first_quote = ft_strchr(list->input[i], '"');
 	if (first_quote)
 	{
-		equals_sign = ft_strchr(first_quote + 1, '=');
-		if (equals_sign && *(equals_sign + 1) == '"')
+		equals_sign = ft_strrchr(first_quote + 1, '=');
+		if (equals_sign && *(equals_sign - 1) == '"')
+		{
 			list->input[i] = remove_closing_quote_after_equals(list->input[i]);
+		}
 	}
 }
 

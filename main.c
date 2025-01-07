@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/06 15:17:18 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 15:15:07 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	initiate_input(char *line, t_tokenlist **token_list,
 	return (1);
 }
 
-int	main(int argc, char **argv, char **envp)
+int	main1(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_env		*my_env;
@@ -75,7 +75,7 @@ int	main(int argc, char **argv, char **envp)
 	return (ft_free_env(&my_env), EXIT_SUCCESS);
 }
 
-int     main1(int argc, char **argv, char **envp)
+int     main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;

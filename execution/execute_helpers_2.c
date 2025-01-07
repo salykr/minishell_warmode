@@ -35,13 +35,14 @@ void	buitlin(t_parser *parser, t_env *env)
 	char	*variable;
 
 	val = 0;
-	variable = get_env_value(env, "PATH");
+	variable = retreive_path(*env);
 	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
 	{
 		printf("bash: env: No such file or directory\n");
 		val = 1;
 	}
-	free(variable);
+	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)
+		free(variable);
 	if (ft_strcmp(parser->command, "echo") == 0)
 		g_v = builtin_echo(parser, env);
 	else if (ft_strcmp(parser->command, "env") == 0 && val == 0)

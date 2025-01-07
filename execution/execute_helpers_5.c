@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_5.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 13:52:20 by saly              #+#    #+#             */
-/*   Updated: 2025/01/06 19:59:54 by root             ###   ########.fr       */
+/*   Updated: 2025/01/07 15:17:45 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,7 @@ char	*retreive_path(t_env env)
 {
 	if (ft_strcmp(ft_getenv(&env, "SHLVL"), "1") == 0)
 		return (ft_strdup(
-				"/home/isalayan/bin:"
-				"/usr/local/sbin:"
-				"/usr/local/bin:"
-				"/usr/sbin:"
-				"/usr/bin:"
-				"/sbin:"
-				"/bin:"
-				"/usr/games:"
-				"/usr/local/games:"
-				"/snap/bin"
+"/home/skreik/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 			));
 	else
 		return (ft_getenv(&env, "PATH"));

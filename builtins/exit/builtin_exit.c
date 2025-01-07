@@ -56,7 +56,6 @@ void	validate_numeric_input(char *input)
 
 void	cleanup_and_exit(t_env *myenv, t_parser *parser)
 {
-	printf("cleaning up\n");
 	ft_free_env(&myenv);
 	free_parser(parser);
 	exit(g_v);
