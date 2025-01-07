@@ -68,7 +68,7 @@ int	pv_handling_0(t_context *ctx)
 		pv_resize_concat(&(ctx->new_str), ctx->total_size,
 			ctx->dollar, ft_strlen(ctx->dollar));
 		ctx->start = ctx->end_of_var + 1;
-		if (*(ctx->start) == '\0')
+		if (ctx->start != NULL && *(ctx->start) == '\0')
 			return (1);
 	}
 	else

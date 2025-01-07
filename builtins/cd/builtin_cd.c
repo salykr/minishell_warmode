@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/07 13:21:13 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 17:31:18 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	handle_input(t_parser *list, t_env *myenv)
 	{
 		if (!replace_with_env_var(&list->input, myenv, "OLDPWD"))
 			return (-1);
-		printf("%s\n", list->input[0]);
 	}
 	return (0);
 }

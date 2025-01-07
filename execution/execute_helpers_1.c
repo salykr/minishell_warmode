@@ -36,7 +36,9 @@ int	is_builtin(t_parser *parser)
 			|| ft_strstr(parser->command, "env") != NULL
 			|| ft_strstr(parser->command, "exit") != NULL
 			|| ft_strstr(parser->command, "echo") != NULL))
-		return (1);
+			{
+				return (1);
+			}
 	return (0);
 }
 

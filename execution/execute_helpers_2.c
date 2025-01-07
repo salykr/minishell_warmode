@@ -43,19 +43,19 @@ void	buitlin(t_parser *parser, t_env *env)
 	}
 	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)
 		free(variable);
-	if (ft_strcmp(parser->command, "echo") == 0)
+	if (ft_strstr(parser ->command,"echo") != NULL)
 		g_v = builtin_echo(parser, env);
-	else if (ft_strcmp(parser->command, "env") == 0 && val == 0)
+	else if ((ft_strcmp(parser->command, "env") == 0 && val == 0) || ft_strstr(parser ->command,"env") != NULL)
 		g_v = builtin_env(parser, env);
-	else if (ft_strcmp(parser->command, "pwd") == 0)
+	else if (ft_strstr(parser ->command,"pwd") != NULL)
 		g_v = builtin_pwd(parser, env);
-	else if (ft_strcmp(parser->command, "export") == 0)
+	else if (ft_strstr(parser ->command,"export") != NULL)
 		g_v = builtin_export(parser, env);
-	else if (ft_strcmp(parser->command, "unset") == 0)
+	else if (ft_strstr(parser ->command,"unset") != NULL)
 		builtin_unset(parser, env);
-	else if (ft_strcmp(parser->command, "cd") == 0)
+	else if (ft_strstr(parser ->command,"cd") != NULL)
 		g_v = builtin_cd(parser, env);
-	else if (ft_strcmp(parser->command, "exit") == 0)
+	else if (ft_strstr(parser ->command,"exit") != NULL)
 		builtin_exit(parser, env);
 }
 

@@ -63,7 +63,8 @@ void	cleanup_and_exit(t_env *myenv, t_parser *parser)
 
 void	builtin_exit(t_parser *parser, t_env *myenv)
 {
-	printf("exit\n");
+	if(parser->next == NULL && parser->prev == NULL)
+		printf("exit\n");
 	handle_exit_input(parser);
 	if (parser->input == NULL)
 	{
@@ -71,7 +72,10 @@ void	builtin_exit(t_parser *parser, t_env *myenv)
 		cleanup_and_exit(myenv, parser);
 	}
 	else if (parser->input[1])
-		handle_exit_arguments(parser->input[0]);
+	{
+		if (handle_exit_arguments(parser->input) != 1)
+			cleanup_and_exit(myenv, parser);
+	}
 	else
 	{
 		validate_numeric_input(parser->input[0]);

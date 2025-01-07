@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 13:27:54 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 16:50:20 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,10 +172,7 @@ void						remove_env_var(t_env *myenv, int index);
 int							includes_exlamation_mark(const char *str);
 int							handle_unset_options(char **operations,
 								bool *save_val);
-int							handle_operations_dash(t_parser *parser,
-								bool *save_val, int *dont_enter);
-int							handle_operations_flags(t_parser *parser, int *i,
-								int *dont_enter, bool *save_val);
+int							handle_operations_dash(t_parser *parser);
 int							handle_input_dash(t_parser *parser,
 								bool *save_val);
 void						process_dollar_strings(char **strs, t_env *env);
@@ -427,7 +424,8 @@ void						free_parser(t_parser *parser);
 
 //_______exit
 void						builtin_exit(t_parser *parser, t_env *myenv);
-int							handle_exit_arguments(char *input);
+int							handle_exit_argument(char *input);
+int							handle_exit_arguments(char **input);
 int							is_numeric(const char *str);
 
 //_______env

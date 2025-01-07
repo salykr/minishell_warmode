@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/07 14:25:04 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 16:35:07 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	pid_t	pid;
 	t_fd	original_fds;
 
-	if (parser->next == NULL)
+	if (parser->next == NULL && parser->prev == NULL)
 	{
 		if (save_original_fds(&original_fds.fd_1, &original_fds.fd_2) == -1)
 			return ;
@@ -112,11 +112,11 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	int		fd[2];
 
 	f.fd_1 = STDIN_FILENO;
-	if (parser->next == NULL && parser->prev == NULL && ft_strcmp(parser->command,
-			"exit") == 0)
-		parser = parser;
-	else
-		parser = find_last_exit(parser);
+	// if (parser->next == NULL && parser->prev == NULL && ft_strcmp(parser->command,
+	// 		"exit") == 0)
+	// 	parser = parser;
+	// else
+	// 	parser = find_last_exit(parser);
 	while (parser)
 	{
 		if (parser->next)

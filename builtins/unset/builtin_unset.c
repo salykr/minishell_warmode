@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2025/01/05 15:01:18 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 17:09:37 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@ int	validate_variable_name(char *name, bool save_val)
 			return (1);
 		}
 		if (!save_val && *name != '\0')
-		{
-			// printf("unset: `%s': not a valid identifier\n", name);
 			g_v = 1;
-		}
 		free(name);
 		return (1);
 	}
@@ -62,10 +59,8 @@ static int	process_unset_input(t_parser *parser, t_env *myenv, bool save_val)
 
 int	builtin_unset(t_parser *parser, t_env *myenv)
 {
-	int		dont_enter;
 	bool	save_val;
 
-	dont_enter = 0;
 	save_val = false;
 	if (!parser || (!parser->input && !parser->operations))
 	{
@@ -74,9 +69,8 @@ int	builtin_unset(t_parser *parser, t_env *myenv)
 	}
 	if (parser->operations)
 	{
-		if (handle_operations_dash(parser, &save_val, &dont_enter))
+		if (handle_operations_dash(parser))
 			return (g_v);
-		handle_operations_flags(parser, &dont_enter, &dont_enter, &save_val);
 	}
 	if (parser->input && handle_input_dash(parser, &save_val))
 		return (g_v);

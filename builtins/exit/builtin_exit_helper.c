@@ -29,7 +29,7 @@ int	is_numeric(const char *str)
 	return (1);
 }
 
-int	handle_exit_arguments(char *input)
+int	handle_exit_argument(char *input)
 {
 	if (!is_numeric(input))
 	{
@@ -41,6 +41,31 @@ int	handle_exit_arguments(char *input)
 		printf("minishell: exit: too many arguments\n");
 		g_v = 1;
 		return (1);
+	}
+	return (0);
+}
+
+int	handle_exit_arguments(char **input)
+{
+	int i;
+
+	g_v = 0;
+	i = 0;
+	while (input[i] != NULL)
+	{
+		if (!is_numeric(input[i]))
+		{
+			printf("minishell : exit: %s: numeric argument required\n", input[i]);
+			g_v = 2;
+			return (2);
+		}
+		else
+		{
+			printf("minishell: exit: too many arguments\n");
+			g_v = 1;
+			return (1);
+		}
+		i++;
 	}
 	return (0);
 }
