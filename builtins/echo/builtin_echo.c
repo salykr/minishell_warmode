@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2025/01/06 20:29:57 by root             ###   ########.fr       */
+/*   Updated: 2025/01/07 13:20:29 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	check_balanced_quotes(const char *input)
 	{
 		if (input[i] == '\\')
 		{
-			if (input[i + 1] != '\'')
+			if (input[i + 1] && input[i + 1] != '\'')
 				i++;
 		}
 		else if (input[i] == '\'' || input[i] == '\"')

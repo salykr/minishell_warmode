@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 16:22:32 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 13:58:36 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,15 @@ void	handle_wait_status(t_parser *parser)
 
 	while (wait(&status) > 0)
 	{
-		if (WIFEXITED(status))
+		if (WIFSIGNALED(status))
+			g_v = WTERMSIG(status) + 128;
+		else
 		{
 			if (parser && parser->next == NULL)
 				g_v = WEXITSTATUS(status);
+			else
+				g_v = WEXITSTATUS(status);
 		}
-		else if (WIFSIGNALED(status))
-			g_v = WTERMSIG(status) + 128;
-		else
-			g_v = status;
 	}
 }
 

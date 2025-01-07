@@ -3,11 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_0.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+
-						      +:+     */
+								+:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+
-     +#+        */
+		+#+        */
 /*                                                +#+#+#+#+#+
-						  +#+           */
+							+#+           */
 /*   Created: 2024/11/24 15:08:51 by marvin            #+#    #+#             */
 /*   Updated: 2024/11/24 15:08:51 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -15,13 +15,14 @@
 
 #include "mini_shell.h"
 
+
 char	*get_path(t_env env, char *cmd)
 {
-	int			i;
-	char		*p;
-	char		*back_slash;
-	char		**path;
-	char		*env_path;
+	int i;
+	char *p;
+	char *back_slash;
+	char **path;
+	char *env_path;
 
 	env_path = retreive_path(env);
 	if (!env_path)
@@ -46,8 +47,8 @@ char	*get_path(t_env env, char *cmd)
 
 char	*get_path_pwd(t_env env, char *cmd)
 {
-	char	*p;
-	char	*env_path;
+	char *p;
+	char *env_path;
 
 	env_path = ft_getenv(&env, "PWD");
 	if (!env_path)
@@ -58,6 +59,7 @@ char	*get_path_pwd(t_env env, char *cmd)
 	else
 	{
 		printf("bash: %s: Permission denied\n", p);
+		g_v = 126;
 		free(p);
 	}
 	return (NULL);
@@ -65,9 +67,9 @@ char	*get_path_pwd(t_env env, char *cmd)
 
 void	handle_input_line(t_parser *node, int delimiter_index)
 {
-	char	*line;
-	char	*ptr;
-	size_t	line_len;
+	char *line;
+	char *ptr;
+	size_t line_len;
 
 	while (1)
 	{
@@ -91,7 +93,7 @@ void	handle_input_line(t_parser *node, int delimiter_index)
 
 void	write_in_heredoc(t_parser *node)
 {
-	int	i;
+	int i;
 
 	g_v = 0;
 	set_signal_handler_heredoc();
@@ -110,8 +112,8 @@ void	write_in_heredoc(t_parser *node)
 
 int	handle_heredoc(char **heredoc_content, t_env *env)
 {
-	int	pipefd[2];
-	int	i;
+	int pipefd[2];
+	int i;
 
 	i = 0;
 	if (pipe(pipefd) == -1)

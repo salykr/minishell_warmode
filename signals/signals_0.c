@@ -3,91 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   signals_0.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saly <saly@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 12:26:55 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/03 13:57:59 by saly             ###   ########.fr       */
+/*   Updated: 2025/01/07 13:21:45 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-
-void	ignore_signals(void)
+void ignore_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-	struct sigaction	sa_stp;
+    struct sigaction sa;
 
-	sa_int.sa_handler = SIG_IGN;
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = SIG_IGN;
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT, &sa_quit, NULL);
-	sa_stp.sa_handler = SIG_IGN;
-	sigemptyset(&sa_stp.sa_mask);
-	sa_stp.sa_flags = 0;
-	sigaction(SIGTSTP, &sa_stp, NULL);
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
 }
 
-void	set_signal_handler_heredoc(void)
+void set_signal_handler_heredoc(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-	struct sigaction	sa_stp;
+    struct sigaction sa;
 
-	sa_int.sa_handler = ctrl_c_press_heredoc;
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = SIG_IGN;
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT, &sa_quit, NULL);
-	sa_stp.sa_handler = SIG_IGN;
-	sigemptyset(&sa_stp.sa_mask);
-	sa_stp.sa_flags = 0;
-	sigaction(SIGTSTP, &sa_stp, NULL);
+    sa.sa_handler = ctrl_c_press_heredoc;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
 }
 
-void	restore_signals(void)
+void restore_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-	struct sigaction	sa_stp;
+    struct sigaction sa;
 
-	sa_int.sa_handler = ctrl_c_press;
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = SIG_IGN;
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT, &sa_quit, NULL);
-	sa_stp.sa_handler = SIG_IGN;
-	sigemptyset(&sa_stp.sa_mask);
-	sa_stp.sa_flags = 0;
-	sigaction(SIGTSTP, &sa_stp, NULL);
+    sa.sa_handler = ctrl_c_press;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
 }
 
-void	configure_child_signals(void)
+void configure_child_signals(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
-	struct sigaction	sa_stp;
+    struct sigaction sa;
 
-	sa_int.sa_handler = ctrl_c_press;
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = SIG_DFL;
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT, &sa_quit, NULL);
-	sa_stp.sa_handler = SIG_IGN;
-	sigemptyset(&sa_stp.sa_mask);
-	sa_stp.sa_flags = 0;
-	sigaction(SIGTSTP, &sa_stp, NULL);
+    sa.sa_handler = ctrl_c_press;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    sa.sa_handler = SIG_DFL;
+    sigaction(SIGQUIT, &sa, NULL);
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGTSTP, &sa, NULL);
 }

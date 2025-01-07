@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 16:03:36 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/07 13:21:13 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,7 @@ int	handle_directory_input(t_parser *list, t_env *myenv)
 			free(val);
 		}
 		val = process_variable(list->input[0], myenv);
-		printf("var is %s\n",val);
 		replace_with_str(&list->input, val);
-		printf("varrrrrrrrrr is %s\n",list->input[0]);
 	}
 	if (val != NULL)
 		free(val);
