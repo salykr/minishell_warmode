@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 13:27:54 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/06 20:42:58 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,7 @@ void						builtin_echo_helper(char **input, char quote,
 								t_env env);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
-int							is_special_char(char c);
+int							is_special_char(char c, int i);
 int							add_or_update_to_env(char *name, char *value,
 								t_env *env);
 int							builtin_export(t_parser *list, t_env *env);

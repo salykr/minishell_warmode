@@ -6,7 +6,7 @@
 /*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2025/01/06 20:29:46 by root             ###   ########.fr       */
+/*   Updated: 2025/01/07 22:03:17 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,17 @@ void	process_special_variable(char **input)
 	if (**input >= '0' && **input <= '9')
 	{
 		(*input)++;
-		while (**input && (ft_isalnum(**input) || is_special_char(**input)))
+		while (**input && (ft_isalnum(**input) || is_special_char(**input, 1)))
 		{
 			printf("%c", **input);
 			(*input)++;
 		}
 		return ;
 	}
-	else if (is_special_char(**input))
+	else if (is_special_char(**input, 0))
 	{
 		printf("$");
-		while (**input && (ft_isalnum(**input) || is_special_char(**input)))
+		while (**input && (ft_isalnum(**input) || is_special_char(**input, 1)))
 		{
 			printf("%c", **input);
 			(*input)++;
@@ -80,7 +80,7 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 			(*input)++;
 			return ;
 		}
-		else if ((**input >= '0' && **input <= '9') || is_special_char(**input))
+		else if ((**input >= '0' && **input <= '9') || is_special_char(**input, 0))
 		{
 			process_special_variable(input);
 			return ;
