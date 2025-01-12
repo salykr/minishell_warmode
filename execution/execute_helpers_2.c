@@ -32,32 +32,55 @@ t_parser	*check_exit(t_parser *node)
 void	buitlin(t_parser *parser, t_env *env)
 {
 	int		val;
-	char	*variable;
 
-	val = 0;
-	variable = retreive_path(*env);
-	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
-	{
-		printf("bash: env: No such file or directory\n");
-		val = 1;
-	}
-	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)
-		free(variable);
-	if (ft_strstr(parser ->command,"echo") != NULL)
+	val = get_variable(parser, env);
+	if (ft_strcmp(parser->command, "echo") == 0)
 		g_v = builtin_echo(parser, env);
-	else if ((ft_strcmp(parser->command, "env") == 0 && val == 0) || ft_strstr(parser ->command,"env") != NULL)
+	else if ((ft_strcmp(parser->command, "env") == 0 && !val)
+		|| ft_strstr(parser->command, "env") != NULL)
 		g_v = builtin_env(parser, env);
-	else if (ft_strstr(parser ->command,"pwd") != NULL)
+	else if (ft_strstr(parser->command, "pwd") != NULL)
 		g_v = builtin_pwd(parser, env);
-	else if (ft_strstr(parser ->command,"export") != NULL)
+	else if (ft_strstr(parser->command, "export") != NULL)
 		g_v = builtin_export(parser, env);
-	else if (ft_strstr(parser ->command,"unset") != NULL)
+	else if (ft_strstr(parser->command, "unset") != NULL)
 		builtin_unset(parser, env);
-	else if (ft_strstr(parser ->command,"cd") != NULL)
+	else if (ft_strstr(parser->command, "cd") != NULL)
 		g_v = builtin_cd(parser, env);
-	else if (ft_strstr(parser ->command,"exit") != NULL)
+	else if (ft_strstr(parser->command, "exit") != NULL)
 		builtin_exit(parser, env);
 }
+
+// void	buitlin(t_parser *parser, t_env *env)
+// {
+// 	int		val;
+// 	char	*variable;
+
+// 	val = 0;
+// 	variable = retreive_path(*env);
+// 	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
+// 	{
+// 		printf("bash: env: No such file or directory\n");
+// 		val = 1;
+// 	}
+// 	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)
+// 		free(variable);
+// 	if (ft_strstr(parser ->command, "echo") != NULL)
+// 		g_v = builtin_echo(parser, env);
+// 	else if ((ft_strcmp(parser->command, "env") == 0 && !val)
+// 		|| ft_strstr(parser ->command, "env") != NULL)
+// 		g_v = builtin_env(parser, env);
+// 	else if (ft_strstr(parser ->command, "pwd") != NULL)
+// 		g_v = builtin_pwd(parser, env);
+// 	else if (ft_strstr(parser ->command, "export") != NULL)
+// 		g_v = builtin_export(parser, env);
+// 	else if (ft_strstr(parser ->command, "unset") != NULL)
+// 		builtin_unset(parser, env);
+// 	else if (ft_strstr(parser ->command, "cd") != NULL)
+// 		g_v = builtin_cd(parser, env);
+// 	else if (ft_strstr(parser ->command, "exit") != NULL)
+// 		builtin_exit(parser, env);
+// }
 
 int	check_permissions(const char *filepath, int flag)
 {

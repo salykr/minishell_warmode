@@ -6,16 +6,20 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2025/01/07 13:20:29 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 15:16:52 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-int	is_special_char(char c)
+int	is_special_char(char c, int i)
 {
-	return (c == '$' || c == ':' || c == '=' || c == '+' || c == '/'
-		|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
+	if (i == 0)
+		return (c == '$' || c == ':' || c == '=' || c == '+' || c == '/'
+			|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
+	else
+		return (c == ':' || c == '=' || c == '+' || c == '/'
+			|| c == '.' || c == ',' || c == '%' || c == ']' || c == '}');
 }
 
 bool	check_balanced_quotes(const char *input)
@@ -29,7 +33,7 @@ bool	check_balanced_quotes(const char *input)
 	{
 		if (input[i] == '\\')
 		{
-			if (input[i + 1] && input[i + 1] != '\'')
+			if (input[i + 1] != '\'')
 				i++;
 		}
 		else if (input[i] == '\'' || input[i] == '\"')

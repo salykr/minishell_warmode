@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/07 17:19:42 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 12:46:56 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int	main(int argc, char **argv, char **envp)
 	return (ft_free_env(&my_env), EXIT_SUCCESS);
 }
 
+/*
 int     main1(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -138,3 +139,4 @@ int     main1(int argc, char **argv, char **envp)
 	ft_free_env(&my_env);
 	return (EXIT_SUCCESS);
 }
+*/

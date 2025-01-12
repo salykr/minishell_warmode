@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:53:38 by saoun             #+#    #+#             */
-/*   Updated: 2025/01/07 17:09:37 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/09 15:52:17 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	validate_variable_name(char *name, bool save_val)
 {
-	if (!is_valid_var_name(name))
+	if (name && !is_valid_var_name(name))
 	{
-		if (includes_exlamation_mark(name))
+		if (name && includes_exlamation_mark(name))
 		{
 			g_v = 0;
 			free(name);

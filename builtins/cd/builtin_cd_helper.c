@@ -46,9 +46,10 @@ void	update_pwd(t_parser *list, t_env *myenv)
 
 int	change_directory_and_update(t_parser *list, t_env *myenv)
 {
-	char *home;
+	char	*home;
 
-	if (list->input != NULL &&((list->input[0] != NULL && list->input[0][0] == '\0') || list->input[0] == NULL ))
+	if (list->input != NULL && ((list->input[0] != NULL
+				&& list->input[0][0] == '\0') || list->input[0] == NULL))
 	{
 		home = get_env_value(myenv, "HOME");
 		chdir(home);
@@ -62,40 +63,50 @@ int	change_directory_and_update(t_parser *list, t_env *myenv)
 	update_pwd(list, myenv);
 	return (0);
 }
-void replace_with_str(char ***array, char *new_str)
-{
-    size_t i;
 
-    if (!array)
-        return;
-    if (*array != NULL)
-    {
-        i = 0;
-        while ((*array)[i] != NULL)
-        {
-            free((*array)[i]);
-            i++;
-        }
-        free(*array);
-    }
-    *array = (char **)malloc(sizeof(char *) * 2);
-    if (*array == NULL)
-        return;
-    if (new_str != NULL)
-    {
-        (*array)[0] = ft_strdup(new_str);
-        if ((*array)[0] == NULL)
-        {
-            free(*array);
-            *array = NULL;
-            return;
-        }
-    }
-    else
-        (*array)[0] = NULL;
-    (*array)[1] = NULL;
+void clear_array(char ***array)
+{
+	size_t i;
+
+	if (!array || !*array)
+		return;
+	i = 0;
+	while ((*array)[i] != NULL)
+	{
+		free((*array)[i]);
+		i++;
+	}
+	free(*array);
+	*array = NULL;
 }
 
+void allocate_and_assign(char ***array, char *new_str)
+{
+	*array = (char **)malloc(sizeof(char *) * 2);
+	if (*array == NULL)
+		return;
+	if (new_str != NULL)
+	{
+		(*array)[0] = ft_strdup(new_str);
+		if ((*array)[0] == NULL)
+		{
+			free(*array);
+			*array = NULL;
+			return;
+		}
+	}
+	else
+		(*array)[0] = NULL;
+	(*array)[1] = NULL;
+}
+
+void replace_with_str(char ***array, char *new_str)
+{
+	if (!array)
+		return;
+	clear_array(array);
+	allocate_and_assign(array, new_str);
+}
 
 char	*remove_quotes_with_free(char *str)
 {

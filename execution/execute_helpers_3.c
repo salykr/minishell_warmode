@@ -33,12 +33,14 @@ int	get_last_input_redirection(int *redirection)
 
 int	handle_heredoc_redirection(t_parser *parser, int *fd_heredoc, t_env *env)
 {
+	int	same;
+
 	if (parser->redirection && check_heredoc_existence(parser->redirection))
 	{
-		write_in_heredoc(parser);
+		same = write_in_heredoc(parser);
 		if (g_v == 130)
 			return (-1);
-		*fd_heredoc = handle_heredoc(parser->heredoc, env);
+		*fd_heredoc = handle_heredoc(parser->heredoc, env, same);
 	}
 	return (0);
 }

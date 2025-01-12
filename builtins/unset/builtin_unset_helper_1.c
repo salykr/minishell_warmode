@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 12:20:46 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/07 16:50:16 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 15:17:44 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	includes_exlamation_mark(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '!' && str[i + 1] != '\0')
+		if (str[i] && str[i] == '!' && str[i + 1] && str[i + 1] != '\0')
 		{
 			printf("bash: !%c event not found\n", (str[i + 1]));
 			return (1);
@@ -37,8 +37,6 @@ int	handle_unset_options(char **operations, bool *save_val)
 		if (operations[0][1] && operations[0][1] == '-'
 			&& operations[0][2] != '\0')
 		{
-			// printf("-bash: unset: --: invalid option\nunset:");
-			// printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
 			return (2);
 		}
 		else if (operations[0][1] && operations[0][1] == '-'
@@ -55,7 +53,6 @@ int	handle_operations_dash(t_parser *parser)
 {
 	if (parser->operations[0] && parser->operations[0][0] == '-')
 	{
-
 		printf("-bash: unset: --: invalid option\nunset:");
 		printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
 		g_v = 2;

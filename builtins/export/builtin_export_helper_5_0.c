@@ -12,80 +12,75 @@
 
 #include "mini_shell.h"
 
-char	*resize_string(char *str, size_t new_size)
+char	*add_path(char *str)
+{
+	char	*new_path;
+
+	if (str[0] == '.')
+	{
+		if (str[1] == '.')
+		{
+			new_path = ft_str_join("$OLDPWD", str + 2);
+			free(str);
+			return (new_path);
+		}
+		new_path = ft_str_join("$PWD", str + 1);
+		free(str);
+		return (new_path);
+	}
+	return (str);
+}
+
+char	*check_tilde(char *str)
 {
 	char	*new_str;
 
-	if (!str || new_size == 0)
-		return (NULL);
-	new_str = (char *)malloc(new_size);
-	if (!new_str)
+	if (str[0] == '~')
 	{
+		new_str = ft_str_join("$HOME", str + 1);
 		free(str);
-		return (NULL);
+		return (new_str);
 	}
-	ft_strncpy(new_str, str, new_size - 1);
-	new_str[new_size - 1] = '\0';
-	free(str);
-	return (new_str);
+	return (str);
 }
 
-size_t	pv_count_backslashes(t_context *ctx)
+void	expand_and_replace(char **str, char *prefix, int end)
 {
-	size_t		backslash_count;
-	char		*p;
+	char	*suffix;
+	char	*new_str;
+	int		len;
+	int		i;
+	int		x;
 
-	p = ctx->dollar - 1;
-	backslash_count = 0;
-	if (ctx->dollar != ctx->input)
+	if (!prefix[0])
 	{
-		while (p >= ctx->input && *p == '\\')
-		{
-			backslash_count++;
-			p--;
-		}
+		free(*str);
+		*str = ft_strdup("");
+		return ;
 	}
-	return (backslash_count);
+	suffix = ft_strdup(*str + end);
+	len = ft_strlen(prefix) + ft_strlen(suffix);
+	new_str = malloc(len + 1);
+	i = 0;
+	x = 0;
+	while (prefix[i])
+		new_str[x++] = prefix[i++];
+	i = 0;
+	while (suffix[i])
+		new_str[x++] = suffix[i++];
+	new_str[x] = '\0';
+	handle_memory_errors(*str, suffix);
+	*str = new_str;
 }
 
-void	pv_resize_concat(char **resized_str, size_t len_resize,
-	char *concat_str, size_t len_concat)
+void	check_quotes_till_end(char *str, t_quoted *q, int start, int end)
 {
-	*resized_str = resize_string(*resized_str, len_resize);
-	if (len_concat == (size_t)-1)
-		ft_strcat(*resized_str, concat_str);
-	else
-		ft_strncat(*resized_str, concat_str, len_concat);
-}
+	int	i;
 
-int	pv_initialise_vars(t_context *ctx)
-{
-	if (!ctx->input)
-		return (-1);
-	ctx->start = ctx->input;
-	ctx->dollar = ft_strchr(ctx->input, '$');
-	ctx->new_str = malloc(1);
-	if (!ctx->new_str)
-		return (-1);
-	(ctx->new_str)[0] = '\0';
-	return (1);
-}
-
-int	pv_backslashes_cases(t_context *ctx)
-{
-	size_t	backslash_count;
-
-	backslash_count = pv_count_backslashes(ctx);
-	if (backslash_count % 2 != 0)
+	i = start;
+	while (i <= end && str[i] != '\0' && i < (int)ft_strlen(str))
 	{
-		pv_resize_concat(&(ctx->new_str),
-			ft_strlen(ctx->new_str) + ctx->dollar - ctx->start + 2,
-			ctx->start, ctx->dollar - ctx->start + 1);
-		ctx->total_size += (ctx->dollar - ctx->start + 1);
-		ctx->new_str = realloc(ctx->new_str, ctx->total_size);
-		if (!ctx->new_str)
-			return (0);
-		return (1);
+		check_quotes_status_and_update(q, str[i]);
+		i++;
 	}
-	return (0);
 }

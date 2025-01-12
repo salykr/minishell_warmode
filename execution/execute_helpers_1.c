@@ -36,9 +36,9 @@ int	is_builtin(t_parser *parser)
 			|| ft_strstr(parser->command, "env") != NULL
 			|| ft_strstr(parser->command, "exit") != NULL
 			|| ft_strstr(parser->command, "echo") != NULL))
-			{
-				return (1);
-			}
+	{
+		return (1);
+	}
 	return (0);
 }
 
@@ -56,13 +56,6 @@ void	manage_input_output(t_fd *f, int fd[2], t_parser *parser)
 	}
 	if (parser->next != NULL)
 		close(fd[0]);
-}
-
-void	initialize_heredoc(int *heredoc_fd, t_parser *parser, t_env *env)
-{
-	*heredoc_fd = -1;
-	if (parser->delimeter != NULL && parser->redirection != NULL)
-		*heredoc_fd = handle_heredoc(parser->heredoc, env);
 }
 
 void	initialize_execution(t_parser *parser, t_env *env, char **cmd_path)

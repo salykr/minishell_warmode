@@ -14,8 +14,8 @@
 
 bool	ft_check_n_operation(char *str)
 {
-	int	i;
-	char * newstr;
+	int		i;
+	char	*newstr;
 
 	newstr = NULL;
 	i = 1;

@@ -63,7 +63,7 @@ void	cleanup_and_exit(t_env *myenv, t_parser *parser)
 
 void	builtin_exit(t_parser *parser, t_env *myenv)
 {
-	if(parser->next == NULL && parser->prev == NULL)
+	if (parser->next == NULL && parser->prev == NULL)
 		printf("exit\n");
 	handle_exit_input(parser);
 	if (parser->input == NULL)

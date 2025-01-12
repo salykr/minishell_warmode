@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/07 16:35:07 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/11 17:32:21 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,18 +105,13 @@ int	handle_io_and_execute(t_parser *parser, t_env *env, t_fd *f, int fd[2])
 	return (1);
 }
 
-
 void	cmds_exec(t_parser *parser, t_env *env)
 {
 	t_fd	f;
 	int		fd[2];
 
 	f.fd_1 = STDIN_FILENO;
-	// if (parser->next == NULL && parser->prev == NULL && ft_strcmp(parser->command,
-	// 		"exit") == 0)
-	// 	parser = parser;
-	// else
-	// 	parser = find_last_exit(parser);
+	process_parser_files(parser, env);
 	while (parser)
 	{
 		if (parser->next)

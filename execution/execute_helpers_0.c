@@ -15,14 +15,13 @@
 
 #include "mini_shell.h"
 
-
 char	*get_path(t_env env, char *cmd)
 {
-	int i;
-	char *p;
-	char *back_slash;
-	char **path;
-	char *env_path;
+	int		i;
+	char	*p;
+	char	*back_slash;
+	char	**path;
+	char	*env_path;
 
 	env_path = retreive_path(env);
 	if (!env_path)
@@ -47,8 +46,8 @@ char	*get_path(t_env env, char *cmd)
 
 char	*get_path_pwd(t_env env, char *cmd)
 {
-	char *p;
-	char *env_path;
+	char	*p;
+	char	*env_path;
 
 	env_path = ft_getenv(&env, "PWD");
 	if (!env_path)
@@ -65,11 +64,11 @@ char	*get_path_pwd(t_env env, char *cmd)
 	return (NULL);
 }
 
-void	handle_input_line(t_parser *node, int delimiter_index)
+void	handle_input_line(t_parser *node, int delimiter_index, int *same)
 {
-	char *line;
-	char *ptr;
-	size_t line_len;
+	char	*line;
+	char	*ptr;
+	size_t	line_len;
 
 	while (1)
 	{
@@ -81,6 +80,7 @@ void	handle_input_line(t_parser *node, int delimiter_index)
 		if (line[line_len - 1] == '\n')
 			line[line_len - 1] = '\0';
 		ptr = remove_quotes(node->delimeter[delimiter_index]);
+		*same = ft_strcmp(ptr, node->delimeter[delimiter_index]);
 		if (ft_strcmp(line, ptr) == 0)
 		{
 			handle_memory_errors(line, ptr);
@@ -91,9 +91,10 @@ void	handle_input_line(t_parser *node, int delimiter_index)
 	}
 }
 
-void	write_in_heredoc(t_parser *node)
+int	write_in_heredoc(t_parser *node)
 {
-	int i;
+	int	i;
+	int	same;
 
 	g_v = 0;
 	set_signal_handler_heredoc();
@@ -103,17 +104,18 @@ void	write_in_heredoc(t_parser *node)
 	{
 		if (node->heredoc != NULL)
 			free_heredoc(node);
-		handle_input_line(node, i);
+		handle_input_line(node, i, &same);
 	}
 	if (g_v == 130)
 		free_heredoc(node);
 	restore_signals();
+	return (same);
 }
 
-int	handle_heredoc(char **heredoc_content, t_env *env)
+int	handle_heredoc(char **heredoc_content, t_env *env, int same)
 {
-	int pipefd[2];
-	int i;
+	int	pipefd[2];
+	int	i;
 
 	i = 0;
 	if (pipe(pipefd) == -1)
@@ -123,7 +125,8 @@ int	handle_heredoc(char **heredoc_content, t_env *env)
 	}
 	while (heredoc_content != NULL && heredoc_content[i] != NULL)
 	{
-		process_dollar_strings(heredoc_content, env);
+		if (same == 0)
+			process_dollar_strings(heredoc_content, env);
 		write(pipefd[1], (heredoc_content[i]), ft_strlen(heredoc_content[i]));
 		write(pipefd[1], "\n", 1);
 		i++;

@@ -61,8 +61,8 @@ static void	print_env_var(char *env_var)
 	char	*equal_sign;
 
 	equal_sign = ft_strchr(env_var, '=');
-	if(env_var && ft_strlen(env_var) == 1 && *env_var == '_')
-		return;
+	if (env_var && ft_strlen(env_var) == 1 && *env_var == '_')
+		return ;
 	if (equal_sign)
 		printf("declare -x %.*s=\"%s\"\n", (int)(equal_sign - env_var),
 			env_var, equal_sign + 1);

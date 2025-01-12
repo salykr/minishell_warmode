@@ -12,71 +12,66 @@
 
 #include "mini_shell.h"
 
-int	pv_question_mark(t_context *ctx)
+char	*create_array_till_dollar(char *str, int index)
 {
-	char	*exit_status;
+	char	*new_string;
+	int		i;
 
-	exit_status = ft_itoa(g_v);
-	if (!exit_status)
-		return (0);
-	ctx->total_size += ft_strlen(exit_status);
-	pv_resize_concat(&(ctx->new_str), ctx->total_size, exit_status, (size_t)-1);
-	free(exit_status);
-	if (ctx->end_of_var)
-		ctx->start = ctx->end_of_var + 1;
-	else
-		return (0);
-	return (1);
-}
-
-int	pv_update_pointers(t_context *ctx)
-{
-	if (ctx->end_of_var)
+	i = 0;
+	new_string = malloc(index + 1);
+	while (i < index)
 	{
-		*(ctx->end_of_var) = ctx->temp_char;
-		ctx->start = ctx->end_of_var;
+		new_string[i] = str[i];
+		i++;
 	}
-	else
-		ctx->start = ctx->var_name + ft_strlen(ctx->var_name);
-	return (1);
+	new_string[index] = '\0';
+	return (new_string);
 }
 
-int	pv_env_variable(t_context *ctx, char *env_value)
+int	find_dollar_pos11(char *str, int j)
 {
-	if (env_value == NULL)
-		env_value = "";
-	ctx->total_size += ft_strlen(env_value);
-	pv_resize_concat(&(ctx->new_str), ctx->total_size, env_value, (size_t)-1);
-	return (1);
-}
+	int	i;
 
-void	pv_fill_values(t_context *ctx)
-{
-	ctx->total_size += (ctx->dollar - ctx->start);
-	ctx->var_name = ctx->dollar + 1;
-	ctx->end_of_var = ft_strpbrk(ctx->var_name, " '\\/.#$()?1234567890+\"");
-	if (ctx->end_of_var && ft_isdigit(*(ctx->end_of_var)))
-		ctx->end_of_var = ft_strpbrk(ctx->end_of_var, " '\\.#$()?+\"");
-	ctx->first_char = *(ctx->var_name);
-}
-
-int	pv_handling_0(t_context *ctx)
-{
-	if (ctx->dollar)
+	i = j;
+	while (str[i])
 	{
-		ctx->total_size += ft_strlen(ctx->dollar);
-		pv_resize_concat(&(ctx->new_str), ctx->total_size,
-			ctx->dollar, ft_strlen(ctx->dollar));
-		ctx->start = ctx->end_of_var + 1;
-		if (ctx->start != NULL && *(ctx->start) == '\0')
-			return (1);
+		if (str[i] == '$')
+			return (i);
+		i++;
 	}
-	else
+	return (-42);
+}
+
+int	find_end_variable(char *str, int j)
+{
+	int	i;
+
+	i = find_dollar_pos11(str, j);
+	i++;
+	if (str[i] == '\"' || str[i] == '\'')
+		return (i + 1);
+	if (str[i] == '?')
+		return (i + 1);
+	while (str[i] && ((str[i] >= 'a' && str[i] <= 'z')
+			|| (str[i] >= 'A' && str[i] <= 'Z')
+			|| (str[i] >= '0' && str[i] <= '9')
+			|| str[i] == '_' ))
 	{
-		pv_resize_concat(&(ctx->new_str),
-			ft_strlen(ctx->new_str) + ft_strlen(ctx->dollar) + 1,
-			ctx->dollar, (size_t) - 1);
-		return (1);
+		i++;
 	}
-	return (0);
+	return (i);
+}
+
+int	find_dollar_pos1(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+			return (i);
+		i++;
+	}
+	return (-42);
 }

@@ -47,7 +47,7 @@ int	handle_exit_argument(char *input)
 
 int	handle_exit_arguments(char **input)
 {
-	int i;
+	int	i;
 
 	g_v = 0;
 	i = 0;
@@ -55,7 +55,7 @@ int	handle_exit_arguments(char **input)
 	{
 		if (!is_numeric(input[i]))
 		{
-			printf("minishell : exit: %s: numeric argument required\n", input[i]);
+			printf("minishell :exit: %s:numeric argument required\n", input[i]);
 			g_v = 2;
 			return (2);
 		}

@@ -52,7 +52,6 @@ t_env	*init_env(char **env)
 		i++;
 	}
 	myenv->env[i] = NULL;
-	// printf("(((((i is %d))))))\n", i);
 	update_shlvl(myenv);
 	return (myenv);
 }

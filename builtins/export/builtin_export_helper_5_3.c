@@ -3,76 +3,157 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export_helper_5_3.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 19:18:23 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/06 19:49:43 by root             ###   ########.fr       */
+/*   Created: 2025/01/12 14:45:20 by skreik            #+#    #+#             */
+/*   Updated: 2025/01/12 14:50:20 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-void	handle_variable_cases(t_context *ctx, t_env *env)
+void	initialize_process_variable(t_quoted *q)
 {
-	if (ctx->end_of_var)
-		pv_handling_3(ctx);
-	if (ctx->first_char == '?')
+	q->d_start = 0;
+	q->d_end = 0;
+	q->s_start = 0;
+	q->s_end = 0;
+	q->inside_quote = 0;
+}
+
+char	*process_variable(char *x_str, t_env *env)
+{
+	int			i;
+	t_quoted	q;
+	char		*str;
+
+	i = 0;
+	initialize_process_variable(&q);
+	if (ft_strchr(x_str, '$') == NULL && x_str[0] != '~')
+		return (remove_paired_quotes(ft_strdup(x_str)));
+	str = ft_strdup(x_str);
+	str = check_tilde(str);
+	while (str[i])
 	{
-		if (!pv_question_mark(ctx))
-			return ;
+		check_quotes_status_and_update(&q, str[i]);
+		if (str[i] == '$')
+			process_variable_helper(&i, &str, &q, env);
+		i++;
 	}
-	else if ((ctx->dollar > ctx->input && *(ctx->dollar - 1) == '\''
-			&& ctx->temp_char == '\''))
+	return (remove_paired_quotes(str));
+}
+
+void	process_variable_helper(int *i, char **str, t_quoted *q, t_env *env)
+{
+	int			start;
+	char		*to_expand;
+	t_strings	s;
+
+	if (*i == 0)
 	{
-		if (pv_handling_0(ctx))
-			return ;
+		start = 0;
+		s.end = 0;
+		s.expanded = NULL;
+		to_expand = NULL;
 	}
-	else if (ft_isdigit(ctx->first_char))
-		ctx->start = ctx->var_name + 1;
+	s.prefix = create_array_till_dollar((*str), (*i));
+	start = (*i);
+	s.end = find_end_variable((*str), (*i));
+	to_expand = ft_strndup((*str) + start, s.end - start);
+	s.expanded = check_char_after_dollar(to_expand, q->inside_quote, env);
+	free(to_expand);
+	process_variable_helper_elseif(i, &s, str, q);
+	check_quotes_till_end((*str), q, start, s.end);
+}
+
+void	process_variable_helper_elseif(int *i, t_strings *s,
+				char **str, t_quoted *q)
+{
+	char	*temp;
+
+	if (s->expanded == NULL && q->inside_quote != 2)
+	{
+		expand_and_replace(str, s->prefix, s->end);
+		(*i) = ft_strlen(s->prefix) - 1;
+		free(s->prefix);
+	}
+	else if (s->expanded)
+	{
+		temp = ft_strjoin(s->prefix, s->expanded);
+		free(s->prefix);
+		s->prefix = temp;
+		expand_and_replace(str, s->prefix, s->end);
+		(*i) = ft_strlen(s->prefix) - 1;
+		free(temp);
+		free(s->expanded);
+	}
 	else
-		ctx->start = handle_env_value(ctx, env);
-	ctx->dollar = ft_strchr(ctx->start, '$');
-	if (ctx->dollar != NULL && *(ctx->dollar + 1) == '\0')
-		ctx->dollar = NULL;
-}
-
-void	process_dollar_signs(t_context *ctx, t_env *env)
-{
-	while (ctx->dollar)
 	{
-		if (pv_backslashes_cases(ctx))
-		{
-			pv_handling_2(ctx);
-			continue ;
-		}
-		if (ctx->dollar != ctx->input)
-			pv_handling_1(ctx);
-		pv_fill_values(ctx);
-		handle_variable_cases(ctx, env);
+		(*i) = s->end;
+		free(s->prefix);
 	}
 }
 
-char	*process_variable(char *input, t_env *env)
-{
-	t_context	ctx;
-	char		*result;
+/*
+   char *process_variable(char *x_str, t_env *env)
+   {
+   int i;
+   int end;
+   char *to_expand;
+   int start;
+   char *expanded;
+   t_quoted q;
+   char *temp;
+   char *prefix;
+   char *str;
 
-	if (!initialize_context(&ctx, input))
-		return (NULL);
-	if (ft_strchr(ctx.input, '$') == NULL)
-		return (remove_paired_quotes(ft_escape_char(ft_strdup(input))));
-	ctx.total_size = pv_initialise_vars(&ctx);
-	process_dollar_signs(&ctx, env);
-	pv_resize_concat(&ctx.new_str, ft_strlen(ctx.new_str)
-		+ ft_strlen(ctx.start) + 1, ctx.start, (size_t)-1);
-	result = remove_paired_quotes(ft_escape_char(ctx.new_str));
-	if (result != NULL && ft_strlen(result) == 0)
-	{
-		free(result);
-		return (NULL);
-	}
-	return (result);
-}
+   i = 0;
+   end = 0;
+   initialize_process_variable(&q);
+   to_expand = NULL;
+   expanded = NULL;
+   start = 0;
+   if (ft_strchr(x_str, '$') == NULL && x_str[0] != '~')
+   return (remove_paired_quotes(ft_strdup(x_str)));
+   str = ft_strdup(x_str);
+   str = check_tilde(str);
+   while (str[i])
+   {
+   check_quotes_status_and_update(&q, str[i]);
+   if (str[i] == '$')
+   {
+   prefix = create_array_till_dollar(str, i);
+   start = i;
+   end = find_end_variable(str, i);
+   to_expand = ft_strndup(str + start, end - start);
+   expanded = check_char_after_dollar(to_expand, q.inside_quote, env);
+   free(to_expand);
+   if (expanded == NULL && q.inside_quote != 2)
+   {
+   expand_and_replace(&str, prefix, end);
+   i = ft_strlen(prefix) - 1;
+   free(prefix);
+   }
+   else if (expanded)
+   {
+   temp = ft_strjoin(prefix, expanded);
+   free(prefix);
+   prefix = temp;
+   expand_and_replace(&str, prefix, end);
+   i = ft_strlen(prefix) - 1;
+   free(temp);
+   }
+   else
+   {
+   i = end;
+   free(prefix);
+   }
+   check_quotes_till_end(str, &q, start, end);
+   }
+   i++;
+   }
+   return (remove_paired_quotes(str));
+   }
 
-// export hi$USER'$USER'"$USER"$USER\\$USER\$USER$HOME9.
-// export hi$USER'$USER'"$USER"$USER\\$USER\$USER$HOME9$.
+*/
+// export hi$?=hi'$USER'''$USER''"$USER"$?$HOME$9.

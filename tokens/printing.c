@@ -36,7 +36,6 @@ void	print_2d_array(char **array)
 	}
 }
 
-
 void	print_parser(t_parser *parser)
 {
 	t_parser	*curr;

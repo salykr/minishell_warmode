@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 13:04:01 by isalayan          #+#    #+#             */
-/*   Updated: 2025/01/06 15:25:44 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/11 17:03:19 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 		add_to_array(curr, T_INPUT);
 	}
 	else if (tokens->type == T_OUTPUT && (tokens->next->type == T_IDENTIFIER
-			|| tokens->next->type == T_PATH))
+			|| tokens->next->type == T_PATH || tokens->next->type == T_ENV))
 	{
 		curr->outfile = add_string_to_2d_array(curr->outfile,
 				tokens->next->value);
@@ -60,7 +60,9 @@ int	handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 
 int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 {
-	if (tokens->next!=NULL && (tokens->next->type == tokens->type || tokens->next->type == T_INPUT || tokens->next->type == T_OUTPUT || tokens->next->type == T_HEREDOC))
+	if (tokens->next != NULL && (tokens->next->type == tokens->type
+			|| tokens->next->type == T_INPUT || tokens->next->type == T_OUTPUT
+			|| tokens->next->type == T_HEREDOC))
 	{
 		printf("bash: syntax error near unexpected token `%s'\n",
 			tokens->value);

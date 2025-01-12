@@ -43,8 +43,8 @@ int	check_input(char *str)
 	size_t	i;
 
 	i = 0;
-	if (str[0] == '\0' || (!ft_isalpha(str[0]) && (str[0] != '_' && str[0] != '\''
-				&& str[0] != '\"' && str[0] != '$')))
+	if (str[0] == '\0' || (!ft_isalpha(str[0]) && (str[0] != '_'
+				&& str[0] != '\'' && str[0] != '\"' && str[0] != '$')))
 	{
 		printf("Error.\n");
 		return (0);

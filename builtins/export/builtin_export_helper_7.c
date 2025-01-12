@@ -92,4 +92,3 @@ char	*remove_closing_quote_after_equals(char *str)
 	copy_until_quote(str, result, &i, &j);
 	return (free(str), result);
 }
-
