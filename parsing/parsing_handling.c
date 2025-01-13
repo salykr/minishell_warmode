@@ -14,24 +14,25 @@
 
 int	handle_parsing_quotes_helper_2(t_input *tokens, char *value)
 {
+	(void) value ;
 	if (!strncmp(tokens->value, "$?", 2))
 	{
 		if (!strcmp(tokens->value, "$?"))
 		{
-			printf("bash:%d: command not found\n", g_v);
+			ft_putendl_fd("bash: command not found", 2);
 			g_v = 127;
 			return (-1);
 		}
 		else
 		{
-			printf("bash:%d%d: command not found\n", g_v, g_v);
+			ft_putendl_fd("bash: command not found", 2);
 			g_v = 127;
 			return (-1);
 		}
 	}
 	else
 	{
-		printf("command %s not found\n", value);
+		ft_putendl_fd("command not found", 2);
 		g_v = 127;
 		return (-1);
 	}
@@ -110,4 +111,32 @@ int	handle_parsing_quotes(t_input *tokens, t_parser *curr, t_env env)
 	else if (handle_parsing_quotes_main_helper(tokens, curr, env, value) == -1)
 		return (-1);
 	return (0);
+}
+
+char	*remove_quotes_with_free(char *str)
+{
+	char	*result;
+	int		j;
+	int		i;
+	bool	in_single;
+	bool	in_double;
+
+	result = malloc(ft_strlen(str) + 1);
+	in_single = false;
+	in_double = false;
+	j = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (str[i] == '"' && !in_single)
+			in_double = !in_double;
+		else
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	free(str);
+	return (result);
 }

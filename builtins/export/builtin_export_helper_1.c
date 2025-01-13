@@ -46,7 +46,7 @@ int	check_input(char *str)
 	if (str[0] == '\0' || (!ft_isalpha(str[0]) && (str[0] != '_'
 				&& str[0] != '\'' && str[0] != '\"' && str[0] != '$')))
 	{
-		printf("Error.\n");
+		ft_putendl_fd("Error", 2);
 		return (0);
 	}
 	while (str[++i])
@@ -60,7 +60,7 @@ int	check_input(char *str)
 		{
 			if ((i == ft_strlen(str) - 1) && str[ft_strlen(str) - 1] == '+')
 				return (-1);
-			printf("Error.\n");
+			ft_putendl_fd("Error", 2);
 			return (0);
 		}
 	}
@@ -73,10 +73,10 @@ int	check_input_end(char *str)
 
 	i = 0;
 	if (str == NULL || str[0] == '\0')
-		return (printf("Error.\n"), 0);
+		return ((void)ft_putendl_fd("export: not a valid identifier\n", 2), 0);
 	if (str[0] == '\0' || (!ft_isalpha(str[0]) && str[0] != '_'))
 	{
-		printf("Error.\n");
+		ft_putendl_fd("Error", 2);
 		return (0);
 	}
 	while (str[++i])
@@ -87,7 +87,7 @@ int	check_input_end(char *str)
 		{
 			if ((i == ft_strlen(str) - 1) && str[ft_strlen(str) - 1] == '+')
 				return (-1);
-			printf("Error.\n");
+			ft_putendl_fd("Error", 2);
 			return (0);
 		}
 	}
@@ -104,7 +104,7 @@ int	check_value(char *str)
 		if (str[i] == '(' || str[i] == ')' || str[i] == '&'
 			|| str[i] == '!' || str[i] == ';')
 		{
-			printf("Error.\n");
+			ft_putendl_fd("Error.", 2);
 			return (0);
 		}
 		else

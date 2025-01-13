@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 13:52:20 by saly              #+#    #+#             */
-/*   Updated: 2025/01/12 14:19:43 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 12:04:56 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,17 @@ void	process_files(char **files, t_env *env)
 {
 	int		i;
 	char	*file;
+	char	*filee;
 
 	if (!files)
 		return ;
 	i = -1;
 	while (files[++i])
 	{
-		file = files[i];
-		files[i] = process_variable(add_path(files[i]), env);
-		free(file);
+		file = add_path(files[i]);
+		filee = remove_paired_quotes(file);
+		files[i] = process_variable(filee, env);
+		free(filee);
 	}
 }
 
@@ -93,7 +95,7 @@ int	get_variable(t_parser *parser, t_env *env)
 	variable = retreive_path(*env);
 	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
 	{
-		printf("bash: env: No such file or directory\n");
+		ft_putendl_fd("bash: env: No such file or directory", 2);
 		val = 1;
 	}
 	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)

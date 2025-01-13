@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/11 17:32:21 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 12:15:21 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
+	if (parser->prev && parser->prev->permission == 1)
+		return (g_v = 0, free(cmd_path));
 	if (pid == 0)
 	{
 		configure_child_signals();
@@ -32,7 +34,7 @@ void	execute_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 				perror("execve");
 		}
 		else
-			printf("Error: PATH environment variable not set\n");
+			ft_putendl_fd("Error: PATH environment variable not set", 2);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -83,6 +85,8 @@ void	handle_wait_status(t_parser *parser)
 			else
 				g_v = WEXITSTATUS(status);
 		}
+		if (parser && parser->next == NULL)
+			g_v = WEXITSTATUS(status);
 	}
 }
 
@@ -117,13 +121,13 @@ void	cmds_exec(t_parser *parser, t_env *env)
 		if (parser->next)
 			pipe(fd);
 		f.fd_2 = STDOUT_FILENO;
-		if (handle_io_and_execute(parser, env, &f, fd) != 1)
-			return ;
-		if (parser->next)
+		if (handle_io_and_execute(parser, env, &f, fd) != 1
+			|| parser->permission == 1)
 		{
-			close(fd[1]);
-			f.fd_1 = fd[0];
+			parser = parser->next;
+			continue ;
 		}
+		close_file(parser, fd, &f);
 		parser = parser->next;
 	}
 	if (f.fd_1 != STDIN_FILENO)

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 13:56:59 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/12 14:51:30 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 15:30:03 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,6 @@ char				*ft_strndup(const char *start, size_t length);
 char				*ft_strtok(char *str, const char *delim);
 bool				ft_isspace(int c);
 char				*ft_str_join(char *s1, char *s2);
-char				*ft_strstr(const char *haystack, const char *needle);
+char				*ft_strstr(char *str, char *to_find);
 char				*ft_strpbrk(const char *s, const char *accept);
 #endif

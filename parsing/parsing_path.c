@@ -74,7 +74,7 @@ int	handle_parsing_path_helper_1(t_input *tokens, t_parser *curr, t_env env)
 		add_to_input_args(tokens->value, curr);
 	else
 	{
-		printf("bash: %s : No such file or directory\n", tokens->value);
+		ft_putendl_fd("bash: No such file or directory", 2);
 		g_v = 127;
 		return (-1);
 	}
@@ -90,17 +90,17 @@ int	handle_parsing_path_helper_2(t_input *tokens, t_parser *curr, t_env env)
 		p++;
 	if (*p != '\0')
 	{
-		if (is_executable(p, env) || ft_strcmp(p, "cd") == 0 || ft_strcmp(p,
-				"exit") == 0 || ft_strcmp(p, "export") == 0
-			|| ft_strcmp(p, "echo") == 0 || ft_strcmp(p, "pwd") == 0
-			|| ft_strcmp(p, "env") == 0
-			|| ft_strcmp(p, "unset") == 0 || access(tokens->value, X_OK) == 0)
+		if (is_executable(p, env) || is_builtin_command(tokens->value)
+			|| access(tokens->value, X_OK) == 0)
 		{
 			curr->command = ft_strdup(tokens->value);
 			curr->args = add_string_to_2d_array(curr->args, tokens->value);
 			if (curr->command == NULL)
 				return (perror("Failed to allocate memory"), -1);
 		}
+		else if (access(tokens->value, X_OK) != 0)
+			return (g_v = 127, errmsg_cmd(tokens->value, NULL,
+					"No such file or directory"), -1);
 		else
 			add_to_input_args(tokens->value, curr);
 	}
@@ -133,7 +133,7 @@ int	handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 		}
 		else if (!cmd_is_dir(tokens->value))
 			return (printf("bash: %s : No such file or directory\n",
-					tokens->value), g_v = 127, -1);
+					tokens->value), g_v = 1, -1);
 	}
 	return (0);
 }

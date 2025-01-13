@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:36:13 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/11 16:13:41 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 10:23:09 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,13 @@ int	builtin_cd(t_parser *list, t_env *myenv)
 	if (list->input != NULL && (ft_strlen(list->input[0]) > 2
 			&& list->input[0][2] == '-'))
 	{
-		printf("cd: Invalid option.\n");
+		ft_putendl_fd("Invalid option", 2);
 		return (2);
 	}
 	if (list->input != NULL && (list->input[1] != NULL
 			|| ft_strcmp(list->input[0], "*") == 0))
 	{
-		printf("bash: cd: too many arguments.\n");
+		ft_putendl_fd(" too many arguments", 2);
 		return (1);
 	}
 	if (list->input != NULL && (ft_strchr(list->input[0], '\'')

@@ -6,11 +6,16 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:50:51 by saoun             #+#    #+#             */
-/*   Updated: 2025/01/05 14:14:37 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 10:23:55 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
+int	is_oldpwd_input(const char *input)
+{
+	return (ft_strcmp(input, "-") == 0 || ft_strcmp(input, "-") == 0);
+}
 
 char	*resize_buffer(char *buffer, size_t *size)
 {
@@ -53,7 +58,7 @@ int	builtin_pwd(t_parser *parser, t_env *env)
 	size = INITIAL_SIZE;
 	if (parser->operations != NULL || (parser->input != NULL
 			&& ft_strlen(parser->input[0]) > 2 && parser->input[0][2] == '-'))
-		return (printf("bash: pwd: invalid option\n"), 2);
+		return (ft_putendl_fd("bash: pwd: invalid option", 2), 2);
 	buffer = (char *)malloc(size);
 	if (buffer == NULL)
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 12:20:46 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/12 15:17:44 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 10:24:00 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	includes_exlamation_mark(const char *str)
 	{
 		if (str[i] && str[i] == '!' && str[i + 1] && str[i + 1] != '\0')
 		{
-			printf("bash: !%c event not found\n", (str[i + 1]));
+			ft_putendl_fd("bash: event not found", 2);
 			return (1);
 		}
 		i++;

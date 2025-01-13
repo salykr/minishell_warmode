@@ -30,6 +30,7 @@ t_parser	*create_parser(void)
 	new_parser->next = NULL;
 	new_parser->infile = NULL;
 	new_parser->outfile = NULL;
+	new_parser->permission = -1;
 	return (new_parser);
 }
 

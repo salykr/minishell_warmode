@@ -33,12 +33,12 @@ int	handle_exit_argument(char *input)
 {
 	if (!is_numeric(input))
 	{
-		printf("minishell : exit: %s: numeric argument required\n", input);
+		ft_putendl_fd("minishell : exit: numeric argument required", 2);
 		g_v = 2;
 	}
 	else
 	{
-		printf("minishell: exit: too many arguments\n");
+		ft_putendl_fd("minishell: exit: too many arguments", 2);
 		g_v = 1;
 		return (1);
 	}
@@ -55,13 +55,13 @@ int	handle_exit_arguments(char **input)
 	{
 		if (!is_numeric(input[i]))
 		{
-			printf("minishell :exit: %s:numeric argument required\n", input[i]);
+			ft_putendl_fd("minishell :exit :numeric argument required", 2);
 			g_v = 2;
 			return (2);
 		}
 		else
 		{
-			printf("minishell: exit: too many arguments\n");
+			ft_putendl_fd("minishell: exit: too many arguments", 2);
 			g_v = 1;
 			return (1);
 		}

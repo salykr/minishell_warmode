@@ -12,6 +12,7 @@
 
 #include "./mini_shell.h"
 
+/*
 void	print_token_list(t_tokenlist *list)
 {
 	t_input	*token;
@@ -108,3 +109,4 @@ void	print_parser(t_parser *parser)
 //         current = current->next;
 //     }
 // }
+*/

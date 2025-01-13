@@ -57,7 +57,6 @@ char	*get_path_pwd(t_env env, char *cmd)
 		return (p);
 	else
 	{
-		printf("bash: %s: Permission denied\n", p);
 		g_v = 126;
 		free(p);
 	}
@@ -120,7 +119,7 @@ int	handle_heredoc(char **heredoc_content, t_env *env, int same)
 	i = 0;
 	if (pipe(pipefd) == -1)
 	{
-		perror("Error creating pipe");
+		perror("Error creating pipe\n");
 		exit(EXIT_FAILURE);
 	}
 	while (heredoc_content != NULL && heredoc_content[i] != NULL)

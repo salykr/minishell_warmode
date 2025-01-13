@@ -92,8 +92,8 @@ int	builtin_env(t_parser *list, t_env *myenv)
 	mismatch_str = check_env_input(list);
 	if (mismatch_str != NULL)
 	{
-		printf("env: '%s':  No such file or directory\n", mismatch_str);
-		return (127);
+		ft_putendl_fd("env:  No such file or directory", 2);
+		return (1);
 	}
 	if (list->input == NULL)
 	{

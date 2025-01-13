@@ -51,58 +51,30 @@ void	buitlin(t_parser *parser, t_env *env)
 		builtin_exit(parser, env);
 }
 
-// void	buitlin(t_parser *parser, t_env *env)
-// {
-// 	int		val;
-// 	char	*variable;
-
-// 	val = 0;
-// 	variable = retreive_path(*env);
-// 	if (variable == NULL && ft_strcmp(parser->command, "env") == 0)
-// 	{
-// 		printf("bash: env: No such file or directory\n");
-// 		val = 1;
-// 	}
-// 	if (variable != NULL && ft_strcmp(ft_getenv(env, "SHLVL"), "1") == 0)
-// 		free(variable);
-// 	if (ft_strstr(parser ->command, "echo") != NULL)
-// 		g_v = builtin_echo(parser, env);
-// 	else if ((ft_strcmp(parser->command, "env") == 0 && !val)
-// 		|| ft_strstr(parser ->command, "env") != NULL)
-// 		g_v = builtin_env(parser, env);
-// 	else if (ft_strstr(parser ->command, "pwd") != NULL)
-// 		g_v = builtin_pwd(parser, env);
-// 	else if (ft_strstr(parser ->command, "export") != NULL)
-// 		g_v = builtin_export(parser, env);
-// 	else if (ft_strstr(parser ->command, "unset") != NULL)
-// 		builtin_unset(parser, env);
-// 	else if (ft_strstr(parser ->command, "cd") != NULL)
-// 		g_v = builtin_cd(parser, env);
-// 	else if (ft_strstr(parser ->command, "exit") != NULL)
-// 		builtin_exit(parser, env);
-// }
-
-int	check_permissions(const char *filepath, int flag)
+int	check_permissions(const char *filepath, int flag, t_parser *parser)
 {
 	struct stat	file_stat;
 
+	parser->permission = 0;
 	if (flag == 0 && stat(filepath, &file_stat) == -1)
 	{
-		printf("%s", filepath);
-		perror("");
+		ft_putendl_fd("bash: No such file or directory", 2);
+		g_v = 1;
+		parser->permission = 1;
 		return (0);
 	}
 	if (flag == 0 && !(file_stat.st_mode & S_IRUSR))
 	{
-		printf("Permission denied\n");
+		ft_putendl_fd("Permission denied", 2);
+		parser->permission = 1;
 		return (0);
 	}
 	if (flag == 1 && stat(filepath, &file_stat) != -1)
 	{
 		if (!(file_stat.st_mode & S_IWUSR))
 		{
-			printf("Permission denied: Write permission not granted\n");
-			return (0);
+			parser->permission = 1;
+			return (ft_putendl_fd("Write permission not granted", 2), 0);
 		}
 	}
 	return (1);
@@ -121,7 +93,7 @@ int	manage_redirection_output(t_parser *parser, int *fd)
 		{
 			if (parser->outfile != NULL && parser->outfile[++ij.j] != NULL)
 			{
-				if (!check_permissions(parser->outfile[ij.j], 1))
+				if (!check_permissions(parser->outfile[ij.j], 1, parser))
 					return (g_v = 1, 1);
 				if (ij.j != 0)
 					close(*fd);

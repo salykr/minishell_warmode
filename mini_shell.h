@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/12 14:46:34 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 12:27:16 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ typedef enum s_type
 	T_OPERATOR,
 	T_PARENTHESIS,
 	T_IDENTIFIER,
-	T_WHITESPACE,
-	T_UNKNOWN,
 	T_ARGUMENT,
 	T_PIPE,
 	T_REDIRECTION,
@@ -67,11 +65,6 @@ typedef enum s_type
 	T_TILDE,
 	T_QUOTED_STRING,
 	T_SEMICOLON,
-	T_AMPERSAND,
-	T_LOGICAL_AND,
-	T_LOGICAL_OR,
-	T_SUBSHELL,
-	T_COMMAND_SEPARATOR,
 	T_QUOTE,
 	T_PERIODS,
 }							t_type;
@@ -121,6 +114,7 @@ typedef struct s_parser
 	char					**infile;
 	char					**outfile;
 	char					**heredoc;
+	int						permission;
 	struct s_parser			*prev;
 	struct s_parser			*next;
 }							t_parser;
@@ -147,33 +141,19 @@ typedef struct s_strings
 {
 	char					*prefix;
 	char					*expanded;
-	int	end;
+	int						end;
 }							t_strings;
 
-typedef struct s_context
+typedef struct s_quoted
 {
-	size_t					total_size;
-	char					*start;
-	char					*dollar;
-	char					*new_str;
-	char					*var_name;
-	char					*end_of_var;
-	char					temp_char;
-	char					first_char;
-	char					*input;
-	t_env					env;
-	char					*env_value;
-}							t_context;
-
-typedef struct s_quoted{
-	int	inside_quote;
-	int	d_start;
-	int	d_end;
-	int	s_start;
-	int	s_end;
-}t_quoted;
+	int						inside_quote;
+	int						d_start;
+	int						d_end;
+	int						s_start;
+	int						s_end;
+}							t_quoted;
 char						*retreive_path(t_env env);
-
+void						close_file(t_parser *parser, int fd[2], t_fd *f);
 int							is_valid_var_name(const char *var);
 int							get_len_before_dollar(const char *str);
 char						*get_before_dollar(const char *name);
@@ -183,26 +163,20 @@ int							includes_exlamation_mark(const char *str);
 int							handle_unset_options(char **operations,
 								bool *save_val);
 int							handle_operations_dash(t_parser *parser);
-int							handle_input_dash(t_parser *parser,
-								bool *save_val);
+int							handle_input_dash(t_parser *parser, bool *save_val);
 void						process_dollar_strings(char **strs, t_env *env);
-void						set_signal_handler(void (*handler)(int));
 void						ctrl_c_press_heredoc(int sig);
-void						manage_pipe(t_parser *parser, t_fd *f, int fd[2]);
 int							get_last_input_redirection(int *redirection);
 int							manage_redirection_output(t_parser *parser,
 								int *fd);
-void						setup_signal_handlers(void);
-void						handle_child_signals(void (*handler)(int));
 void						configure_child_signals(void);
 void						restore_signals(void);
 void						ignore_signals(void);
-void						setup_signals(void);
-void						setup_signals_heredoc(void);
 void						set_signal_handler_heredoc(void);
+int							is_builtin_command(const char *cmd);
 // execution
-void	process_parser_files(t_parser *parser, t_env *env);
-int	get_variable(t_parser *parser, t_env *env);
+void						process_parser_files(t_parser *parser, t_env *env);
+int							get_variable(t_parser *parser, t_env *env);
 t_parser					*check_exit(t_parser *parser);
 int							is_builtin(t_parser *parser);
 int							manage_redirection_input(t_parser *parser, int *fd,
@@ -214,7 +188,10 @@ void						restore_original_fds(int original_stdin,
 int							check_heredoc_existence(int *redirection);
 int							save_original_fds(int *original_stdin,
 								int *original_stdout);
-int							check_permissions(const char *filepath, int flag);
+int							check_permissions(const char *filepath, int flag,
+								t_parser *parser);
+
+void						handle_wait_status(t_parser *parser);
 void						manage_input_output(t_fd *f, int fd[2],
 								t_parser *parser);
 // void						initialize_heredoc(int *heredoc_fd,
@@ -223,9 +200,8 @@ t_parser					*find_last_exit(t_parser *parser);
 void						initialize_execution(t_parser *parser, t_env *env,
 								char **cmd_path);
 void						handle_child_exit(t_fd *f);
-int							ft_handle_redirections(t_parser *parser);
 void						buitlin(t_parser *parser, t_env *env);
-int						write_in_heredoc(t_parser *node);
+int							write_in_heredoc(t_parser *node);
 void						free_heredoc(t_parser *node);
 t_env						*initialize_environment(char **envp);
 int							ft_manage_empty_input(char *line);
@@ -238,10 +214,7 @@ void						cleanup_resources(char *line,
 // void                        ctrl_c_press_here(int signal);
 void						process_dollar_strings(char **strs, t_env *env);
 char						*retreive_path(t_env env);
-void						update_pwd_m(t_env *myenv, int use_manual_path);
 void						ctrl_c_press(int signal_nb);
-int							ft_isprintable(char c);
-void						ft_redirection(t_parser *node);
 int							builtin_pwd(t_parser *parser, t_env *env);
 int							builtin_unset(t_parser *parser, t_env *myenv);
 int							builtin_echo(t_parser *list, t_env *env);
@@ -249,41 +222,40 @@ void						builtin_echo_helper(char **input, char quote,
 								t_env env);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
-int	is_special_char(char c, int i);
+int							is_special_char(char c, int i);
 int							add_or_update_to_env(char *name, char *value,
 								t_env *env);
 int							builtin_export(t_parser *list, t_env *env);
 int							handle_shlvl_case(char *name, char *value,
 								t_name_value *new_nv);
-char						*resize_string(char *str, size_t new_size);
-int find_dollar_pos1(char *str);
-int find_end_variable(char *str,int j);
-void check_quotes_status_and_update(t_quoted *q, char c);
-int is_num_or_char(char c);
-void check_quotes_till_end(char *str, t_quoted *q, int start,int end);
-char *check_char_after_dollar(char *str, int inside_quote, t_env *envp);
-char *create_array_till_dollar(char *str, int index);
-void	process_variable_helper_elseif(int *i, t_strings *s, char **str, t_quoted *q);
-void	process_variable_helper(int *i, char **str, t_quoted *q, t_env *env);
-void expand_and_replace(char **str, char *prefix, int end);
-char *add_path(char *str);
-char *check_tilde(char *str);
+int							find_dollar_pos1(char *str);
+int							find_end_variable(char *str, int j);
+void						check_quotes_status_and_update(t_quoted *q, char c);
+int							is_num_or_char(char c);
+void						check_quotes_till_end(char *str, t_quoted *q,
+								int start, int end);
+char						*check_char_after_dollar(char *str,
+								int inside_quote, t_env *envp);
+char						*create_array_till_dollar(char *str, int index);
+void						process_variable_helper_elseif(int *i, t_strings *s,
+								char **str, t_quoted *q);
+void						process_variable_helper(int *i, char **str,
+								t_quoted *q, t_env *env);
+void						expand_and_replace(char **str, char *prefix,
+								int end);
+char						*add_path(char *str);
+char						*check_tilde(char *str);
 
 char						**add_string_to_2d_array(char **array,
 								char *new_string);
-int							ft_checkft(t_parser *parser);
-int							ft_handle_redirections(t_parser *parser);
-void						ft_redirection_delimiter(t_parser *node);
 void						cmds_exec(t_parser *parser, t_env *env);
-void						update_env_level(t_env *myenv);
 bool						check_balanced_quotes(const char *input);
-char						*remove_quotes_new(const char *str);
-int							handle_heredoc(char **heredoc_content, t_env *env, int same);
+int							handle_heredoc(char **heredoc_content, t_env *env,
+								int same);
 char						*get_path_pwd(t_env env, char *cmd);
 void						print_expanded_input(char **input,
 								bool inside_single_quotes, t_env env);
 void						free_heredoc(t_parser *node);
-int							check_args_nb(t_parser *list);
 void						replace_with_str(char ***array, char *new_str);
 void						print_env_sorted(t_env *env);
 int							check_value(char *str);
@@ -292,8 +264,8 @@ void						check_semicolon(char *name, char **value);
 int							ft_haschar(char *str, char c);
 char						*ft_escape_char(char *str);
 void						free_2d_array(char **array);
-char *process_variable(char *x_str, t_env *env);
-char *add_path(char *str);
+char						*process_variable(char *x_str, t_env *env);
+char						*add_path(char *str);
 char						*ft_trim_string(char *str);
 int							ft_doublecharlen(t_env *env);
 void						free_2d_array(char **input_array);
@@ -308,18 +280,11 @@ int							find_and_update_env(int check_input_status,
 								char *new_name, char *new_value, t_env *env);
 void						parse_export_input(char *input, char **name,
 								char **value);
-char						*itoa(int num);
 char						*get_env_value(t_env *env, const char *var);
 int							check_input_end(char *str);
 char						*remove_quotes_new_new(const char *str);
 char						*remove_paired_quotes(char *str);
-void						memory_free(char *str1, char *str2);
 char						*remove_closing_quote_after_equals(char *str);
-int							calculate_len_for_backslash(const char *str);
-void						manage_input(t_parser *parser, int *fd, int re,
-								int *place);
-void						manage_output(t_parser *parser, int *fd, int re,
-								int *place);
 
 //---------------------------tokens
 
@@ -368,10 +333,10 @@ int							handle_parsing_identifier(t_input *tokens,
 								t_parser *curr, t_env env);
 int							handle_parsing_identifier_helper(t_input *tokens,
 								t_parser *curr, char *value);
-int							handle_parsing_identifier_helper_errors(
-								t_input *tokens, t_parser *curr);
-int							handle_parsing_identifier_helper_errors_helper(
-								t_input *tokens, t_parser *curr);
+int							handle_parsing_identifier_helper_errors(t_input *tokens,
+								t_parser *curr);
+int							handle_parsing_identifier_helper_errors_helper(t_input *tokens,
+								t_parser *curr);
 int							handle_parsing_path(t_input *tokens, t_parser *curr,
 								t_env env);
 int							handle_parsing_path_helper_1(t_input *tokens,
@@ -396,8 +361,6 @@ int							parse_tokens(t_parser **parser, t_tokenlist *list,
 int							is_executable(char *cmd, t_env env);
 int							is_executable_PWD(t_env env, char *cmd);
 char						*get_path(t_env env, char *cmd);
-char						**ft_create_args(t_parser *parser,
-								t_tokenlist *token);
 int							handle_parsing_path_helper_1(t_input *tokens,
 								t_parser *curr, t_env env);
 int							handle_parsing_path_helper_2(t_input *tokens,

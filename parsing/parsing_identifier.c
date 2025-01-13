@@ -47,7 +47,7 @@ int	handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr)
 	{
 		if (curr->command == NULL)
 		{
-			printf("%s: command not found\n", (tokens->value) + 1);
+			ft_putendl_fd("command not found", 2);
 			g_v = 127;
 			return (-1);
 		}
@@ -77,7 +77,7 @@ int	handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,
 			free(value);
 			return (-1);
 		}
-		printf("%s: command not found\n", value);
+		ft_putendl_fd("command not found", 2);
 		g_v = 127;
 		free(value);
 		return (-1);

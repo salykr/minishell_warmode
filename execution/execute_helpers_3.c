@@ -58,13 +58,13 @@ int	process_input_redirection(t_parser *parser, int *fd_file)
 		{
 			if (parser->infile != NULL && parser->infile[++j] != NULL)
 			{
-				if (!check_permissions(parser->infile[j], 0))
-					return (g_v = 1, 1);
+				if (!check_permissions(parser->infile[j], 0, parser))
+					return (1);
 				if (j != 0)
 					close(*fd_file);
 				*fd_file = open(parser->infile[j], O_RDONLY);
 				if (*fd_file == -1)
-					perror("Error: Input file");
+					ft_putendl_fd("Error: Input file", 2);
 			}
 		}
 	}

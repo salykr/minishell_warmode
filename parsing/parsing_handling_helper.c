@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 13:04:01 by isalayan          #+#    #+#             */
-/*   Updated: 2025/01/11 17:03:19 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 12:25:01 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,15 @@ int	handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 		add_to_array(curr, T_HEREDOC);
 	}
 	else if (tokens->type == T_INPUT && (tokens->next->type == T_IDENTIFIER
-			|| tokens->next->type == T_PATH))
+			|| tokens->next->type == T_PATH || tokens->next->type == T_QUOTE))
 	{
 		curr->infile = add_string_to_2d_array(curr->infile,
 				tokens->next->value);
 		add_to_array(curr, T_INPUT);
 	}
 	else if (tokens->type == T_OUTPUT && (tokens->next->type == T_IDENTIFIER
-			|| tokens->next->type == T_PATH || tokens->next->type == T_ENV))
+			|| tokens->next->type == T_PATH || tokens->next->type == T_ENV
+			|| tokens->next->type == T_QUOTE))
 	{
 		curr->outfile = add_string_to_2d_array(curr->outfile,
 				tokens->next->value);
@@ -76,7 +77,7 @@ int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 		return (-1);
 	}
 	else if (tokens->type == T_APPEND && (tokens->next->type == T_IDENTIFIER
-			|| tokens->next->type == T_PATH))
+			|| tokens->next->type == T_PATH || tokens->next->type == T_QUOTE))
 	{
 		curr->outfile = add_string_to_2d_array(curr->outfile,
 				tokens->next->value);
@@ -85,4 +86,12 @@ int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 	else
 		handle_parsing_redirection_helper(tokens, curr);
 	return (0);
+}
+
+int	is_builtin_command(const char *cmd)
+{
+	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit")
+		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "echo")
+		|| !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "env")
+		|| !ft_strcmp(cmd, "unset"));
 }

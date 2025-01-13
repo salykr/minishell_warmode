@@ -38,7 +38,7 @@ void	validate_numeric_input(char *input)
 	{
 		if (*endptr != '\0' || errno == ERANGE)
 		{
-			printf("minishell : exit: %s: numeric argument required\n", input);
+			ft_putendl_fd("minishell : exit: numeric argument required", 2);
 			g_v = 2;
 		}
 		else
@@ -49,7 +49,7 @@ void	validate_numeric_input(char *input)
 	}
 	else
 	{
-		printf("minishell : exit: %s: numeric argument required\n", input);
+		ft_putendl_fd("minishell : exit: numeric argument required", 2);
 		g_v = 2;
 	}
 }

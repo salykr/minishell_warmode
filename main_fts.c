@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 12:05:09 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/05 12:05:43 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 10:23:02 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	handle_tokenization_error(t_tokenlist *token_list, char *line)
 {
 	if (!token_list)
 	{
-		printf("Error: Failed to tokenize input.\n");
+		ft_putendl_fd("Error: Failed to tokenize input.", 2);
 		free(line);
 		return (1);
 	}
@@ -45,7 +45,7 @@ int	handle_parser_error(t_parser *parser, t_tokenlist *token_list, char *line)
 {
 	if (!parser)
 	{
-		printf("Error: Failed to create parser.\n");
+		ft_putendl_fd("Error: Failed to create parser.", 2);
 		free(line);
 		free_token_list(token_list);
 		return (1);

@@ -75,3 +75,12 @@ void	handle_child_exit(t_fd *f)
 	if (f->fd_1 != STDIN_FILENO)
 		close(f->fd_1);
 }
+
+void	close_file(t_parser *parser, int fd[2], t_fd *f)
+{
+	if (parser->next)
+	{
+		close(fd[1]);
+		f->fd_1 = fd[0];
+	}
+}
