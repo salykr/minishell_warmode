@@ -47,7 +47,7 @@ int	handle_parsing_quotes_helper(t_input *tokens, t_parser *curr, char *value)
 	{
 		errmsg_cmd(value, NULL, "Is a directory");
 		free(value);
-		g_v = 0;
+		g_v = 126;
 		return (-1);
 	}
 	else if (curr->command == NULL)
@@ -74,7 +74,7 @@ int	handle_parsing_quotes_main_helper(t_input *tokens, t_parser *curr,
 	else if (curr->command == NULL && (is_executable(value, env)
 			|| ft_strcmp(value, "cd") == 0 || ft_strcmp(value, "exit") == 0
 			|| ft_strcmp(value, "export") == 0 || ft_strcmp(value,
-				"unset") == 0))
+				"unset") == 0) && value != NULL && *value != '\0')
 	{
 		curr->command = value;
 		curr->args = add_string_to_2d_array(curr->args, value);
@@ -106,7 +106,7 @@ int	handle_parsing_quotes(t_input *tokens, t_parser *curr, t_env env)
 	else
 		value = ft_strdup(temp_value);
 	free(temp_value);
-	if (value == NULL)
+	if (value == NULL || *value == '\0')
 		return (1);
 	else if (handle_parsing_quotes_main_helper(tokens, curr, env, value) == -1)
 		return (-1);

@@ -117,7 +117,7 @@ int	handle_parsing_path(t_input *tokens, t_parser *curr, t_env env)
 			return (1);
 		if (curr->command == NULL && cmd_is_dir(tokens->value))
 		{	
-			g_v = 0;
+			g_v = 126;
 			return (errmsg_cmd(tokens->value, NULL, "Is a directory"), 1);
 		}
 		else if (!ft_strncmp(tokens->value, "./", 2))

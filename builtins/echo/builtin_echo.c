@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:55:23 by rdennaou          #+#    #+#             */
-/*   Updated: 2025/01/12 15:16:52 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/13 16:21:21 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	check_balanced_quotes(const char *input)
 	{
 		if (input[i] == '\\')
 		{
-			if (input[i + 1] != '\'')
+			if (input[i + 1] && input[i + 1] != '\'')
 				i++;
 		}
 		else if (input[i] == '\'' || input[i] == '\"')

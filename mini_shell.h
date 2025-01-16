@@ -6,7 +6,7 @@
 /*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 11:05:26 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/13 12:27:16 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/16 13:16:15 by skreik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,6 @@ typedef struct s_parser
 	struct s_parser			*prev;
 	struct s_parser			*next;
 }							t_parser;
-
-typedef struct s_env_var
-{
-	const char				*name;
-	int						length;
-}							t_env_var;
 
 typedef struct s_env
 {
@@ -333,10 +327,10 @@ int							handle_parsing_identifier(t_input *tokens,
 								t_parser *curr, t_env env);
 int							handle_parsing_identifier_helper(t_input *tokens,
 								t_parser *curr, char *value);
-int							handle_parsing_identifier_helper_errors(t_input *tokens,
-								t_parser *curr);
-int							handle_parsing_identifier_helper_errors_helper(t_input *tokens,
-								t_parser *curr);
+int							handle_parsing_identifier_helper_errors(
+								t_input *tokens, t_parser *curr);
+int							handle_parsing_identifier_helper_errors_helper(
+								t_input *tokens, t_parser *curr);
 int							handle_parsing_path(t_input *tokens, t_parser *curr,
 								t_env env);
 int							handle_parsing_path_helper_1(t_input *tokens,
@@ -371,8 +365,6 @@ bool						ft_check_n_operation(char *str);
 int							count_rows(char **array);
 char						**add_string_to_2d_array(char **array,
 								char *new_string);
-void						add_to_array_helper(t_parser *parser,
-								int new_redirection);
 void						add_to_array(t_parser *parser, int new_redirection);
 void						free_ptr(void *ptr);
 char						*join_strs(char *str, char *add);

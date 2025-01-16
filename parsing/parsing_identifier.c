@@ -20,7 +20,7 @@ int	handle_parsing_identifier_helper_errors_helper(t_input *tokens,
 		if (cmd_is_dir(tokens->value))
 		{
 			errmsg_cmd(tokens->value, NULL, "Is a directory");
-			g_v = 0;
+			g_v = 126;
 			return (1);
 		}
 		else
@@ -30,7 +30,7 @@ int	handle_parsing_identifier_helper_errors_helper(t_input *tokens,
 			return (-1);
 		}
 	}
-	else if (!check_balanced_quotes(tokens->value))
+	else if (tokens->value && !check_balanced_quotes(tokens->value))
 	{
 		printf("Error: Unbalanced quotes in argument\n");
 		g_v = 1;
