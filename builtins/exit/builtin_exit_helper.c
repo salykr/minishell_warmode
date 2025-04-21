@@ -29,40 +29,44 @@ int	is_numeric(const char *str)
 	return (1);
 }
 
-int	handle_exit_argument(char *input)
+int	handle_exit_argument(char *input, t_env *env)
 {
 	if (!is_numeric(input))
 	{
 		ft_putendl_fd("minishell : exit: numeric argument required", 2);
-		g_v = 2;
+		env->exit_code = 2;
+		g_v = 0;
 	}
 	else
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
-		g_v = 1;
+		env->exit_code = 1;
+		g_v = 0;
 		return (1);
 	}
 	return (0);
 }
 
-int	handle_exit_arguments(char **input)
+int	handle_exit_arguments(char **input, t_env *env)
 {
 	int	i;
 
-	g_v = 0;
+	env->exit_code = 0;
 	i = 0;
 	while (input[i] != NULL)
 	{
 		if (!is_numeric(input[i]))
 		{
 			ft_putendl_fd("minishell :exit :numeric argument required", 2);
-			g_v = 2;
+			env->exit_code = 2;
+			g_v = 0;
 			return (2);
 		}
 		else
 		{
 			ft_putendl_fd("minishell: exit: too many arguments", 2);
-			g_v = 1;
+			env->exit_code = 1;
+			g_v = 0;
 			return (1);
 		}
 		i++;

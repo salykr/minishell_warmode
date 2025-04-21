@@ -2,12 +2,9 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_3.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-						      +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
-     +#+        */
-/*                                                +#+#+#+#+#+  
-						  +#+           */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 17:51:08 by marvin            #+#    #+#             */
 /*   Updated: 2024/12/29 17:51:08 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -37,15 +34,15 @@ int	handle_heredoc_redirection(t_parser *parser, int *fd_heredoc, t_env *env)
 
 	if (parser->redirection && check_heredoc_existence(parser->redirection))
 	{
-		same = write_in_heredoc(parser);
-		if (g_v == 130)
+		same = write_in_heredoc(parser, env);
+		if (env->exit_code == 130)
 			return (-1);
 		*fd_heredoc = handle_heredoc(parser->heredoc, env, same);
 	}
 	return (0);
 }
 
-int	process_input_redirection(t_parser *parser, int *fd_file)
+int	process_input_redirection(t_parser *parser, int *fd_file, t_env *env)
 {
 	int	i;
 	int	j;
@@ -58,7 +55,7 @@ int	process_input_redirection(t_parser *parser, int *fd_file)
 		{
 			if (parser->infile != NULL && parser->infile[++j] != NULL)
 			{
-				if (!check_permissions(parser->infile[j], 0, parser))
+				if (!check_permissions(parser->infile[j], 0, parser, env))
 					return (1);
 				if (j != 0)
 					close(*fd_file);
@@ -99,7 +96,7 @@ int	manage_redirection_input(t_parser *parser, int *fd, t_env *env)
 	fd_heredoc = -1;
 	if (handle_heredoc_redirection(parser, &fd_heredoc, env) == -1)
 		return (-1);
-	if (process_input_redirection(parser, &fd_file) != 0)
+	if (process_input_redirection(parser, &fd_file, env) != 0)
 		return (1);
 	return (set_final_fd(parser, fd_file, fd_heredoc, fd));
 }

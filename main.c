@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/14 14:10:16 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/16 13:14:58 by skreik           ###   ########.fr       */
+/*   Created: 2024/08/14 14:10:16 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/21 13:12:58 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	initiate_input(char *line, t_tokenlist **token_list,
 	*parser = create_parser();
 	if (handle_parser_error(*parser, *token_list, line))
 		return (0);
-	value = parse_tokens(parser, *token_list, *my_env);
+	value = parse_tokens(parser, *token_list, my_env);
 	if (handle_parse_tokens_error(line, *token_list, *parser, value))
 		return (0);
 	return (1);
@@ -74,8 +74,8 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (ft_free_env(&my_env), EXIT_SUCCESS);
 }
-/*
-int     main1(int argc, char **argv, char **envp)
+
+/*int     main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
@@ -120,7 +120,7 @@ int     main1(int argc, char **argv, char **envp)
 			free_token_list(token_list); // Free token list
 			continue ;
 		}
-		value = parse_tokens(&parser, token_list, *my_env);
+		value = parse_tokens(&parser, token_list, my_env);
 		if (!parser || !parser->command || value == -1)
 		{
 			free(line);
@@ -137,5 +137,4 @@ int     main1(int argc, char **argv, char **envp)
 	}
 	ft_free_env(&my_env);
 	return (EXIT_SUCCESS);
-}
-*/
+}*/

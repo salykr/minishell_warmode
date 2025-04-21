@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/10 12:40:50 by skreik            #+#    #+#             */
-/*   Updated: 2024/06/10 12:43:02 by skreik           ###   ########.fr       */
+/*   Created: 2024/06/15 11:39:38 by isalayan          #+#    #+#             */
+/*   Updated: 2024/06/15 15:57:13 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_isdigit(int c)
+int	ft_isdigit(int digit)
 {
-	if (c >= 48 && c <= 57)
-		return (1);
-	return (0);
+	return (digit >= '0' && digit <= '9');
 }

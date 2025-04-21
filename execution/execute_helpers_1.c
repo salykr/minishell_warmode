@@ -2,12 +2,9 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_1.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-						      +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
-     +#+        */
-/*                                                +#+#+#+#+#+  
-						  +#+           */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 22:37:16 by marvin            #+#    #+#             */
 /*   Updated: 2024/11/24 22:37:16 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -60,9 +57,10 @@ void	manage_input_output(t_fd *f, int fd[2], t_parser *parser)
 
 void	initialize_execution(t_parser *parser, t_env *env, char **cmd_path)
 {
-	if (!ft_strncmp(parser->command, "./", 2))
-		*cmd_path = get_path_pwd(*env, parser->command);
-	else if (ft_strchr(parser->command, '/') && !access(parser->command, X_OK))
+	if (parser->command && !ft_strncmp(parser->command, "./", 2))
+		*cmd_path = get_path_pwd(env, parser->command);
+	else if (parser->command && ft_strchr(parser->command, '/')
+		&& !access(parser->command, X_OK))
 		*cmd_path = ft_strdup(parser->command);
 	else
 		*cmd_path = get_path(*env, parser->command);

@@ -2,12 +2,9 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_0.c                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+
-								+:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+
-		+#+        */
-/*                                                +#+#+#+#+#+
-							+#+           */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 15:08:51 by marvin            #+#    #+#             */
 /*   Updated: 2024/11/24 15:08:51 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -24,8 +21,6 @@ char	*get_path(t_env env, char *cmd)
 	char	*env_path;
 
 	env_path = retreive_path(env);
-	if (!env_path)
-		return (NULL);
 	path = ft_split(env_path, ':');
 	if (!path)
 		return (NULL);
@@ -35,6 +30,8 @@ char	*get_path(t_env env, char *cmd)
 		back_slash = ft_strjoin("/", cmd);
 		p = ft_strjoin(path[i], back_slash);
 		free(back_slash);
+		if (!p)
+			return (free_2d_array(path), NULL);
 		if (access(p, X_OK) == 0)
 			return (free_2d_array(path), p);
 		else
@@ -44,12 +41,12 @@ char	*get_path(t_env env, char *cmd)
 	return (free_2d_array(path), NULL);
 }
 
-char	*get_path_pwd(t_env env, char *cmd)
+char	*get_path_pwd(t_env *env, char *cmd)
 {
 	char	*p;
 	char	*env_path;
 
-	env_path = ft_getenv(&env, "PWD");
+	env_path = ft_getenv(env, "PWD");
 	if (!env_path)
 		return (NULL);
 	p = ft_strjoin(env_path, &cmd[1]);
@@ -57,7 +54,8 @@ char	*get_path_pwd(t_env env, char *cmd)
 		return (p);
 	else
 	{
-		g_v = 126;
+		env->exit_code = 126;
+		g_v = 0;
 		free(p);
 	}
 	return (NULL);
@@ -90,22 +88,23 @@ void	handle_input_line(t_parser *node, int delimiter_index, int *same)
 	}
 }
 
-int	write_in_heredoc(t_parser *node)
+int	write_in_heredoc(t_parser *node, t_env *env)
 {
 	int	i;
 	int	same;
 
+	env->exit_code = 0;
 	g_v = 0;
 	set_signal_handler_heredoc();
 	i = -1;
 	while (node->delimeter != NULL && node->delimeter[++i] != NULL
-		&& g_v != 130)
+		&& env->exit_code != 130)
 	{
 		if (node->heredoc != NULL)
 			free_heredoc(node);
 		handle_input_line(node, i, &same);
 	}
-	if (g_v == 130)
+	if (env->exit_code == 130)
 		free_heredoc(node);
 	restore_signals();
 	return (same);

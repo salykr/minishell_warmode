@@ -1,33 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/19 12:38:19 by skreik            #+#    #+#             */
-/*   Updated: 2024/02/19 12:38:40 by skreik           ###   ########.fr       */
+/*   Created: 2024/06/15 14:34:41 by isalayan          #+#    #+#             */
+/*   Updated: 2024/06/15 14:35:00 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t	i;
-	size_t	j;
+	size_t	h;
+	size_t	n;
 
-	i = 0;
-	if (little[0] == '\0')
-		return ((char *)big);
-	while (big[i] != '\0' && i < len)
+	h = 0;
+	if (needle[0] == '\0')
+		return ((char *)haystack);
+	while (haystack[h] != '\0')
 	{
-		j = 0;
-		while (little[j] != '\0' && big[i + j] == little[j] && (i + j) < len)
-			j++;
-		if (little[j] == '\0')
-			return ((char *)big + i);
-		i++;
+		n = 0;
+		while (haystack[h + n] == needle[n] && (h + n) < len)
+		{
+			if (haystack[h + n] == '\0' && needle[n] == '\0')
+				return ((char *)&haystack[h]);
+			n++;
+		}
+		if (needle[n] == '\0')
+			return ((char *)haystack + h);
+		h++;
 	}
 	return (0);
 }

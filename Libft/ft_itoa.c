@@ -3,71 +3,74 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/14 10:15:47 by skreik            #+#    #+#             */
-/*   Updated: 2024/06/14 10:15:49 by skreik           ###   ########.fr       */
+/*   Created: 2024/06/18 11:14:44 by isalayan          #+#    #+#             */
+/*   Updated: 2024/06/18 16:30:37 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_digitcount(int n)
+static int	nbr_len(int nbr)
 {
-	int	count;
+	int	len;
 
-	if (n == 0)
-		return (1);
-	count = 0;
-	if (n < 0)
-		count++;
-	while (n != 0)
+	len = 0;
+	if (nbr < 1)
+		len++;
+	while (nbr)
 	{
-		n /= 10;
-		count++;
+		nbr /= 10;
+		len++;
 	}
-	return (count);
+	return (len);
 }
 
-static int	ft_sign(int n)
+static long long	abs_val(long long n)
 {
-	if (n < 0)
-		return (-1);
-	return (1);
-}
+	long long	nb;
 
-static int	absolute(int n)
-{
+	nb = 1;
 	if (n < 0)
-		return (-n);
+		nb *= -n;
 	else
-		return (n);
+		nb *= n;
+	return (nb);
+}
+
+static char	*str_new(size_t n)
+{
+	char	*str;
+
+	str = (char *)malloc(sizeof(char) * (n + 1));
+	if (!str)
+		return (NULL);
+	return (str);
 }
 
 char	*ft_itoa(int n)
 {
-	int		digit_num;
-	int		sign;
-	char	*num;
+	unsigned int	nbr;
+	int				sign;
+	int				len;
+	char			*str;
 
-	digit_num = ft_digitcount(n);
-	sign = ft_sign(n);
-	if (n == -2147483648)
-		return (ft_strdup("-2147483648"));
-	num = (char *)malloc(sizeof(char) * (digit_num + 1));
-	if (!num)
+	sign = 0;
+	if (n < 0)
+		sign = 1;
+	len = nbr_len(n);
+	str = str_new(len);
+	if (!str)
 		return (NULL);
-	num[digit_num--] = '\0';
-	while (digit_num >= 0)
+	*(str + len) = '\0';
+	nbr = abs_val(n);
+	while (len--)
 	{
-		if (sign < 0 && digit_num == 0)
-			num[0] = '-';
-		else
-		{
-			num[digit_num] = absolute(n) % 10 + '0';
-			n /= 10;
-		}
-		digit_num--;
+		*(str + len) = 48 + nbr % 10;
+		nbr /= 10;
 	}
-	return (num);
+	if (sign)
+		*(str) = 45;
+	return (str);
 }

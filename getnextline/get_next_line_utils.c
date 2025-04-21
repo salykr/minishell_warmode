@@ -3,89 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/26 14:24:36 by skreik            #+#    #+#             */
-/*   Updated: 2024/06/26 14:24:38 by skreik           ###   ########.fr       */
+/*   Created: 2024/06/20 14:56:52 by isalayan          #+#    #+#             */
+/*   Updated: 2024/06/20 16:47:23 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
+char	*append_char_to_line(char *line, char c, int len)
 {
-	size_t	i;
-
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s)
-{
-	unsigned int	i;
-	unsigned int	size;
-	char			*dest;
-
-	i = 0;
-	size = ft_strlen(s) + 1;
-	if (s == NULL)
-		return (NULL);
-	dest = (char *)malloc(sizeof(char) * size);
-	if (!(dest))
-		return (NULL);
-	else
-	{
-		while (s[i] != '\0')
-		{
-			dest[i] = s[i];
-			i++;
-		}
-		dest[i] = '\0';
-	}
-	return (dest);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*ptr;
+	char	*new_line;
 	int		i;
-	int		j;
-	int		len1;
-	int		len2;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
+	new_line = (char *)malloc(len + 2);
 	i = 0;
-	j = 0;
-	ptr = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
-	if (!ptr)
+	if (!new_line)
 		return (NULL);
-	while (i < len1 && s1[i] != '\0')
+	while (i < len)
 	{
-		ptr[i] = s1[i];
+		new_line[i] = line[i];
 		i++;
 	}
-	while (j < len2 && s2[j] != '\0')
-	{
-		ptr[i + j] = s2[j];
-		j++;
-	}
-	ptr[i + j] = '\0';
-	return (ptr);
+	new_line[len] = c;
+	new_line[len + 1] = '\0';
+	free(line);
+	return (new_line);
 }
 
-int	char_check(const char *s)
+ssize_t	buffer_read(int fd, char *buffer, int *buf_pos, int *buf_size)
 {
-	int	i;
+	*buf_size = read(fd, buffer, BUFFER_SIZE);
+	*buf_pos = 0;
+	return (*buf_size);
+}
 
-	i = 0;
-	while (s[i] != '\0')
+char	*read_line(int fd, char *buffer, int *buf_pos, int *buf_size)
+{
+	char	*line ;
+	int		line_len;
+	char	c;
+
+	line = NULL;
+	line_len = 0;
+	while (1)
 	{
-		if (s[i] == '\n')
-			return (1);
-		i++;
+		if (*buf_pos >= *buf_size)
+		{
+			if (buffer_read(fd, buffer, buf_pos, buf_size) <= 0)
+			{
+				if (line_len > 0)
+					return (line);
+				free(line);
+				return (NULL);
+			}
+		}
+		c = buffer[(*buf_pos)++];
+		line = append_char_to_line(line, c, line_len++);
+		if (!line || c == '\n')
+			break ;
 	}
-	return (0);
+	return (line);
 }

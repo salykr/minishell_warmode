@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo_helper.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/14 12:27:34 by rdennaou          #+#    #+#             */
-/*   Updated: 2025/01/12 15:17:30 by skreik           ###   ########.fr       */
+/*   Created: 2024/12/14 12:27:34 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/12 13:59:13 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,18 +76,19 @@ void	print_expanded_input(char **input, bool inside_single_quotes, t_env env)
 		}
 		else if (**input == '?')
 		{
-			printf("%d", g_v);
+			if (g_v == 0)
+				printf("%d", env.exit_code);
+			else
+				printf("%d", g_v);
 			(*input)++;
 			return ;
 		}
 		else if ((**input >= '0' && **input <= '9')
 			|| is_special_char(**input, 0))
-		{
 			process_special_variable(input);
-			return ;
-		}
 		else
 			process_expanded_variable(input, env);
+		return ;
 	}
 }
 

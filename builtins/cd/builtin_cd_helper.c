@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 20:09:14 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/12 15:21:49 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 15:21:49 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ int	change_directory_and_update(t_parser *list, t_env *myenv)
 		free(home);
 	}
 	else if (!cmd_is_dir(list->input[0]) || chdir(list->input[0]) != 0)
-	{
-		perror("cd");
-		return (1);
-	}
+		return (perror("cd"), 1);
 	update_pwd(list, myenv);
 	return (0);
 }

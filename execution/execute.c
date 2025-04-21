@@ -3,23 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/15 13:18:14 by skreik           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "mini_shell.h"
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/31 12:56:23 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/13 12:15:21 by skreik           ###   ########.fr       */
+/*   Created: 2024/08/31 12:56:23 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/21 13:12:04 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +194,7 @@ void	execute_builtin_command(t_parser *parser, t_fd f, t_env *env, int fd[2])
 	}
 }
 
-void	handle_wait_status(t_parser *parser)
+void	handle_wait_status(t_parser *parser, t_env *env)
 {
 	int	status;
 	int	signal;
@@ -218,18 +205,19 @@ void	handle_wait_status(t_parser *parser)
 		{	
 			signal = WTERMSIG(status);
 			if (signal == SIGINT || signal == SIGQUIT)
-				g_v = signal + 128;
+				env->exit_code = signal + 128;
 		}
 		else
 		{
 			if (parser && parser->next == NULL)
-				g_v = WEXITSTATUS(status);
+				env->exit_code = WEXITSTATUS(status);
 			else
-				g_v = WEXITSTATUS(status);
+				env->exit_code = WEXITSTATUS(status);
 		}
 		if (parser && parser->next == NULL)
-			g_v = WEXITSTATUS(status);
+			env->exit_code = WEXITSTATUS(status);
 	}
+	g_v = 0;
 }
 
 int	handle_io_and_execute(t_parser *parser, t_env *env, t_fd *f, int fd[2])
@@ -241,7 +229,8 @@ int	handle_io_and_execute(t_parser *parser, t_env *env, t_fd *f, int fd[2])
 		return (0);
 	else if (val == -1)
 	{
-		g_v = 130;
+		env->exit_code = 130;
+		g_v = 0;
 		return (-1);
 	}
 	if (is_builtin(parser))
@@ -274,6 +263,6 @@ void	cmds_exec(t_parser *parser, t_env *env)
 	}
 	if (f.fd_1 != STDIN_FILENO)
 		close(f.fd_1);
-	handle_wait_status(parser);
+	handle_wait_status(parser, env);
 	restore_signals();
 }

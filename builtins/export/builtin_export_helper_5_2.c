@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 17:03:06 by marvin            #+#    #+#             */
-/*   Updated: 2025/01/12 14:39:45 by skreik           ###   ########.fr       */
+/*   Updated: 2025/01/12 14:39:45 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ char	*check_char_after_dollar(char *str, int inside_quote, t_env *envp)
 		&& (inside_quote == 0 || inside_quote == 1))
 		new_string = ft_strdup(str + 2);
 	else if (str[0] == '$' && str[1] == '?')
-		new_string = ft_itoa(g_v);
+		new_string = ft_itoa(envp->exit_code);
 	else if ((is_num_or_char(str[1]) == 0 && (str[1] != '_'))
 		&& str[0] == '$' && (inside_quote == 0 || inside_quote == 1))
 		new_string = ft_strdup(str);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset_helper_1.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/05 12:20:46 by skreik            #+#    #+#             */
-/*   Updated: 2025/01/13 10:24:00 by skreik           ###   ########.fr       */
+/*   Created: 2025/01/05 12:20:46 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/12 13:57:09 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,20 @@ int	handle_unset_options(char **operations, bool *save_val)
 	return (-1);
 }
 
-int	handle_operations_dash(t_parser *parser)
+int	handle_operations_dash(t_parser *parser, t_env *env)
 {
 	if (parser->operations[0] && parser->operations[0][0] == '-')
 	{
 		printf("-bash: unset: --: invalid option\nunset:");
 		printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
-		g_v = 2;
+		env->exit_code = 2;
+		g_v = 0;
 		return (1);
 	}
 	return (0);
 }
 
-int	handle_input_dash(t_parser *parser, bool *save_val)
+int	handle_input_dash(t_parser *parser, bool *save_val, t_env *env)
 {
 	if (parser->input[0] && parser->input[0][0] == '-')
 	{
@@ -69,21 +70,22 @@ int	handle_input_dash(t_parser *parser, bool *save_val)
 		if (parser->input[0][1] == '\0')
 		{
 			printf("\n");
-			g_v = 0;
+			env->exit_code = 0;
 		}
 		else if (parser->input[0][1] && parser->input[0][1] == '-'
 					&& parser->input[0][2] != '\0')
 		{
 			printf("-bash: unset: --: invalid option\nunset:");
 			printf(" usage: unset [-f] [-v] [-n] [name ...]\n");
-			g_v = 2;
+			env->exit_code = 2;
 		}
 		else if (parser->input[0][1] && parser->input[0][1] == '-'
 					&& parser->input[0][2] == '\0')
 		{
 			printf("\n");
-			g_v = 0;
+			env->exit_code = 0;
 		}
+		g_v = 0;
 		return (1);
 	}
 	return (0);

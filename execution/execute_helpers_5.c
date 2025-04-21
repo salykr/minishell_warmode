@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_helpers_5.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/03 13:52:20 by saly              #+#    #+#             */
-/*   Updated: 2025/01/13 12:04:56 by skreik           ###   ########.fr       */
+/*   Created: 2025/01/03 13:52:20 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/19 12:49:25 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ void	process_dollar_strings(char **strs, t_env *env)
 
 char	*retreive_path(t_env env)
 {
-	if (ft_strcmp(ft_getenv(&env, "SHLVL"), "1") == 0)
+	if (ft_getenv(&env, "SHLVL") == NULL)
+		return (NULL);
+	else if (ft_strcmp(ft_getenv(&env, "SHLVL"), "1") == 0)
 	{
 		return (ft_strdup(
-				"/home/skreik/bin:"
+				"/home/isalayan/bin:"
 				"/usr/local/sbin:"
 				"/usr/local/bin:"
 				"/usr/sbin:"

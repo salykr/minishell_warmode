@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_handling_helper.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skreik <skreik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/05 13:04:01 by isalayan          #+#    #+#             */
-/*   Updated: 2025/01/13 12:25:01 by skreik           ###   ########.fr       */
+/*   Updated: 2025/04/21 13:13:32 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	handle_parsing_redirection_helper(t_input *tokens, t_parser *curr)
 	return (0);
 }
 
-int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
+int	handle_parsing_redirection(t_input *tokens, t_parser *curr, t_env *env)
 {
 	if (tokens->next != NULL && (tokens->next->type == tokens->type
 			|| tokens->next->type == T_INPUT || tokens->next->type == T_OUTPUT
@@ -67,14 +67,14 @@ int	handle_parsing_redirection(t_input *tokens, t_parser *curr)
 	{
 		printf("bash: syntax error near unexpected token `%s'\n",
 			tokens->value);
-		g_v = 2;
-		return (-1);
+		env->exit_code = 2;
+		return (g_v = 0, -1);
 	}
 	if (tokens->next == NULL)
 	{
 		printf("bash: syntax error near unexpected token `newline`\n");
-		g_v = 2;
-		return (-1);
+		env->exit_code = 2;
+		return (g_v = 0, -1);
 	}
 	else if (tokens->type == T_APPEND && (tokens->next->type == T_IDENTIFIER
 			|| tokens->next->type == T_PATH || tokens->next->type == T_QUOTE))

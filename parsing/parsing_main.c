@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saly <saly@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: isalayan <isalayan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/13 16:01:21 by saoun             #+#    #+#             */
-/*   Updated: 2025/01/03 14:42:29 by saly             ###   ########.fr       */
+/*   Created: 2024/08/13 16:01:21 by isalayan          #+#    #+#             */
+/*   Updated: 2025/04/21 12:53:04 by isalayan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	*expand_variable(const char *input, t_env env)
 	return (result);
 }
 
-int	parse_tokens_helper(t_input **tokens, t_parser *curr, t_env env)
+int	parse_tokens_helper(t_input **tokens, t_parser *curr, t_env *env)
 {
 	if ((*tokens)->type == T_IDENTIFIER)
 	{
@@ -96,14 +96,14 @@ int	parse_tokens_helper(t_input **tokens, t_parser *curr, t_env env)
 	else if ((*tokens)->type == T_APPEND || (*tokens)->type == T_HEREDOC
 		|| (*tokens)->type == T_OUTPUT || (*tokens)->type == T_INPUT)
 	{
-		if (handle_parsing_redirection(*tokens, curr) < 0)
+		if (handle_parsing_redirection(*tokens, curr, env) < 0)
 			return (-1);
 		*tokens = (*tokens)->next;
 	}
 	return (0);
 }
 
-int	parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
+int	parse_tokens(t_parser **parser, t_tokenlist *list, t_env *env)
 {
 	t_input		*tokens;
 	t_parser	*curr;
@@ -118,9 +118,9 @@ int	parse_tokens(t_parser **parser, t_tokenlist *list, t_env env)
 		{
 			if (curr->command == NULL || tokens->next == NULL)
 			{
-				g_v = 2;
+				env->exit_code = 2;
 				printf("bash: syntax error near unexpected token `|' \n");
-				return (-1);
+				return (g_v = 0, -1);
 			}
 			add_parser_node(parser, create_parser());
 			curr = curr->next;

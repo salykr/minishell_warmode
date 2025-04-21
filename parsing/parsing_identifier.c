@@ -13,33 +13,34 @@
 #include "mini_shell.h"
 
 int	handle_parsing_identifier_helper_errors_helper(t_input *tokens,
-		t_parser *curr)
+		t_parser *curr, t_env *env)
 {
 	if (curr->command == NULL && ft_strchr(tokens->value, '/'))
 	{
 		if (cmd_is_dir(tokens->value))
 		{
 			errmsg_cmd(tokens->value, NULL, "Is a directory");
-			g_v = 126;
-			return (1);
+			env->exit_code = 126;
+			return (g_v = 0, 1);
 		}
 		else
 		{
 			printf("bash: %s : No such file or directory\n", tokens->value);
-			g_v = 127;
-			return (-1);
+			env->exit_code = 127;
+			return (g_v = 0, -1);
 		}
 	}
 	else if (tokens->value && !check_balanced_quotes(tokens->value))
 	{
 		printf("Error: Unbalanced quotes in argument\n");
-		g_v = 1;
-		return (-1);
+		env->exit_code = 1;
+		return (g_v = 0, -1);
 	}
 	return (0);
 }
 
-int	handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr)
+int	handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr,
+			t_env *env)
 {
 	int	value;
 
@@ -47,28 +48,28 @@ int	handle_parsing_identifier_helper_errors(t_input *tokens, t_parser *curr)
 	{
 		if (curr->command == NULL)
 		{
-			ft_putendl_fd("command not found", 2);
-			g_v = 127;
-			return (-1);
+			ft_putendl_fd("minishell: command not found", 2);
+			env->exit_code = 127;
+			return (g_v = 0, -1);
 		}
 	}
 	else if (!ft_strcmp(tokens->value, ":") || !ft_strcmp(tokens->value, "!"))
 	{
-		g_v = 127;
-		return (-1);
+		env->exit_code = 127;
+		return (g_v = 0, -1);
 	}
 	else if (curr->command == NULL && !ft_strncmp(tokens->value, "&&", 2))
 	{
 		printf("bash: syntax error near unexpected token `&&' \n");
-		g_v = 2;
-		return (-1);
+		env->exit_code = 2;
+		return (g_v = 0, -1);
 	}
-	value = handle_parsing_identifier_helper_errors_helper(tokens, curr);
+	value = handle_parsing_identifier_helper_errors_helper(tokens, curr, env);
 	return (value);
 }
 
 int	handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,
-		char *value)
+		char *value, t_env *env)
 {
 	if (curr->command == NULL || !tokens->value[0])
 	{
@@ -77,10 +78,10 @@ int	handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,
 			free(value);
 			return (-1);
 		}
-		ft_putendl_fd("command not found", 2);
-		g_v = 127;
+		ft_putendl_fd("minishell: command not found", 2);
+		env->exit_code = 127;
 		free(value);
-		return (-1);
+		return (g_v = 0, -1);
 	}
 	else
 		add_to_input_args(tokens->value, curr);
@@ -88,7 +89,7 @@ int	handle_parsing_identifier_helper(t_input *tokens, t_parser *curr,
 	return (0);
 }
 
-int	handle_parsing_identifier_main(t_input *tokens, t_parser *curr, t_env env,
+int	handle_parsing_identifier_main(t_input *tokens, t_parser *curr, t_env *env,
 		char *value)
 {
 	char	**split_value;
@@ -105,7 +106,7 @@ int	handle_parsing_identifier_main(t_input *tokens, t_parser *curr, t_env env,
 			add_to_input_args(split_value[i], curr);
 		return (free_2d_array(split_value), free(value), 0);
 	}
-	if ((is_executable(value, env) || ft_strcmp(value, "cd") == 0
+	if ((is_executable(value, *env) || ft_strcmp(value, "cd") == 0
 			|| ft_strcmp(value, "exit") == 0 || ft_strcmp(value, "export") == 0
 			|| ft_strcmp(value, "unset") == 0 || ft_strcmp(value, "echo") == 0
 			||ft_strcmp(value, "env") == 0 || ft_strcmp(value, "pwd") == 0)
@@ -118,7 +119,7 @@ int	handle_parsing_identifier_main(t_input *tokens, t_parser *curr, t_env env,
 	return (1);
 }
 
-int	handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
+int	handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env *env)
 {
 	char	*value;
 	char	*temp_value;
@@ -126,12 +127,12 @@ int	handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
 
 	value = NULL;
 	temp_value = NULL;
-	return_value = handle_parsing_identifier_helper_errors(tokens, curr);
+	return_value = handle_parsing_identifier_helper_errors(tokens, curr, env);
 	if (return_value == 1 || return_value == -1)
 		return (return_value);
 	temp_value = remove_quotes(tokens->value);
 	if (curr->command == NULL)
-		value = process_variable(temp_value, &env);
+		value = process_variable(temp_value, env);
 	else
 		value = ft_strdup(temp_value);
 	free(temp_value);
@@ -139,7 +140,7 @@ int	handle_parsing_identifier(t_input *tokens, t_parser *curr, t_env env)
 		return (1);
 	else if (handle_parsing_identifier_main(tokens, curr, env, value) == 0)
 		return (0);
-	else if (handle_parsing_identifier_helper(tokens, curr, value) < 0)
+	else if (handle_parsing_identifier_helper(tokens, curr, value, env) < 0)
 		return (-1);
 	else if (curr->command == NULL)
 		free(value);
